@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= Index.title %></title>
+  </head>
+  <body>
+    <h1><%= Index.title %></h1>
+    <% for (var i = 0; i < Index.links.length; i++) { %>
+        <a href="<%= Index.links[i].url %>"><%= Index.links[i].name %></a><br>
+    <% } %>
+  </body>
+</html>
