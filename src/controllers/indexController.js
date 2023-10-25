@@ -9,7 +9,7 @@ class IndexController
 
     renderIndex(req, res)
     {
-        res.render('index', {index: this.index});
+        res.render('indexView', {index: this.index});
     }
 }
 

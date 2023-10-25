@@ -9,7 +9,7 @@ class SettingsController
 
     renderSettings(req, res)
     {
-        res.render('settings', {settings: this.settings});
+        res.render('settingsView', {settings: this.settings});
     }
 }
 
