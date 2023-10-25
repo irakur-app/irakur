@@ -1,17 +1,18 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
-
-const dataFolderPath = './data/';
-const databaseFilePath = dataFolderPath + 'linguaImmerse.db';
+const path = require('path');
 
 class DatabaseManager
 {
-    constructor()
+    constructor(folderPath, fileName)
     {
         if(DatabaseManager.instance)
         {
             return DatabaseManager.instance;
         }
+
+        const dataFolderPath = folderPath;
+        const databaseFilePath = path.join(dataFolderPath, fileName);
 
         if (!fs.existsSync(dataFolderPath)){
             fs.mkdirSync(dataFolderPath);
@@ -45,8 +46,20 @@ class DatabaseManager
             }
         });
 
+        this.createTables();
+
         DatabaseManager.instance = this;
+    }
+
+    createTables()
+    {
+        const linguaImmerseQueries = require('./queries/linguaImmerseQueries');
+        
+        this.database.run(linguaImmerseQueries.createConfigurationTable);
+        this.database.run(linguaImmerseQueries.createLanguageTable);
+        this.database.run(linguaImmerseQueries.createTextTable);
+        this.database.run(linguaImmerseQueries.createWordTable);
     }
 }
 
-module.exports = new DatabaseManager();
+module.exports = new DatabaseManager('data', 'linguaImmerse.db');
