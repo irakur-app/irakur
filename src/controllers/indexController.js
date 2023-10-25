@@ -1,4 +1,4 @@
-var Index = require ('../models/index');
+const Index = require ('../models/index');
 
 class IndexController
 {

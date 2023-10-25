@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-var SettingsController = require('../controllers/settingsController');
+const SettingsController = require('../controllers/settingsController');
 
-var settingsController = new SettingsController();
+const settingsController = new SettingsController();
 
 router.get('/', settingsController.renderSettings.bind(settingsController));
 

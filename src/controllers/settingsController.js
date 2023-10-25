@@ -1,4 +1,4 @@
-var Settings = require ('../models/settings');
+const Settings = require ('../models/settings');
 
 class SettingsController
 {
