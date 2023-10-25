@@ -1,6 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 
+const dataFolderPath = './data/';
+const databaseFilePath = dataFolderPath + 'linguaImmerse.db';
+
 class DatabaseManager
 {
     constructor()
@@ -10,10 +13,14 @@ class DatabaseManager
             return DatabaseManager.instance;
         }
 
-        if(!fs.existsSync('./data/linguaImmerse.db'))
+        if (!fs.existsSync(dataFolderPath)){
+            fs.mkdirSync(dataFolderPath);
+        }
+
+        if(!fs.existsSync(databaseFilePath))
         {
             console.log('Database not found. Creating empty database.');
-            fs.writeFile('./data/linguaImmerse.db', '', (error) =>
+            fs.writeFileSync(databaseFilePath, '', (error) =>
             {
                 if (error)
                 {
@@ -26,7 +33,7 @@ class DatabaseManager
             });
         }
 
-        this.database = new sqlite3.Database('./data/linguaImmerse.db', (error) =>
+        this.database = new sqlite3.Database(databaseFilePath, (error) =>
         {
             if (error)
             {
