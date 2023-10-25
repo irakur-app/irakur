@@ -2,6 +2,9 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 
+const linguaImmerseQueries = require('./queries/linguaImmerseQueries');
+const languageQueries = require('./queries/languageQueries');
+
 class DatabaseManager
 {
     constructor(folderPath, fileName)
@@ -53,12 +56,28 @@ class DatabaseManager
 
     createTables()
     {
-        const linguaImmerseQueries = require('./queries/linguaImmerseQueries');
-        
         this.database.run(linguaImmerseQueries.createConfigurationTable);
         this.database.run(linguaImmerseQueries.createLanguageTable);
         this.database.run(linguaImmerseQueries.createTextTable);
         this.database.run(linguaImmerseQueries.createWordTable);
+    }
+
+    getLanguages()
+    {
+        return new Promise((resolve, reject) =>
+        {
+            this.database.all(languageQueries.getLanguages, [], (error, rows) =>
+            {
+                if(error)
+                {
+                    reject(error);
+                }
+                else
+                {
+                    resolve(rows);
+                }
+            });
+        });
     }
 }
 

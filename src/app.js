@@ -14,6 +14,7 @@ app.use(morgan('dev'));
 //routes
 app.use('/', require('./routers/indexRouter'));
 app.use('/settings/', require('./routers/settingsRouter'));
+app.use('/languages/', require('./routers/languagesRouter'));
 
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
