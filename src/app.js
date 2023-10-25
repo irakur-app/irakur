@@ -12,7 +12,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(morgan('dev'));
 
 //routes
-app.use(require('./routers/index'));
+app.use('/', require('./routers/index'));
+app.use('/settings/', require('./routers/settings'));
 
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
