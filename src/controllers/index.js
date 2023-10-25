@@ -1,10 +1,16 @@
-const Index = require('../models/index');
+var Index = require ('../models/index');
 
-const IndexController = {
-  getIndexPage: (req, res) => {    
-    console.log(Index.links[0].url);
-    res.render('index', { Index: Index });
-  },
-};
+class IndexController
+{
+    constructor()
+    {
+        this.index = new Index();
+    }
+
+    renderIndex(req, res)
+    {
+        res.render('index', {index: this.index});
+    }
+}
 
 module.exports = IndexController;
