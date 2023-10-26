@@ -12,6 +12,13 @@ class Languages
     {
         return databaseManager.executeQuery(languageQueries.getLanguages);
     }
+
+    addLanguage(name, dictionaryUrl, shouldShowSpaces)
+    {
+        return databaseManager.executeQuery(languageQueries.addLanguage,
+            [name, dictionaryUrl, shouldShowSpaces]
+        );
+    }
 }
 
 module.exports = Languages;

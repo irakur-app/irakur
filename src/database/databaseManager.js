@@ -61,7 +61,7 @@ class DatabaseManager
         this.database.run(linguaImmerseQueries.createTextTable);
         this.database.run(linguaImmerseQueries.createWordTable);
     }
-    
+
     executeQuery(query, parameters = [])
     {
         return new Promise((resolve, reject) =>

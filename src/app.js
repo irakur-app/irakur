@@ -10,6 +10,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 //middlewares
 app.use(morgan('dev'));
+app.use(express.urlencoded({extended: false}));
 
 //routes
 app.use('/', require('./routers/indexRouter'));
