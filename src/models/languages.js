@@ -1,4 +1,5 @@
 const databaseManager = require('../database/databaseManager');
+const languageQueries = require('../database/queries/languageQueries');
 
 class Languages
 {
@@ -9,7 +10,7 @@ class Languages
 
     getLanguages()
     {
-        return databaseManager.getLanguages();
+        return databaseManager.executeQuery(languageQueries.getLanguages);
     }
 }
 

@@ -61,14 +61,14 @@ class DatabaseManager
         this.database.run(linguaImmerseQueries.createTextTable);
         this.database.run(linguaImmerseQueries.createWordTable);
     }
-
-    getLanguages()
+    
+    executeQuery(query, parameters = [])
     {
         return new Promise((resolve, reject) =>
         {
-            this.database.all(languageQueries.getLanguages, [], (error, rows) =>
+            this.database.all(query, parameters, (error, rows) =>
             {
-                if(error)
+                if (error)
                 {
                     reject(error);
                 }
