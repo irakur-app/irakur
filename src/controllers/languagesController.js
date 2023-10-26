@@ -9,7 +9,10 @@ class LanguagesController
 
     renderLanguages(req, res)
     {
-        res.render('languagesView', {languages: this.languages});
+        this.languages.getLanguages().then((languages) =>
+        {
+            res.render('languagesView', {title: this.languages.title, languages: languages});
+        });
     }
 }
 

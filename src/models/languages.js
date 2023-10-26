@@ -5,16 +5,11 @@ class Languages
     constructor()
     {
         this.title = "Lingua Immerse — Languages";
-        this.languages = [];
-        databaseManager.getLanguages()
-            .then((languages) =>
-            {
-                this.languages = languages;
-            })
-            .catch((error) =>
-            {
-                console.error(error);
-            });
+    }
+
+    getLanguages()
+    {
+        return databaseManager.getLanguages();
     }
 }
 

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= languages.title %></title>
+    <title><%= title %></title>
   </head>
   <body>
-    <h1><%= languages.title %></h1>
-    <% for (var i = 0; i < languages.languages.length; i++) { %>
-        <p><%= languages.languages[i].name %></p>
+    <h1><%= title %></h1>
+    <% for (var i = 0; i < languages.length; i++) { %>
+        <p><%= languages[i].name %></p>
     <% } %>
   </body>
 </html>
