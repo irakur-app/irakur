@@ -79,6 +79,24 @@ class DatabaseManager
             });
         });
     }
+
+    getFirstRow(query, parameters = [])
+    {
+        return new Promise((resolve, reject) =>
+        {
+            this.database.all(query, parameters, (error, rows) =>
+            {
+                if (error)
+                {
+                    reject(error);
+                }
+                else
+                {
+                    resolve(rows[0]);
+                }
+            });
+        });
+    }
 }
 
 module.exports = new DatabaseManager('data', 'linguaImmerse.db');

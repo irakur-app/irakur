@@ -20,6 +20,14 @@ class LanguagesController
         res.render('addLanguageView', {title: this.languages.title});
     }
 
+    renderEditLanguage(req, res)
+    {
+        this.languages.getLanguage(req.params.id).then((language) =>
+        {
+            res.render('editLanguageView', {title: language.name, language: language});
+        });
+    }
+
     addLanguage(req, res)
     {
         this.languages.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
@@ -31,6 +39,14 @@ class LanguagesController
     deleteLanguage(req, res)
     {
         this.languages.deleteLanguage(req.body.id).then(() =>
+        {
+            res.redirect('/languages');
+        });
+    }
+
+    editLanguage(req, res)
+    {
+        this.languages.editLanguage(req.body.id, req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
         {
             res.redirect('/languages');
         });

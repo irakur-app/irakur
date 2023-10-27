@@ -13,6 +13,13 @@ class Languages
         return databaseManager.executeQuery(languageQueries.getLanguages);
     }
 
+    getLanguage(id)
+    {
+        return databaseManager.getFirstRow(languageQueries.getLanguage,
+            [id]
+        );
+    }
+
     addLanguage(name, dictionaryUrl, shouldShowSpaces)
     {
         return databaseManager.executeQuery(languageQueries.addLanguage,
@@ -24,6 +31,13 @@ class Languages
     {
         return databaseManager.executeQuery(languageQueries.deleteLanguage,
             [id]
+        );
+    }
+
+    editLanguage(id, name, dictionaryUrl, shouldShowSpaces)
+    {
+        return databaseManager.executeQuery(languageQueries.editLanguage,
+            [name, dictionaryUrl, shouldShowSpaces, id]
         );
     }
 }
