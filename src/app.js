@@ -16,6 +16,7 @@ app.use(express.urlencoded({extended: false}));
 app.use('/', require('./routers/indexRouter'));
 app.use('/settings/', require('./routers/settingsRouter'));
 app.use('/languages/', require('./routers/languagesRouter'));
+app.use('/texts/', require('./routers/textsRouter'));
 
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
