@@ -27,6 +27,14 @@ class LanguagesController
             res.redirect('/languages');
         });
     }
+
+    deleteLanguage(req, res)
+    {
+        this.languages.deleteLanguage(req.body.id).then(() =>
+        {
+            res.redirect('/languages');
+        });
+    }
 }
 
 module.exports = LanguagesController;

@@ -7,5 +7,6 @@ const languagesController = new LanguagesController();
 router.get('/', languagesController.renderLanguages.bind(languagesController));
 router.get('/add', languagesController.renderAddLanguage.bind(languagesController));
 router.post('/add', languagesController.addLanguage.bind(languagesController));
+router.post('/delete', languagesController.deleteLanguage.bind(languagesController));
 
 module.exports = router;

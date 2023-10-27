@@ -8,6 +8,10 @@
     <a href = '/languages/add'>Add language</a>
     <% for (var i = 0; i < languages.length; i++) { %>
         <p><%= languages[i].name %></p>
+        <form method="post" action="/languages/delete" onsubmit="return confirm('Are you sure you want to delete language \'<%= languages[i].name %>\'?');">
+          <input type="hidden" name="id" value="<%= languages[i].id %>">
+          <button type="submit">Delete</button>
+        </form>
     <% } %>
   </body>
 </html>

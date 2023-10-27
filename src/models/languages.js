@@ -19,6 +19,13 @@ class Languages
             [name, dictionaryUrl, shouldShowSpaces]
         );
     }
+
+    deleteLanguage(id)
+    {
+        return databaseManager.executeQuery(languageQueries.deleteLanguage,
+            [id]
+        );
+    }
 }
 
 module.exports = Languages;
