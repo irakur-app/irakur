@@ -9,7 +9,7 @@ class IndexController
 
     renderIndex(req, res)
     {
-        res.render('indexView', {index: this.index});
+        res.render('indexView', {title: this.index.title, links: this.index.links});
     }
 }
 

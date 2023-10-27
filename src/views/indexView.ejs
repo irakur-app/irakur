@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= index.title %></title>
+    <title><%= title %></title>
   </head>
   <body>
-    <h1><%= index.title %></h1>
-    <% for (var i = 0; i < index.links.length; i++) { %>
-        <a href="<%= index.links[i].url %>"><%= index.links[i].name %></a><br>
+    <h1><%= title %></h1>
+    <% for (var i = 0; i < links.length; i++) { %>
+        <a href="<%= links[i].url %>"><%= links[i].name %></a><br>
     <% } %>
   </body>
 </html>
