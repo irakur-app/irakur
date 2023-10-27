@@ -40,6 +40,18 @@ class Languages
             [name, dictionaryUrl, shouldShowSpaces, id]
         );
     }
+
+    getActiveLanguage()
+    {
+        return databaseManager.getFirstRow(languageQueries.getActiveLanguage);
+    }
+
+    setActiveLanguage(id)
+    {
+        return databaseManager.executeQuery(languageQueries.setActiveLanguage,
+            [id]
+        );
+    }
 }
 
 module.exports = Languages;

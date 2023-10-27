@@ -10,5 +10,6 @@ router.get('/edit/:id', languagesController.renderEditLanguage.bind(languagesCon
 router.post('/add', languagesController.addLanguage.bind(languagesController));
 router.post('/delete', languagesController.deleteLanguage.bind(languagesController));
 router.post('/edit', languagesController.editLanguage.bind(languagesController));
+router.post('/setActive', languagesController.setActiveLanguage.bind(languagesController));
 
 module.exports = router;

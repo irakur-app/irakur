@@ -51,6 +51,15 @@ class LanguagesController
             res.redirect('/languages');
         });
     }
+
+    setActiveLanguage(req, res)
+    {
+        console.log(req.body);
+        this.languages.setActiveLanguage(req.body.activeLanguage).then(() =>
+        {
+            res.redirect('back');
+        });
+    }
 }
 
 module.exports = LanguagesController;

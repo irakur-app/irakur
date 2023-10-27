@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <% for (var i = 0; i < links.length; i++) { %>
-        <a href="<%= links[i].url %>"><%= links[i].name %></a><br>
-    <% } %>
-  </body>
+    <head>
+        <title><%= title %></title>
+    </head>
+    <body>
+        <h1><%= title %></h1>
+        <h3>Active language:</h3>
+        <form id="activeLanguageForm" method="post" action="/languages/setActive">
+            <select id="activeLanguage" name="activeLanguage" onchange="this.form.submit()">
+                <option value="" disabled hidden <%= !activeLanguage ? 'selected=selected' : '' %>>Select language</option>
+                <% for (var i = 0; i < languages.length; i++) { %>
+                    <option value="<%= languages[i].id %>" <%= (activeLanguage && languages[i].id == activeLanguage.id) ? 'selected=selected' : '' %>><%= languages[i].name %></option>
+                <% } %>
+            </select>
+        </form>
+        <% for (var i = 0; i < links.length; i++) { %>
+            <a href="<%= links[i].url %>"><%= links[i].name %></a><br>
+        <% } %>
+    </body>
 </html>
