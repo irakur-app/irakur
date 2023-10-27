@@ -8,9 +8,12 @@ class Texts
         this.title = "Lingua Immerse — Texts";
     }
 
-    getTexts()
+    getTexts(languageId)
     {
-        return databaseManager.executeQuery(textQueries.getTexts);
+        console.log("getTexts", languageId);
+        return databaseManager.executeQuery(textQueries.getTexts,
+            [languageId]
+        );
     }
 }
 
