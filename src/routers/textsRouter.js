@@ -5,5 +5,7 @@ const TextsController = require('../controllers/textsController');
 const textsController = new TextsController();
 
 router.get('/', textsController.renderTexts.bind(textsController));
+router.get('/add', textsController.renderAddText.bind(textsController));
+router.post('/add', textsController.addText.bind(textsController));
 
 module.exports = router;

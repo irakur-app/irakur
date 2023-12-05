@@ -19,6 +19,25 @@ class TextsController
             });
         });
     }
+
+    renderAddText(req, res)
+    {
+        this.languages.getActiveLanguage().then((activeLanguage) =>
+        {
+            res.render('addTextView', {title: this.texts.title, language: activeLanguage});
+        });
+    }
+
+    addText(req, res)
+    {
+        this.languages.getActiveLanguage().then((activeLanguage) =>
+        {
+            this.texts.addText(activeLanguage.id, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
+            {
+                res.redirect('/texts');
+            });
+        });
+    }
 }
 
 module.exports = TextsController;

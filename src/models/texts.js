@@ -15,6 +15,14 @@ class Texts
             [languageId]
         );
     }
+
+    addText(languageId, title, content, sourceUrl)
+    {
+        console.log("addText", languageId, title, content, sourceUrl);
+        return databaseManager.executeQuery(textQueries.addText,
+            [languageId, title, content, sourceUrl]
+        );
+    }
 }
 
 module.exports = Texts;
