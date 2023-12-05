@@ -23,6 +23,14 @@ class Texts
             [languageId, title, content, sourceUrl]
         );
     }
+
+    deleteText(id)
+    {
+        console.log("deleteText", id);
+        return databaseManager.executeQuery(textQueries.deleteText,
+            [id]
+        );
+    }
 }
 
 module.exports = Texts;

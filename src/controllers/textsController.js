@@ -38,6 +38,14 @@ class TextsController
             });
         });
     }
+
+    deleteText(req, res)
+    {
+        this.texts.deleteText(req.body.id).then(() =>
+        {
+            res.redirect('/texts');
+        });
+    }
 }
 
 module.exports = TextsController;
