@@ -28,6 +28,17 @@ class TextsController
         });
     }
 
+    renderEditText(req, res)
+    {
+        this.languages.getActiveLanguage().then((activeLanguage) =>
+        {
+            this.texts.getText(req.params.id).then((text) =>
+            {
+                res.render('editTextView', {title: text.title, text: text});
+            });
+        });
+    }
+
     addText(req, res)
     {
         this.languages.getActiveLanguage().then((activeLanguage) =>
@@ -42,6 +53,14 @@ class TextsController
     deleteText(req, res)
     {
         this.texts.deleteText(req.body.id).then(() =>
+        {
+            res.redirect('/texts');
+        });
+    }
+
+    editText(req, res)
+    {
+        this.texts.editText(req.body.id, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
         {
             res.redirect('/texts');
         });

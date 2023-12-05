@@ -16,6 +16,14 @@ class Texts
         );
     }
 
+    getText(id)
+    {
+        console.log("getText", id);
+        return databaseManager.getFirstRow(textQueries.getText,
+            [id]
+        );
+    }
+
     addText(languageId, title, content, sourceUrl)
     {
         console.log("addText", languageId, title, content, sourceUrl);
@@ -29,6 +37,14 @@ class Texts
         console.log("deleteText", id);
         return databaseManager.executeQuery(textQueries.deleteText,
             [id]
+        );
+    }
+
+    editText(id, title, content, sourceUrl)
+    {
+        console.log("editText", id, title, content, sourceUrl);
+        return databaseManager.executeQuery(textQueries.editText,
+            [title, content, sourceUrl, id]
         );
     }
 }
