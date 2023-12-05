@@ -21,6 +21,7 @@ const linguaImmerseQueries =
     createWordTable: `CREATE TABLE IF NOT EXISTS word (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         language_id INTEGER NOT NULL,
+        content TEXT NOT NULL,
         status INTEGER NOT NULL DEFAULT 0,
         meaning TEXT,
         notes TEXT,
