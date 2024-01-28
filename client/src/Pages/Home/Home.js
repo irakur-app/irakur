@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const Home = () => {
@@ -32,10 +32,10 @@ const Home = () => {
           </select>
       </form>
       {apiData.links.map((link, i) => (
-        <Fragment key={i}>
+        <React.Fragment key={i}>
           <a href={link.url}>{link.name}</a>
           <br />
-        </Fragment>
+        </React.Fragment>
       ))}
     </HelmetProvider>
   );

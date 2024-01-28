@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -25,14 +25,14 @@ const Languages = () => {
       <h1>{apiData.title}</h1>
       <a href="/languages/add">Add language</a>
       {apiData.languages.map((language, i) => (
-        <Fragment key={i}>
+        <React.Fragment key={i}>
           <p>{language.name}</p>
           <a href={"/languages/edit/" + language.id}>Edit</a>
           <form method="post" action="/api/languages/delete">
             <input type="hidden" name="id" value={language.id} />
             <button type="submit">Delete</button>
           </form>
-        </Fragment>
+        </React.Fragment>
       ))}
 
       <Outlet />
