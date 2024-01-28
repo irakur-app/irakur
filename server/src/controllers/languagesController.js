@@ -17,20 +17,20 @@ class LanguagesController
     {
         this.languages.getLanguages().then((languages) =>
         {
-            res.render('languagesView', {title: this.languages.title, languages: languages});
+            res.json({title: this.languages.title, languages: languages});
         });
     }
 
     renderAddLanguage(req, res)
     {
-        res.render('addLanguageView', {title: this.languages.title});
+        res.json({title: this.languages.title});
     }
 
     renderEditLanguage(req, res)
     {
         this.languages.getLanguage(req.params.id).then((language) =>
         {
-            res.render('editLanguageView', {title: language.name, language: language});
+            res.json({title: language.name, language: language});
         });
     }
 

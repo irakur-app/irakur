@@ -15,7 +15,7 @@ class SettingsController
 
     renderSettings(req, res)
     {
-        res.render('settingsView', {settings: this.settings});
+        res.json({settings: this.settings});
     }
 }
 

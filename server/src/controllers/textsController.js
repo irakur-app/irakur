@@ -21,7 +21,7 @@ class TextsController
         {
             this.texts.getTexts(activeLanguage.id).then((texts) =>
             {
-                res.render('textsView', {title: this.texts.title, texts: texts});
+                res.json({title: this.texts.title, texts: texts});
             });
         });
     }
@@ -30,7 +30,7 @@ class TextsController
     {
         this.languages.getActiveLanguage().then((activeLanguage) =>
         {
-            res.render('addTextView', {title: this.texts.title, language: activeLanguage});
+            res.json({title: this.texts.title, language: activeLanguage});
         });
     }
 
@@ -40,7 +40,7 @@ class TextsController
         {
             this.texts.getText(req.params.id).then((text) =>
             {
-                res.render('editTextView', {title: text.title, text: text});
+                res.json({title: text.title, text: text});
             });
         });
     }

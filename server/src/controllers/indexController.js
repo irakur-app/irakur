@@ -22,7 +22,7 @@ class IndexController
             this.languages.getActiveLanguage().then((activeLanguage) =>
             {
                 console.log(activeLanguage);
-                res.render('indexView', {title: this.index.title, links: this.index.links, languages: languages, activeLanguage: activeLanguage});
+                res.json({title: this.index.title, links: this.index.links, languages: languages, activeLanguage: activeLanguage});
             });
         });
     }
