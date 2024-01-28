@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './Pages/Home';
 import { Texts } from './Pages/Texts';
 import { AddText } from './Pages/AddText';
+import { EditText } from './Pages/EditText';
 import { Languages } from './Pages/Languages';
 import { AddLanguage } from './Pages/AddLanguage';
 import { EditLanguage } from './Pages/EditLanguage';
@@ -15,6 +16,7 @@ const App = () => {
         <Route exact path="/" element={<Home />} />
         <Route exact path="/texts" element={<Texts />} />
         <Route exact path="/texts/add" element={<AddText />} />
+        <Route exact path="/texts/edit/:id" element={<EditText />} />
         <Route exact path="/languages" element={<Languages />} />
         <Route exact path="/languages/add" element={<AddLanguage />} />
         <Route exact path="/languages/edit/:id" element={<EditLanguage />} />
