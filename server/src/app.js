@@ -9,6 +9,9 @@ const app = express();
 const path = require('path');
 const morgan = require('morgan');
 
+const cors = require('cors');
+app.use(cors());
+
 //settings
 app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'ejs');
