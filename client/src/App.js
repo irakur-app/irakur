@@ -4,6 +4,7 @@ import { Home } from './Pages/Home';
 import { Languages } from './Pages/Languages';
 import { AddLanguage } from './Pages/AddLanguage';
 import { EditLanguage } from './Pages/EditLanguage';
+import { Settings } from './Pages/Settings';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route exact path="/languages" element={<Languages />} />
         <Route exact path="/languages/add" element={<AddLanguage />} />
         <Route exact path="/languages/edit/:id" element={<EditLanguage />} />
+        <Route exact path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   );
