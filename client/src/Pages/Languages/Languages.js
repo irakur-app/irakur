@@ -1,17 +1,18 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const Languages = () => {
-  const [languagesData, setLanguagesData] = useState(null);
+  const [apiData, setApiData] = useState(null);
 
   useEffect(() => {
     fetch('/api/languages')
       .then((response) => response.json())
-      .then((data) => setLanguagesData(data))
+      .then((data) => setApiData(data))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
-  if (!languagesData) {
+  if (!apiData) {
     return <p>Loading...</p>;
   }
 
@@ -19,11 +20,11 @@ const Languages = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>{languagesData.title}</title>
+        <title>{apiData.title}</title>
       </Helmet>
-      <h1>{languagesData.title}</h1>
+      <h1>{apiData.title}</h1>
       <a href="/languages/add">Add language</a>
-      {languagesData.languages.map((language, i) => (
+      {apiData.languages.map((language, i) => (
         <Fragment key={i}>
           <p>{language.name}</p>
           <a href={"/languages/edit/" + language.id}>Edit</a>
@@ -33,6 +34,8 @@ const Languages = () => {
           </form>
         </Fragment>
       ))}
+
+      <Outlet />
     </HelmetProvider>
   );
 };
