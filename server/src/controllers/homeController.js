@@ -4,28 +4,28 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Index = require ('../models/index');
+const Home = require ('../models/home');
 const Languages = require ('../models/languages');
 
-class IndexController
+class HomeController
 {
     constructor()
     {
-        this.index = new Index();
+        this.home = new Home();
         this.languages = new Languages();
     }
 
-    renderIndex(req, res)
+    renderHome(req, res)
     {
         this.languages.getLanguages().then((languages) =>
         {
             this.languages.getActiveLanguage().then((activeLanguage) =>
             {
                 console.log(activeLanguage);
-                res.json({title: this.index.title, links: this.index.links, languages: languages, activeLanguage: activeLanguage});
+                res.json({title: this.home.title, links: this.home.links, languages: languages, activeLanguage: activeLanguage});
             });
         });
     }
 }
 
-module.exports = IndexController;
+module.exports = HomeController;

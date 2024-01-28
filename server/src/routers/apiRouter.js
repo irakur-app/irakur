@@ -7,7 +7,7 @@
 const express = require('express');
 const router = express.Router();
 
-router.use('/index', require('./indexRouter'));
+router.use('/home', require('./homeRouter'));
 router.use('/settings/', require('./settingsRouter'));
 router.use('/languages/', require('./languagesRouter'));
 router.use('/texts/', require('./textsRouter'));

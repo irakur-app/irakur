@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-class Index
+class Home
 {
     constructor()
     {
@@ -19,4 +19,4 @@ class Index
     }
 };
   
-module.exports = Index;
+module.exports = Home;

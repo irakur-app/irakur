@@ -6,10 +6,10 @@
 
 const express = require('express');
 const router = express.Router();
-const IndexController = require('../controllers/indexController');
+const HomeController = require('../controllers/homeController');
 
-const indexController = new IndexController();
+const homeController = new HomeController();
 
-router.get('/', indexController.renderIndex.bind(indexController));
+router.get('/', homeController.renderHome.bind(homeController));
 
 module.exports = router;
