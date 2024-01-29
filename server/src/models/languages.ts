@@ -4,11 +4,13 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const databaseManager = require('../database/databaseManager');
-const languageQueries = require('../database/queries/languageQueries');
+import { databaseManager } from '../database/databaseManager';
+import { languageQueries } from '../database/queries/languageQueries';
 
 class Languages
 {
+    title:string;
+
     constructor()
     {
         this.title = "Irakur — Languages";
@@ -19,31 +21,31 @@ class Languages
         return databaseManager.executeQuery(languageQueries.getLanguages);
     }
 
-    getLanguage(id)
+    getLanguage(id:string)
     {
         return databaseManager.getFirstRow(languageQueries.getLanguage,
             [id]
         );
     }
 
-    addLanguage(name, dictionaryUrl, shouldShowSpaces)
+    addLanguage(name:string, dictionaryUrl:string, shouldShowSpaces:boolean)
     {
         return databaseManager.executeQuery(languageQueries.addLanguage,
-            [name, dictionaryUrl, shouldShowSpaces]
+            [name, dictionaryUrl, shouldShowSpaces.toString()]
         );
     }
 
-    deleteLanguage(id)
+    deleteLanguage(id:string)
     {
         return databaseManager.executeQuery(languageQueries.deleteLanguage,
             [id]
         );
     }
 
-    editLanguage(id, name, dictionaryUrl, shouldShowSpaces)
+    editLanguage(id:string, name:string, dictionaryUrl:string, shouldShowSpaces:boolean)
     {
         return databaseManager.executeQuery(languageQueries.editLanguage,
-            [name, dictionaryUrl, shouldShowSpaces, id]
+            [name, dictionaryUrl, shouldShowSpaces.toString(), id]
         );
     }
 
@@ -52,7 +54,7 @@ class Languages
         return databaseManager.getFirstRow(languageQueries.getActiveLanguage);
     }
 
-    setActiveLanguage(id)
+    setActiveLanguage(id:string)
     {
         return databaseManager.executeQuery(languageQueries.setActiveLanguage,
             [id]
@@ -60,4 +62,4 @@ class Languages
     }
 }
 
-module.exports = Languages;
+export { Languages }

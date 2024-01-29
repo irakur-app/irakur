@@ -4,19 +4,22 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const sqlite3 = require('sqlite3').verbose();
-const fs = require('fs');
-const path = require('path');
+import sqlite3 from 'sqlite3';
+import fs from 'fs';
+import path from 'path';
 
-const irakurQueries = require('./queries/irakurQueries');
-const languageQueries = require('./queries/languageQueries');
+import { irakurQueries } from './queries/irakurQueries';
 
 class DatabaseManager
 {
-    constructor(folderPath, fileName)
+    private static instance:DatabaseManager;
+    database:sqlite3.Database;
+
+    constructor(folderPath:string, fileName:string)
     {
         if(DatabaseManager.instance)
         {
+            this.database = DatabaseManager.instance.database;
             return DatabaseManager.instance;
         }
 
@@ -30,17 +33,15 @@ class DatabaseManager
         if(!fs.existsSync(databaseFilePath))
         {
             console.log('Database not found. Creating empty database.');
-            fs.writeFileSync(databaseFilePath, '', (error) =>
+            try
             {
-                if (error)
-                {
-                    console.error(error.message);
-                }
-                else
-                {
-                    console.log('Created empty database.');
-                }
-            });
+                fs.writeFileSync(databaseFilePath, '');
+                console.log('Created empty database.');
+            }
+            catch(error)
+            {
+                console.error(error);
+            }
         }
 
         this.database = new sqlite3.Database(databaseFilePath, (error) =>
@@ -68,7 +69,7 @@ class DatabaseManager
         this.database.run(irakurQueries.createWordTable);
     }
 
-    executeQuery(query, parameters = [])
+    executeQuery(query:string, parameters:string[] = [])
     {
         return new Promise((resolve, reject) =>
         {
@@ -86,7 +87,7 @@ class DatabaseManager
         });
     }
 
-    getFirstRow(query, parameters = [])
+    getFirstRow(query:string, parameters:string[] = []):Promise<any>
     {
         return new Promise((resolve, reject) =>
         {
@@ -105,4 +106,5 @@ class DatabaseManager
     }
 }
 
-module.exports = new DatabaseManager('data', 'irakur.db');
+const databaseManager = new DatabaseManager('data', 'irakur.db')
+export { databaseManager };

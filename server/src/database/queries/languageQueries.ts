@@ -15,4 +15,4 @@ const languageQueries =
     setActiveLanguage: "REPLACE INTO configuration (key, value) VALUES ('active_language', ?)"
 }
 
-module.exports = languageQueries;
+export { languageQueries }

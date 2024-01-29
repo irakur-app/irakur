@@ -4,12 +4,12 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const express = require('express');
+import express from 'express';
 const app = express();
-const path = require('path');
-const morgan = require('morgan');
+import path from 'path';
+import morgan from 'morgan';
 
-const cors = require('cors');
+import cors from 'cors';
 app.use(cors());
 
 //settings
@@ -23,7 +23,8 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: false}));
 
 //routes
-app.use('/api', require('./routers/apiRouter'));
+import { apiRouter } from './routers/apiRouter';
+app.use('/api', apiRouter);
 
 app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));

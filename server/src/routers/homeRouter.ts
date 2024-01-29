@@ -3,13 +3,12 @@
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
-
-const express = require('express');
-const router = express.Router();
-const HomeController = require('../controllers/homeController');
+import express from 'express';
+const homeRouter = express.Router();
+import { HomeController } from '../controllers/homeController';
 
 const homeController = new HomeController();
 
-router.get('/', homeController.renderHome.bind(homeController));
+homeRouter.get('/', homeController.renderHome.bind(homeController));
 
-module.exports = router;
+export { homeRouter };

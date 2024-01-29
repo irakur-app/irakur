@@ -4,18 +4,23 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Texts = require ('../models/texts');
-const Languages = require ('../models/languages');
+import { Request, Response } from 'express';
+
+import { Texts } from '../models/texts';
+import { Languages } from '../models/languages';
 
 class TextsController
 {
+    texts:Texts;
+    languages:Languages;
+
     constructor()
     {
         this.texts = new Texts();
         this.languages = new Languages();
     }
 
-    renderTexts(req, res)
+    renderTexts(req:Request, res:Response)
     {
         this.languages.getActiveLanguage().then((activeLanguage) =>
         {
@@ -26,7 +31,7 @@ class TextsController
         });
     }
 
-    renderAddText(req, res)
+    renderAddText(req:Request, res:Response)
     {
         this.languages.getActiveLanguage().then((activeLanguage) =>
         {
@@ -34,7 +39,7 @@ class TextsController
         });
     }
 
-    renderEditText(req, res)
+    renderEditText(req:Request, res:Response)
     {
         this.languages.getActiveLanguage().then((activeLanguage) =>
         {
@@ -45,7 +50,7 @@ class TextsController
         });
     }
 
-    addText(req, res)
+    addText(req:Request, res:Response)
     {
         this.languages.getActiveLanguage().then((activeLanguage) =>
         {
@@ -56,7 +61,7 @@ class TextsController
         });
     }
 
-    deleteText(req, res)
+    deleteText(req:Request, res:Response)
     {
         this.texts.deleteText(req.body.id).then(() =>
         {
@@ -64,7 +69,7 @@ class TextsController
         });
     }
 
-    editText(req, res)
+    editText(req:Request, res:Response)
     {
         this.texts.editText(req.body.id, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
         {
@@ -73,4 +78,4 @@ class TextsController
     }
 }
 
-module.exports = TextsController;
+export { TextsController };

@@ -4,18 +4,23 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Home = require ('../models/home');
-const Languages = require ('../models/languages');
+import { Request, Response } from 'express';
+
+import { Home } from '../models/home';
+import { Languages } from '../models/languages';
 
 class HomeController
 {
+    home:Home;
+    languages:Languages;
+
     constructor()
     {
         this.home = new Home();
         this.languages = new Languages();
     }
 
-    renderHome(req, res)
+    renderHome(req:Request, res:Response)
     {
         this.languages.getLanguages().then((languages) =>
         {
@@ -28,4 +33,4 @@ class HomeController
     }
 }
 
-module.exports = HomeController;
+export { HomeController };

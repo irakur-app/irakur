@@ -6,10 +6,12 @@
 
 class Settings
 {
+    title:string;
+
     constructor()
     {
         this.title = "Irakur — Settings";
     }
 };
   
-module.exports = Settings;
+export { Settings };

@@ -13,4 +13,4 @@ const textQueries =
     editText: 'UPDATE text SET title = ?, content = ?, source_url = ? WHERE id = ?',
 }
 
-module.exports = textQueries;
+export { textQueries };
