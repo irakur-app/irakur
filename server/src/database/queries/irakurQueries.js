@@ -1,10 +1,10 @@
 /* 
- * Lingua Immerse - Learn languages through immersion
+ * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const linguaImmerseQueries =
+const irakurQueries =
 {
     createConfigurationTable: `CREATE TABLE IF NOT EXISTS configuration (
         key TEXT NOT NULL PRIMARY KEY,
@@ -38,4 +38,4 @@ const linguaImmerseQueries =
     )`,
 };
 
-module.exports = linguaImmerseQueries;
+module.exports = irakurQueries;
