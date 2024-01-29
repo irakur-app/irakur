@@ -1,4 +1,4 @@
-# Lingua Immerse
+# Irakur
 ### Learn languages through immersion
 
 ## License

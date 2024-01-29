@@ -1,5 +1,5 @@
 /* 
- * Lingua Immerse - Learn languages through immersion
+ * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
@@ -8,7 +8,7 @@ const sqlite3 = require('sqlite3').verbose();
 const fs = require('fs');
 const path = require('path');
 
-const linguaImmerseQueries = require('./queries/linguaImmerseQueries');
+const irakurQueries = require('./queries/irakurQueries');
 const languageQueries = require('./queries/languageQueries');
 
 class DatabaseManager
@@ -51,7 +51,7 @@ class DatabaseManager
             }
             else
             {
-                console.log('Connected to the Lingua Immerse database.');
+                console.log('Connected to the Irakur database.');
             }
         });
 
@@ -62,10 +62,10 @@ class DatabaseManager
 
     createTables()
     {
-        this.database.run(linguaImmerseQueries.createConfigurationTable);
-        this.database.run(linguaImmerseQueries.createLanguageTable);
-        this.database.run(linguaImmerseQueries.createTextTable);
-        this.database.run(linguaImmerseQueries.createWordTable);
+        this.database.run(irakurQueries.createConfigurationTable);
+        this.database.run(irakurQueries.createLanguageTable);
+        this.database.run(irakurQueries.createTextTable);
+        this.database.run(irakurQueries.createWordTable);
     }
 
     executeQuery(query, parameters = [])
@@ -105,4 +105,4 @@ class DatabaseManager
     }
 }
 
-module.exports = new DatabaseManager('data', 'linguaImmerse.db');
+module.exports = new DatabaseManager('data', 'irakur.db');
