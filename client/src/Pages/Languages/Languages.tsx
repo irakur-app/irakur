@@ -8,11 +8,19 @@ import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-const Texts = () => {
-  const [apiData, setApiData] = useState(null);
+type ApiData = {
+  title: string;
+  languages: {
+    id: number;
+    name: string;
+  }[];
+};
+
+const Languages = () => {
+  const [apiData, setApiData] = useState<ApiData | null>(null);
 
   useEffect(() => {
-    fetch('/api/texts')
+    fetch('/api/languages')
       .then((response) => response.json())
       .then((data) => setApiData(data))
       .catch((error) => console.error('Error fetching data:', error));
@@ -29,13 +37,13 @@ const Texts = () => {
         <title>{apiData.title}</title>
       </Helmet>
       <h1>{apiData.title}</h1>
-      <a href="/texts/add">Add text</a>
-      {apiData.texts.map((text, i) => (
+      <a href="/languages/add">Add language</a>
+      {apiData.languages.map((language, i) => (
         <React.Fragment key={i}>
-          <p>{text.title}</p>
-          <a href={"/texts/edit/" + text.id}>Edit</a>
-          <form method="post" action="/api/texts/delete">
-            <input type="hidden" name="id" value={text.id} />
+          <p>{language.name}</p>
+          <a href={"/languages/edit/" + language.id}>Edit</a>
+          <form method="post" action="/api/languages/delete">
+            <input type="hidden" name="id" value={language.id} />
             <button type="submit">Delete</button>
           </form>
         </React.Fragment>
@@ -46,4 +54,4 @@ const Texts = () => {
   );
 };
 
-export { Texts };
+export { Languages };

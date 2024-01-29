@@ -4,7 +4,6 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './Pages/Home';
 import { Texts } from './Pages/Texts';
@@ -19,14 +18,14 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/texts" element={<Texts />} />
-        <Route exact path="/texts/add" element={<AddText />} />
-        <Route exact path="/texts/edit/:id" element={<EditText />} />
-        <Route exact path="/languages" element={<Languages />} />
-        <Route exact path="/languages/add" element={<AddLanguage />} />
-        <Route exact path="/languages/edit/:id" element={<EditLanguage />} />
-        <Route exact path="/settings" element={<Settings />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/texts" element={<Texts />} />
+        <Route path="/texts/add" element={<AddText />} />
+        <Route path="/texts/edit/:id" element={<EditText />} />
+        <Route path="/languages" element={<Languages />} />
+        <Route path="/languages/add" element={<AddLanguage />} />
+        <Route path="/languages/edit/:id" element={<EditLanguage />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </BrowserRouter>
   );

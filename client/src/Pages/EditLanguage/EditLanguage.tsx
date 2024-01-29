@@ -7,8 +7,18 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
+type ApiData = {
+  title: string;
+  language: {
+    id: number;
+    name: string;
+    dictionary_url: string;
+    should_show_spaces: boolean;
+  };
+};
+
 const EditLanguage = () => {
-  const [apiData, setApiData] = useState(null);
+  const [apiData, setApiData] = useState<ApiData | null>(null);
 
   const languageId = document.location.pathname.split('/').pop();
 
