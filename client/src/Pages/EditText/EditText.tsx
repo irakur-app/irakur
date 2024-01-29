@@ -7,8 +7,18 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
+type ApiData = {
+  title: string;
+  text: {
+    id: number;
+    title: string;
+    content: string;
+    source_url: string;
+  };
+};
+
 const EditText = () => {
-  const [apiData, setApiData] = useState(null);
+  const [apiData, setApiData] = useState<ApiData | null>(null);
 
   const textId = document.location.pathname.split('/').pop();
 

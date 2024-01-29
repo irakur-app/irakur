@@ -7,11 +7,15 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-const Home = () => {
-  const [apiData, setApiData] = useState(null);
+type ApiData = {
+  title: string;
+};
+
+const AddText = () => {
+  const [apiData, setApiData] = useState<ApiData | null>(null);
 
   useEffect(() => {
-    fetch('/api/home')
+    fetch('/api/texts/add')
       .then((response) => response.json())
       .then((data) => setApiData(data))
       .catch((error) => console.error('Error fetching data:', error));
@@ -28,23 +32,21 @@ const Home = () => {
         <title>{apiData.title}</title>
       </Helmet>
       <h1>{apiData.title}</h1>
-      <h3>Active language:</h3>
-      <form id="activeLanguageForm" method="post">
-          <select id="activeLanguage" name="activeLanguage" defaultValue={apiData.activeLanguage?.id}>
-              <option value="" disabled hidden>Select language</option>
-              {apiData.languages.map((language, i) => (
-                <option value={language.id} key={language.id}>{language.name}</option>
-              ))}
-          </select>
+      <form method="post" action="/api/texts/add">
+        <label htmlFor="title">Title</label>
+        <input type="text" name="title" id="title" />
+        <br />
+        <label htmlFor="content">Content</label>
+        <textarea name="content" id="content"></textarea>
+        <br />
+        <label htmlFor="sourceUrl">URL</label>
+        <input type="text" name="sourceUrl" id="sourceUrl" />
+        <br />
+
+        <button type="submit">Add</button>
       </form>
-      {apiData.links.map((link, i) => (
-        <React.Fragment key={i}>
-          <a href={link.url}>{link.name}</a>
-          <br />
-        </React.Fragment>
-      ))}
     </HelmetProvider>
   );
 };
 
-export { Home };
+export { AddText };

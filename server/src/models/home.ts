@@ -6,6 +6,9 @@
 
 class Home
 {
+    title:string;
+    links:{name:string, url:string}[];
+
     constructor()
     {
         this.title = "Irakur";
@@ -19,4 +22,4 @@ class Home
     }
 };
   
-module.exports = Home;
+export { Home };

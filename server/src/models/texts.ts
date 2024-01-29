@@ -4,17 +4,19 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const databaseManager = require('../database/databaseManager');
-const textQueries = require('../database/queries/textQueries');
+import { databaseManager } from "../database/databaseManager";
+import { textQueries } from "../database/queries/textQueries";
 
 class Texts
 {
+    title:string;
+
     constructor()
     {
         this.title = "Irakur — Texts";
     }
 
-    getTexts(languageId)
+    getTexts(languageId:string)
     {
         console.log("getTexts", languageId);
         return databaseManager.executeQuery(textQueries.getTexts,
@@ -22,7 +24,7 @@ class Texts
         );
     }
 
-    getText(id)
+    getText(id:string)
     {
         console.log("getText", id);
         return databaseManager.getFirstRow(textQueries.getText,
@@ -30,7 +32,7 @@ class Texts
         );
     }
 
-    addText(languageId, title, content, sourceUrl)
+    addText(languageId:string, title:string, content:string, sourceUrl:string)
     {
         console.log("addText", languageId, title, content, sourceUrl);
         return databaseManager.executeQuery(textQueries.addText,
@@ -38,7 +40,7 @@ class Texts
         );
     }
 
-    deleteText(id)
+    deleteText(id:string)
     {
         console.log("deleteText", id);
         return databaseManager.executeQuery(textQueries.deleteText,
@@ -46,7 +48,7 @@ class Texts
         );
     }
 
-    editText(id, title, content, sourceUrl)
+    editText(id:string, title:string, content:string, sourceUrl:string)
     {
         console.log("editText", id, title, content, sourceUrl);
         return databaseManager.executeQuery(textQueries.editText,
@@ -55,4 +57,4 @@ class Texts
     }
 }
 
-module.exports = Texts;
+export { Texts };

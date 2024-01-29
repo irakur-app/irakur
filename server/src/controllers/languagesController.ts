@@ -4,16 +4,22 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Languages = require ('../models/languages');
+import { Request, Response } from 'express';
+
+import { Languages } from '../models/languages';
+
+import { DatabaseLanguage } from '../types/database';
 
 class LanguagesController
 {
+    languages:Languages;
+
     constructor()
     {
         this.languages = new Languages();
     }
 
-    renderLanguages(req, res)
+    renderLanguages(req:Request, res:Response)
     {
         this.languages.getLanguages().then((languages) =>
         {
@@ -21,20 +27,22 @@ class LanguagesController
         });
     }
 
-    renderAddLanguage(req, res)
+    renderAddLanguage(req:Request, res:Response)
     {
         res.json({title: this.languages.title});
     }
 
-    renderEditLanguage(req, res)
+    renderEditLanguage(req:Request, res:Response)
     {
         this.languages.getLanguage(req.params.id).then((language) =>
         {
-            res.json({title: language.name, language: language});
+            language = language as DatabaseLanguage;
+            
+            res.json({title: language?.name, language: language});
         });
     }
 
-    addLanguage(req, res)
+    addLanguage(req:Request, res:Response)
     {
         this.languages.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
         {
@@ -42,7 +50,7 @@ class LanguagesController
         });
     }
 
-    deleteLanguage(req, res)
+    deleteLanguage(req:Request, res:Response)
     {
         this.languages.deleteLanguage(req.body.id).then(() =>
         {
@@ -50,7 +58,7 @@ class LanguagesController
         });
     }
 
-    editLanguage(req, res)
+    editLanguage(req:Request, res:Response)
     {
         this.languages.editLanguage(req.body.id, req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
         {
@@ -58,7 +66,7 @@ class LanguagesController
         });
     }
 
-    setActiveLanguage(req, res)
+    setActiveLanguage(req:Request, res:Response)
     {
         console.log(req.body);
         this.languages.setActiveLanguage(req.body.activeLanguage).then(() =>
@@ -68,4 +76,4 @@ class LanguagesController
     }
 }
 
-module.exports = LanguagesController;
+export { LanguagesController };

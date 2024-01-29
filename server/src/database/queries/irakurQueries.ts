@@ -38,4 +38,4 @@ const irakurQueries =
     )`,
 };
 
-module.exports = irakurQueries;
+export { irakurQueries }

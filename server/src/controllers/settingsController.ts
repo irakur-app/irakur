@@ -4,19 +4,23 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Settings = require ('../models/settings');
+import { Request, Response } from 'express';
+
+import { Settings } from '../models/settings';
 
 class SettingsController
 {
+    settings:Settings;
+
     constructor()
     {
         this.settings = new Settings();
     }
 
-    renderSettings(req, res)
+    renderSettings(req:Request, res:Response)
     {
         res.json({title: this.settings.title});
     }
 }
 
-module.exports = SettingsController;
+export { SettingsController };
