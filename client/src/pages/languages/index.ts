@@ -4,4 +4,4 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-export * from './Home';
+export * from './languages';
