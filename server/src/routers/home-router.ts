@@ -5,7 +5,7 @@
  */
 import express from 'express';
 const homeRouter = express.Router();
-import { HomeController } from '../controllers/homeController';
+import { HomeController } from '../controllers/home-controller';
 
 const homeController = new HomeController();
 

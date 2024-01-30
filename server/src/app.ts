@@ -23,7 +23,7 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: false}));
 
 //routes
-import { apiRouter } from './routers/apiRouter';
+import { apiRouter } from './routers/api-router';
 app.use('/api', apiRouter);
 
 app.listen(app.get('port'), () => {

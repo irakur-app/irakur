@@ -6,7 +6,7 @@
 
 import express from 'express';
 const languagesRouter = express.Router();
-import { LanguagesController } from '../controllers/languagesController';
+import { LanguagesController } from '../controllers/languages-controller';
 
 const languagesController = new LanguagesController();
 
