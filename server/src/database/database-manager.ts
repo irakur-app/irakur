@@ -8,7 +8,7 @@ import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-import { irakurQueries } from './queries/irakurQueries';
+import { irakurQueries } from './queries/irakur-queries';
 
 class DatabaseManager
 {

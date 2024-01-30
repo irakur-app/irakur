@@ -6,7 +6,7 @@
 
 import express from 'express';
 const textsRouter = express.Router();
-import { TextsController } from '../controllers/textsController';
+import { TextsController } from '../controllers/texts-controller';
 
 const textsController = new TextsController();
 

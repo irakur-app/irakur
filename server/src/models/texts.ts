@@ -4,8 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { databaseManager } from "../database/databaseManager";
-import { textQueries } from "../database/queries/textQueries";
+import { databaseManager } from "../database/database-manager";
+import { textQueries } from "../database/queries/text-queries";
 
 class Texts
 {

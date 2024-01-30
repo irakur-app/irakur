@@ -4,8 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { databaseManager } from '../database/databaseManager';
-import { languageQueries } from '../database/queries/languageQueries';
+import { databaseManager } from '../database/database-manager';
+import { languageQueries } from '../database/queries/language-queries';
 
 class Languages
 {

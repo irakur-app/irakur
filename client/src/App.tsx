@@ -5,14 +5,14 @@
  */
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home } from './Pages/Home';
-import { Texts } from './Pages/Texts';
-import { AddText } from './Pages/AddText';
-import { EditText } from './Pages/EditText';
-import { Languages } from './Pages/Languages';
-import { AddLanguage } from './Pages/AddLanguage';
-import { EditLanguage } from './Pages/EditLanguage';
-import { Settings } from './Pages/Settings';
+import { Home } from './pages/home';
+import { Texts } from './pages/texts';
+import { AddText } from './pages/add-text';
+import { EditText } from './pages/edit-text';
+import { Languages } from './pages/languages';
+import { AddLanguage } from './pages/add-language';
+import { EditLanguage } from './pages/edit-language';
+import { Settings } from './pages/settings';
 
 const App = () => {
   return (
