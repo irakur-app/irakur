@@ -25,7 +25,7 @@ class LanguagesController
     async deleteLanguage(req:Request, res:Response)
     {
         await databaseManager.executeQuery(languageQueries.deleteLanguage,
-            [req.body.id]
+            [req.params.languageId]
         );
         
         res.redirect('/languages');
@@ -51,7 +51,7 @@ class LanguagesController
 
         if (updates.length > 0)
         {
-            queryParams.push(req.params.id);
+            queryParams.push(req.params.languageId);
             console.log(queryParams);
 
             const dynamicQuery = languageQueries.editLanguage.replace(/\%DYNAMIC\%/, () => {
@@ -76,7 +76,7 @@ class LanguagesController
     async getLanguage(req:Request, res:Response)
     {
         let language = await databaseManager.getFirstRow(languageQueries.getLanguage,
-            [req.params.id]
+            [req.params.languageId]
         );
 
         language = language as DatabaseLanguage;
