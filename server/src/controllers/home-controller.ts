@@ -24,11 +24,7 @@ class HomeController
     {
         this.languages.getLanguages().then((languages) =>
         {
-            this.languages.getActiveLanguage().then((activeLanguage) =>
-            {
-                console.log(activeLanguage);
-                res.json({title: this.home.title, links: this.home.links, languages: languages, activeLanguage: activeLanguage});
-            });
+            res.json({title: this.home.title, links: this.home.links, languages: languages});
         });
     }
 }

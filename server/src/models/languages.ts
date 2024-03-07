@@ -48,18 +48,6 @@ class Languages
             [name, dictionaryUrl, shouldShowSpaces.toString(), id]
         );
     }
-
-    getActiveLanguage()
-    {
-        return databaseManager.getFirstRow(languageQueries.getActiveLanguage);
-    }
-
-    setActiveLanguage(id:string)
-    {
-        return databaseManager.executeQuery(languageQueries.setActiveLanguage,
-            [id]
-        );
-    }
 }
 
 export { Languages }

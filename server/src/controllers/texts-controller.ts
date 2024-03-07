@@ -22,42 +22,30 @@ class TextsController
 
     renderTexts(req:Request, res:Response)
     {
-        this.languages.getActiveLanguage().then((activeLanguage) =>
+        this.texts.getTexts(req.body.languageId).then((texts) =>
         {
-            this.texts.getTexts(activeLanguage.id).then((texts) =>
-            {
-                res.json({title: this.texts.title, texts: texts});
-            });
+            res.json({title: this.texts.title, texts: texts});
         });
     }
 
     renderAddText(req:Request, res:Response)
     {
-        this.languages.getActiveLanguage().then((activeLanguage) =>
-        {
-            res.json({title: this.texts.title, language: activeLanguage});
-        });
+        res.json({title: this.texts.title, language: req.body.languageId});
     }
 
     renderEditText(req:Request, res:Response)
     {
-        this.languages.getActiveLanguage().then((activeLanguage) =>
+        this.texts.getText(req.params.id).then((text) =>
         {
-            this.texts.getText(req.params.id).then((text) =>
-            {
-                res.json({title: text.title, text: text});
-            });
+            res.json({title: text.title, text: text});
         });
     }
 
     addText(req:Request, res:Response)
     {
-        this.languages.getActiveLanguage().then((activeLanguage) =>
+        this.texts.addText(req.body.languageId, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
         {
-            this.texts.addText(activeLanguage.id, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
-            {
-                res.redirect('/texts');
-            });
+            res.redirect('/texts');
         });
     }
 

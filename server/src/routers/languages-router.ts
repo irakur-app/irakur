@@ -16,6 +16,5 @@ languagesRouter.get('/edit/:id', languagesController.renderEditLanguage.bind(lan
 languagesRouter.post('/add', languagesController.addLanguage.bind(languagesController));
 languagesRouter.post('/delete', languagesController.deleteLanguage.bind(languagesController));
 languagesRouter.post('/edit', languagesController.editLanguage.bind(languagesController));
-languagesRouter.post('/setActive', languagesController.setActiveLanguage.bind(languagesController));
 
 export { languagesRouter };
