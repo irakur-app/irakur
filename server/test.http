@@ -1,0 +1,6 @@
+PATCH http://localhost:5000/api/languages/1
+Content-Type: application/json
+
+{
+    "shouldShowSpaces": "true"
+}
