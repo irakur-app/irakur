@@ -9,9 +9,6 @@ import { textQueries } from "../database/queries/text-queries";
 
 class Texts
 {
-    constructor()
-    {    }
-
     getTexts(languageId:string)
     {
         console.log("getTexts", languageId);

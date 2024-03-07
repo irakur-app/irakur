@@ -11,7 +11,6 @@ import { LanguagesController } from '../controllers/languages-controller';
 const languagesController = new LanguagesController();
 
 languagesRouter.get('/', languagesController.renderLanguages.bind(languagesController));
-languagesRouter.get('/add', languagesController.renderAddLanguage.bind(languagesController));
 languagesRouter.get('/edit/:id', languagesController.renderEditLanguage.bind(languagesController));
 languagesRouter.post('/add', languagesController.addLanguage.bind(languagesController));
 languagesRouter.post('/delete', languagesController.deleteLanguage.bind(languagesController));

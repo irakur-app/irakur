@@ -9,10 +9,6 @@ import { languageQueries } from '../database/queries/language-queries';
 
 class Languages
 {
-    constructor()
-    {
-    }
-
     getLanguages()
     {
         return databaseManager.executeQuery(languageQueries.getLanguages);

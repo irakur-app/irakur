@@ -26,12 +26,6 @@ class LanguagesController
             res.json({languages: languages});
         });
     }
-
-    renderAddLanguage(req:Request, res:Response)
-    {
-        res.json({});
-    }
-
     renderEditLanguage(req:Request, res:Response)
     {
         this.languages.getLanguage(req.params.id).then((language) =>

@@ -7,12 +7,10 @@
 import express from 'express';
 const apiRouter = express.Router();
 
-import { homeRouter } from './home-router';
 import { settingsRouter } from './settings-router';
 import { languagesRouter } from './languages-router';
 import { textsRouter } from './texts-router';
 
-apiRouter.use('/home', homeRouter);
 apiRouter.use('/settings/', settingsRouter);
 apiRouter.use('/languages/', languagesRouter);
 apiRouter.use('/texts/', textsRouter);

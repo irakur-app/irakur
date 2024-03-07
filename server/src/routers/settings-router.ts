@@ -6,10 +6,5 @@
 
 import express from 'express';
 const settingsRouter = express.Router();
-import { SettingsController } from '../controllers/settings-controller';
-
-const settingsController = new SettingsController();
-
-settingsRouter.get('/', settingsController.renderSettings.bind(settingsController));
 
 export { settingsRouter };
