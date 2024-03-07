@@ -14,11 +14,11 @@ const textsController = new TextsController();
 
 const router = express.Router();
 
-router.get('/languages/', languagesController.renderLanguages.bind(languagesController));
-router.get('/languages/edit/:id', languagesController.renderEditLanguage.bind(languagesController));
-router.post('/languages/add', languagesController.addLanguage.bind(languagesController));
-router.post('/languages/delete', languagesController.deleteLanguage.bind(languagesController));
-router.post('/languages/edit', languagesController.editLanguage.bind(languagesController));
+router.get('/languages/', languagesController.getAllLanguages.bind(languagesController));
+router.post('/languages/', languagesController.addLanguage.bind(languagesController));
+router.get('/languages/:id', languagesController.getLanguage.bind(languagesController));
+router.delete('/languages/:id', languagesController.deleteLanguage.bind(languagesController));
+router.patch('/languages/:id', languagesController.editLanguage.bind(languagesController));
 
 router.get('/texts/', textsController.renderTexts.bind(textsController));
 router.get('/texts/edit/:id', textsController.renderEditText.bind(textsController));
