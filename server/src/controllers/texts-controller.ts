@@ -20,11 +20,6 @@ class TextsController
         res.json({texts: texts});
     }
 
-    async renderAddText(req:Request, res:Response)
-    {
-        res.json({language: req.body.languageId});
-    }
-
     async renderEditText(req:Request, res:Response)
     {
         const text = databaseManager.getFirstRow(textQueries.getText,
