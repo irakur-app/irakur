@@ -11,59 +11,54 @@ import { textQueries } from "../database/queries/text-queries";
 
 class TextsController
 {
-    renderTexts(req:Request, res:Response)
+    async renderTexts(req:Request, res:Response)
     {
-        databaseManager.executeQuery(textQueries.getTexts,
+        const texts = await databaseManager.executeQuery(textQueries.getTexts,
             [req.body.languageId]
-        ).then((texts) =>
-        {
-            res.json({texts: texts});
-        });
+        );
+        
+        res.json({texts: texts});
     }
 
-    renderAddText(req:Request, res:Response)
+    async renderAddText(req:Request, res:Response)
     {
         res.json({language: req.body.languageId});
     }
 
-    renderEditText(req:Request, res:Response)
+    async renderEditText(req:Request, res:Response)
     {
-        databaseManager.getFirstRow(textQueries.getText,
+        const text = databaseManager.getFirstRow(textQueries.getText,
             [req.params.id]
-        ).then((text) =>
-        {
-            res.json({text: text});
-        });
+        )
+
+        res.json({text: text});
     }
 
-    addText(req:Request, res:Response)
+    async addText(req:Request, res:Response)
     {
-        databaseManager.executeQuery(textQueries.addText,
+        await databaseManager.executeQuery(textQueries.addText,
             [req.body.languageId, req.body.title, req.body.content, req.body.sourceUrl]
-        ).then(() =>
-        {
-            res.redirect('/texts');
-        });
+        )
+        
+        res.redirect('/texts');
     }
 
-    deleteText(req:Request, res:Response)
+    async deleteText(req:Request, res:Response)
     {
-        databaseManager.executeQuery(textQueries.deleteText,
+        await databaseManager.executeQuery(textQueries.deleteText,
             [req.body.id]
-        ).then(() =>
-        {
-            res.redirect('/texts');
-        });
+        )
+        
+        res.redirect('/texts');
     }
 
-    editText(req:Request, res:Response)
+    async editText(req:Request, res:Response)
     {
-        databaseManager.executeQuery(textQueries.editText,
+        await databaseManager.executeQuery(textQueries.editText,
             [req.body.title, req.body.content, req.body.sourceUrl, req.body.id]
-        ).then(() =>
-        {
-            res.redirect('/texts');
-        });
+        )
+        
+        res.redirect('/texts');
     }
 }
 
