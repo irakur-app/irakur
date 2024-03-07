@@ -6,29 +6,25 @@
 
 import { Request, Response } from 'express';
 
-import { Languages } from '../models/languages';
-
 import { DatabaseLanguage } from '../types/database';
+
+import { databaseManager } from '../database/database-manager';
+import { languageQueries } from '../database/queries/language-queries';
 
 class LanguagesController
 {
-    languages:Languages;
-
-    constructor()
-    {
-        this.languages = new Languages();
-    }
-
     renderLanguages(req:Request, res:Response)
     {
-        this.languages.getLanguages().then((languages) =>
+        databaseManager.executeQuery(languageQueries.getLanguages).then((languages) =>
         {
             res.json({languages: languages});
         });
     }
     renderEditLanguage(req:Request, res:Response)
     {
-        this.languages.getLanguage(req.params.id).then((language) =>
+        databaseManager.getFirstRow(languageQueries.getLanguage,
+            [req.params.id]
+        ).then((language) =>
         {
             language = language as DatabaseLanguage;
             
@@ -38,7 +34,9 @@ class LanguagesController
 
     addLanguage(req:Request, res:Response)
     {
-        this.languages.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
+        databaseManager.executeQuery(languageQueries.addLanguage,
+            [req.body.name, req.body.dictionaryUrl, (req.body.shouldShowSpaces === 'on' ? true : false).toString()]
+        ).then(() =>
         {
             res.redirect('/languages');
         });
@@ -46,7 +44,9 @@ class LanguagesController
 
     deleteLanguage(req:Request, res:Response)
     {
-        this.languages.deleteLanguage(req.body.id).then(() =>
+        databaseManager.executeQuery(languageQueries.deleteLanguage,
+            [req.body.id]
+        ).then(() =>
         {
             res.redirect('/languages');
         });
@@ -54,7 +54,9 @@ class LanguagesController
 
     editLanguage(req:Request, res:Response)
     {
-        this.languages.editLanguage(req.body.id, req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
+        databaseManager.executeQuery(languageQueries.editLanguage,
+            [req.body.name, req.body.dictionaryUrl, (req.body.shouldShowSpaces === 'on' ? true : false).toString(), req.body.id]
+        ).then(() =>
         {
             res.redirect('/languages');
         });

@@ -6,23 +6,16 @@
 
 import { Request, Response } from 'express';
 
-import { Texts } from '../models/texts';
-import { Languages } from '../models/languages';
+import { databaseManager } from "../database/database-manager";
+import { textQueries } from "../database/queries/text-queries";
 
 class TextsController
 {
-    texts:Texts;
-    languages:Languages;
-
-    constructor()
-    {
-        this.texts = new Texts();
-        this.languages = new Languages();
-    }
-
     renderTexts(req:Request, res:Response)
     {
-        this.texts.getTexts(req.body.languageId).then((texts) =>
+        databaseManager.executeQuery(textQueries.getTexts,
+            [req.body.languageId]
+        ).then((texts) =>
         {
             res.json({texts: texts});
         });
@@ -35,7 +28,9 @@ class TextsController
 
     renderEditText(req:Request, res:Response)
     {
-        this.texts.getText(req.params.id).then((text) =>
+        databaseManager.getFirstRow(textQueries.getText,
+            [req.params.id]
+        ).then((text) =>
         {
             res.json({text: text});
         });
@@ -43,7 +38,9 @@ class TextsController
 
     addText(req:Request, res:Response)
     {
-        this.texts.addText(req.body.languageId, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
+        databaseManager.executeQuery(textQueries.addText,
+            [req.body.languageId, req.body.title, req.body.content, req.body.sourceUrl]
+        ).then(() =>
         {
             res.redirect('/texts');
         });
@@ -51,7 +48,9 @@ class TextsController
 
     deleteText(req:Request, res:Response)
     {
-        this.texts.deleteText(req.body.id).then(() =>
+        databaseManager.executeQuery(textQueries.deleteText,
+            [req.body.id]
+        ).then(() =>
         {
             res.redirect('/texts');
         });
@@ -59,7 +58,9 @@ class TextsController
 
     editText(req:Request, res:Response)
     {
-        this.texts.editText(req.body.id, req.body.title, req.body.content, req.body.sourceUrl).then(() =>
+        databaseManager.executeQuery(textQueries.editText,
+            [req.body.title, req.body.content, req.body.sourceUrl, req.body.id]
+        ).then(() =>
         {
             res.redirect('/texts');
         });
