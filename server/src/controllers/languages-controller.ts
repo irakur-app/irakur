@@ -36,15 +36,18 @@ class LanguagesController
         const queryParams: any[] = [];
         const updates: string[] = [];
     
-        if (req.body.name) {
+        if (req.body.name)
+        {
             updates.push('name = ?');
             queryParams.push(req.body.name);
         }
-        if (req.body.dictionaryUrl) {
+        if (req.body.dictionaryUrl)
+        {
             updates.push('dictionary_url = ?');
             queryParams.push(req.body.dictionaryUrl);
         }
-        if (req.body.shouldShowSpaces) {
+        if (req.body.shouldShowSpaces)
+        {
             updates.push('should_show_spaces = ?');
             queryParams.push(req.body.shouldShowSpaces);
         }
