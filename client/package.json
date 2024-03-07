@@ -6,24 +6,20 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "fork-ts-checker-webpack-plugin": "^6.5.3",
+    "@vitejs/plugin-react-swc": "^3.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.4",
     "react-router-dom": "^6.21.3",
-    "react-scripts": "5.0.1",
-    "typescript": "^5.3.3"
-  },
-  "overrides": {
-    "react-scripts": {
-      "typescript": "^5"
-    }
+    "typescript": "^5.3.3",
+    "vite": "^5.1.5",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite --port 3000",
+    "build": "tsc && vite build",
+    "serve": "vite preview"
   },
   "eslintConfig": {
     "extends": [
@@ -43,5 +39,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "type": "module"
 }
