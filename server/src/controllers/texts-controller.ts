@@ -24,20 +24,20 @@ class TextsController
     {
         this.texts.getTexts(req.body.languageId).then((texts) =>
         {
-            res.json({title: this.texts.title, texts: texts});
+            res.json({texts: texts});
         });
     }
 
     renderAddText(req:Request, res:Response)
     {
-        res.json({title: this.texts.title, language: req.body.languageId});
+        res.json({language: req.body.languageId});
     }
 
     renderEditText(req:Request, res:Response)
     {
         this.texts.getText(req.params.id).then((text) =>
         {
-            res.json({title: text.title, text: text});
+            res.json({text: text});
         });
     }
 

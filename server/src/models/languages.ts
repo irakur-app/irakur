@@ -9,11 +9,8 @@ import { languageQueries } from '../database/queries/language-queries';
 
 class Languages
 {
-    title:string;
-
     constructor()
     {
-        this.title = "Irakur — Languages";
     }
 
     getLanguages()

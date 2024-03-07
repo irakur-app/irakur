@@ -6,11 +6,8 @@
 
 class Settings
 {
-    title:string;
-
     constructor()
     {
-        this.title = "Irakur — Settings";
     }
 };
   

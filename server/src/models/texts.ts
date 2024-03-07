@@ -9,12 +9,8 @@ import { textQueries } from "../database/queries/text-queries";
 
 class Texts
 {
-    title:string;
-
     constructor()
-    {
-        this.title = "Irakur — Texts";
-    }
+    {    }
 
     getTexts(languageId:string)
     {

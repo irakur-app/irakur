@@ -23,13 +23,13 @@ class LanguagesController
     {
         this.languages.getLanguages().then((languages) =>
         {
-            res.json({title: this.languages.title, languages: languages});
+            res.json({languages: languages});
         });
     }
 
     renderAddLanguage(req:Request, res:Response)
     {
-        res.json({title: this.languages.title});
+        res.json({});
     }
 
     renderEditLanguage(req:Request, res:Response)
@@ -38,7 +38,7 @@ class LanguagesController
         {
             language = language as DatabaseLanguage;
             
-            res.json({title: language?.name, language: language});
+            res.json({language: language});
         });
     }
 

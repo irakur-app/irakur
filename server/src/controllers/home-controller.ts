@@ -24,7 +24,7 @@ class HomeController
     {
         this.languages.getLanguages().then((languages) =>
         {
-            res.json({title: this.home.title, links: this.home.links, languages: languages});
+            res.json({languages: languages});
         });
     }
 }

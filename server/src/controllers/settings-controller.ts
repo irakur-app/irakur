@@ -19,7 +19,7 @@ class SettingsController
 
     renderSettings(req:Request, res:Response)
     {
-        res.json({title: this.settings.title});
+        res.json({});
     }
 }
 
