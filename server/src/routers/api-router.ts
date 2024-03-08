@@ -20,10 +20,10 @@ router.post('/languages/', languagesController.addLanguage.bind(languagesControl
 router.delete('/languages/:languageId', languagesController.deleteLanguage.bind(languagesController));
 router.patch('/languages/:languageId', languagesController.editLanguage.bind(languagesController));
 
-router.get('/texts/', textsController.renderTexts.bind(textsController));
-router.get('/texts/edit/:id', textsController.renderEditText.bind(textsController));
-router.post('/texts/add', textsController.addText.bind(textsController));
-router.post('/texts/delete', textsController.deleteText.bind(textsController));
-router.post('/texts/edit', textsController.editText.bind(textsController));
+router.get('/texts/', textsController.getAllTexts.bind(textsController));
+router.get('/texts/:textId', textsController.getText.bind(textsController));
+router.post('/texts/', textsController.addText.bind(textsController));
+router.delete('/texts/:textId', textsController.deleteText.bind(textsController));
+router.patch('/texts/:textId', textsController.editText.bind(textsController));
 
 export { router };

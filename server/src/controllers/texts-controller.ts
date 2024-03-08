@@ -8,27 +8,10 @@ import { Request, Response } from 'express';
 
 import { databaseManager } from "../database/database-manager";
 import { textQueries } from "../database/queries/text-queries";
+import { languageQueries } from "../database/queries/language-queries";
 
 class TextsController
 {
-    async renderTexts(req:Request, res:Response)
-    {
-        const texts = await databaseManager.executeQuery(textQueries.getTexts,
-            [req.body.languageId]
-        );
-        
-        res.json({texts: texts});
-    }
-
-    async renderEditText(req:Request, res:Response)
-    {
-        const text = databaseManager.getFirstRow(textQueries.getText,
-            [req.params.id]
-        )
-
-        res.json({text: text});
-    }
-
     async addText(req:Request, res:Response)
     {
         await databaseManager.executeQuery(textQueries.addText,
@@ -38,10 +21,28 @@ class TextsController
         res.redirect('/texts');
     }
 
+    async getAllTexts(req:Request, res:Response)
+    {
+        const texts = await databaseManager.executeQuery(textQueries.getTexts,
+            [req.body.languageId]
+        );
+        
+        res.json({texts: texts});
+    }
+
+    async getText(req:Request, res:Response)
+    {
+        const text = databaseManager.getFirstRow(textQueries.getText,
+            [req.params.id]
+        )
+
+        res.json({text: text});
+    }
+
     async deleteText(req:Request, res:Response)
     {
         await databaseManager.executeQuery(textQueries.deleteText,
-            [req.body.id]
+            [req.params.id]
         )
         
         res.redirect('/texts');
@@ -49,9 +50,49 @@ class TextsController
 
     async editText(req:Request, res:Response)
     {
-        await databaseManager.executeQuery(textQueries.editText,
-            [req.body.title, req.body.content, req.body.sourceUrl, req.body.id]
-        )
+        const queryParams: any[] = [];
+        const updates: string[] = [];
+    
+        if (req.body.languageId)
+        {
+            const language = await databaseManager.getFirstRow(languageQueries.getLanguage, [req.body.languageId]);
+            if (!language)
+            {
+                res.status(400).send('Language does not exist');
+                return;
+            }
+            updates.push('language_id = ?');
+            queryParams.push(req.body.languageId);
+        }
+        if (req.body.title)
+        {
+            updates.push('title = ?');
+            queryParams.push(req.body.title);
+        }
+        if (req.body.content)
+        {
+            updates.push('content = ?');
+            queryParams.push(req.body.content);
+        }
+        if (req.body.sourceUrl)
+        {
+            updates.push('source_url = ?');
+            queryParams.push(req.body.sourceUrl);
+        }
+
+        if (updates.length > 0)
+        {
+            queryParams.push(req.params.textId);
+            console.log(queryParams);
+
+            const dynamicQuery = textQueries.editText.replace(/\%DYNAMIC\%/, () => {
+                return updates.join(', ');
+            });
+
+            console.log(dynamicQuery);
+
+            await databaseManager.executeQuery(dynamicQuery, queryParams);
+        }
         
         res.redirect('/texts');
     }

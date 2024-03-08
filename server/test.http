@@ -4,3 +4,23 @@ Content-Type: application/json
 {
     "shouldShowSpaces": "true"
 }
+
+###
+POST http://localhost:5000/api/texts
+Content-Type: application/json
+
+{
+    "languageId": 1,
+    "title": "Test title",
+    "content": "Test content",
+    "sourceUrl": "example.com"
+}
+
+###
+PATCH http://localhost:5000/api/texts/1
+Content-Type: application/json
+
+{
+    "content": "Updated content",
+    "sourceUrl": "example.com/updated"
+}
