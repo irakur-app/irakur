@@ -8,7 +8,7 @@ import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
 
-import { irakurQueries } from './queries/irakur-queries';
+import { queries } from './queries';
 
 class DatabaseManager
 {
@@ -63,10 +63,10 @@ class DatabaseManager
 
     createTables()
     {
-        this.database.run(irakurQueries.createConfigurationTable);
-        this.database.run(irakurQueries.createLanguageTable);
-        this.database.run(irakurQueries.createTextTable);
-        this.database.run(irakurQueries.createWordTable);
+        this.database.run(queries.createConfigurationTable);
+        this.database.run(queries.createLanguageTable);
+        this.database.run(queries.createTextTable);
+        this.database.run(queries.createWordTable);
     }
 
     executeQuery(query:string, parameters:string[] = [])

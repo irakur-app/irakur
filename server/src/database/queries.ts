@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const irakurQueries =
+const queries: { [key: string]: string } =
 {
     createConfigurationTable: `CREATE TABLE IF NOT EXISTS configuration (
         key TEXT NOT NULL PRIMARY KEY,
@@ -36,6 +36,18 @@ const irakurQueries =
         datetime_updated TEXT NOT NULL,
         FOREIGN KEY(language_id) REFERENCES language(id)
     )`,
+
+    getAllLanguages: 'SELECT * FROM language',
+    getLanguage: 'SELECT * FROM language WHERE id = ?',
+    addLanguage: 'INSERT INTO language (name, dictionary_url, should_show_spaces) VALUES (?, ?, ?)',
+    deleteLanguage: 'DELETE FROM language WHERE id = ?',
+    editLanguage: 'UPDATE language SET %DYNAMIC% WHERE id = ?',
+
+    getAllTexts: 'SELECT * FROM text WHERE language_id = ?',
+    getText: 'SELECT * FROM text WHERE id = ?',
+    addText: 'INSERT INTO text (language_id, title, content, source_url) VALUES (?, ?, ?, ?)',
+    deleteText: 'DELETE FROM text WHERE id = ?',
+    editText: 'UPDATE text SET %DYNAMIC% WHERE id = ?',
 };
 
-export { irakurQueries }
+export { queries }

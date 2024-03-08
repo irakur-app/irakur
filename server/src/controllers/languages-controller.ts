@@ -9,13 +9,13 @@ import { Request, Response } from 'express';
 import { DatabaseLanguage } from '../types/database';
 
 import { databaseManager } from '../database/database-manager';
-import { languageQueries } from '../database/queries/language-queries';
+import { queries } from '../database/queries';
 
 class LanguagesController
 {
     async addLanguage(req:Request, res:Response)
     {
-        await databaseManager.executeQuery(languageQueries.addLanguage,
+        await databaseManager.executeQuery(queries.addLanguage,
             [req.body.name, req.body.dictionaryUrl, (req.body.shouldShowSpaces === 'on' ? true : false).toString()]
         );
 
@@ -24,7 +24,7 @@ class LanguagesController
 
     async deleteLanguage(req:Request, res:Response)
     {
-        await databaseManager.executeQuery(languageQueries.deleteLanguage,
+        await databaseManager.executeQuery(queries.deleteLanguage,
             [req.params.languageId]
         );
         
@@ -57,7 +57,7 @@ class LanguagesController
             queryParams.push(req.params.languageId);
             console.log(queryParams);
 
-            const dynamicQuery = languageQueries.editLanguage.replace(/\%DYNAMIC\%/, () => {
+            const dynamicQuery = queries.editLanguage.replace(/\%DYNAMIC\%/, () => {
                 return updates.join(', ');
             });
 
@@ -71,14 +71,14 @@ class LanguagesController
 
     async getAllLanguages(req:Request, res:Response)
     {
-        const languages = await databaseManager.executeQuery(languageQueries.getLanguages);
+        const languages = await databaseManager.executeQuery(queries.getAllLanguages);
         
         res.json({languages: languages});
     }
 
     async getLanguage(req:Request, res:Response)
     {
-        let language = await databaseManager.getFirstRow(languageQueries.getLanguage,
+        let language = await databaseManager.getFirstRow(queries.getLanguage,
             [req.params.languageId]
         );
 

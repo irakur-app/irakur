@@ -7,14 +7,13 @@
 import { Request, Response } from 'express';
 
 import { databaseManager } from "../database/database-manager";
-import { textQueries } from "../database/queries/text-queries";
-import { languageQueries } from "../database/queries/language-queries";
+import { queries } from "../database/queries";
 
 class TextsController
 {
     async addText(req:Request, res:Response)
     {
-        await databaseManager.executeQuery(textQueries.addText,
+        await databaseManager.executeQuery(queries.addText,
             [req.body.languageId, req.body.title, req.body.content, req.body.sourceUrl]
         )
         
@@ -23,7 +22,7 @@ class TextsController
 
     async getAllTexts(req:Request, res:Response)
     {
-        const texts = await databaseManager.executeQuery(textQueries.getTexts,
+        const texts = await databaseManager.executeQuery(queries.getAllTexts,
             [req.body.languageId]
         );
         
@@ -32,7 +31,7 @@ class TextsController
 
     async getText(req:Request, res:Response)
     {
-        const text = databaseManager.getFirstRow(textQueries.getText,
+        const text = databaseManager.getFirstRow(queries.getText,
             [req.params.id]
         )
 
@@ -41,7 +40,7 @@ class TextsController
 
     async deleteText(req:Request, res:Response)
     {
-        await databaseManager.executeQuery(textQueries.deleteText,
+        await databaseManager.executeQuery(queries.deleteText,
             [req.params.id]
         )
         
@@ -55,7 +54,7 @@ class TextsController
     
         if (req.body.languageId)
         {
-            const language = await databaseManager.getFirstRow(languageQueries.getLanguage, [req.body.languageId]);
+            const language = await databaseManager.getFirstRow(queries.getLanguage, [req.body.languageId]);
             if (!language)
             {
                 res.status(400).send('Language does not exist');
@@ -85,7 +84,7 @@ class TextsController
             queryParams.push(req.params.textId);
             console.log(queryParams);
 
-            const dynamicQuery = textQueries.editText.replace(/\%DYNAMIC\%/, () => {
+            const dynamicQuery = queries.editText.replace(/\%DYNAMIC\%/, () => {
                 return updates.join(', ');
             });
 
