@@ -8,9 +8,11 @@ import express from 'express';
 
 import { LanguagesController } from '../controllers/languages-controller';
 import { TextsController } from '../controllers/texts-controller';
+import { WordsController } from '../controllers/words-controller';
 
 const languagesController = new LanguagesController();
 const textsController = new TextsController();
+const wordsController = new WordsController();
 
 const router = express.Router();
 
@@ -25,5 +27,10 @@ router.get('/texts/:textId', textsController.getText.bind(textsController));
 router.post('/texts/', textsController.addText.bind(textsController));
 router.delete('/texts/:textId', textsController.deleteText.bind(textsController));
 router.patch('/texts/:textId', textsController.editText.bind(textsController));
+
+router.get('/words/:wordId', wordsController.getWord.bind(wordsController));
+router.post('/words/', wordsController.addWord.bind(wordsController));
+router.delete('/words/:wordId', wordsController.deleteWord.bind(wordsController));
+router.patch('/words/:wordId', wordsController.editWord.bind(wordsController));
 
 export { router };

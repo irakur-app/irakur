@@ -48,6 +48,11 @@ const queries: { [key: string]: string } =
     addText: 'INSERT INTO text (language_id, title, content, source_url) VALUES (?, ?, ?, ?)',
     deleteText: 'DELETE FROM text WHERE id = ?',
     editText: 'UPDATE text SET %DYNAMIC% WHERE id = ?',
+
+    getWord: 'SELECT * FROM word WHERE id = ?',
+    addWord: 'INSERT INTO word (language_id, content, status, meaning, notes, reading, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    deleteWord: 'DELETE FROM word WHERE id = ?',
+    editWord: 'UPDATE word SET %DYNAMIC% WHERE id = ?'
 };
 
 export { queries }
