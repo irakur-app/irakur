@@ -1,3 +1,5 @@
+GET http://localhost:5000/api/languages/1
+
 ###
 PATCH http://localhost:5000/api/languages/1
 Content-Type: application/json
@@ -27,6 +29,9 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:5000/api/words/12
+
+###
 POST http://localhost:5000/api/words
 Content-Type: application/json
 
@@ -34,8 +39,18 @@ Content-Type: application/json
     "languageId": 1,
     "content": "Test content",
     "status": "Test status",
+    "entries":
+    [
+        {
+            "meaning": "Test meaning",
+            "reading": "Test reading"
+        },
+        {
+            "meaning": "Test meaning 2",
+            "reading": "Test reading 2"
+        }
+    ],
     "notes": "Test notes",
-    "reading": "Test reading",
     "datetimeAdded": "2021-01-01T00:00:00",
     "datetimeUpdated": "2021-01-01T00:00:00"
 }
@@ -48,7 +63,13 @@ Content-Type: application/json
     "content": "Updated content",
     "status": "Updated status",
     "notes": "Updated notes",
-    "reading": "Updated reading",
+    "entries":
+    [
+        {
+            "meaning": "Updated meaning",
+            "reading": "Updated reading"
+        }
+    ],
     "datetimeUpdated": "2021-01-05T00:00:00"
 }
 

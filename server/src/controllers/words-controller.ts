@@ -13,8 +13,10 @@ class WordsController
 {
     async addWord(req:Request, res:Response)
     {
+        req.body.entries = JSON.stringify(req.body.entries);
+
         await databaseManager.executeQuery(queries.addWord,
-            [req.body.languageId, req.body.content, req.body.status, req.body.meaning, req.body.notes, req.body.reading, req.body.datetimeAdded, req.body.datetimeUpdated]
+            [req.body.languageId, req.body.content, req.body.status, req.body.entries, req.body.notes, req.body.datetimeAdded, req.body.datetimeUpdated]
         )
         
         res.redirect('/words');
@@ -22,9 +24,11 @@ class WordsController
 
     async getWord(req:Request, res:Response)
     {
-        const word = databaseManager.getFirstRow(queries.getWord,
+        const word = await databaseManager.getFirstRow(queries.getWord,
             [req.params.wordId]
         )
+
+        word.entries = JSON.parse(word.entries);
 
         res.json({word: word});
     }
@@ -64,20 +68,17 @@ class WordsController
             updates.push('status = ?');
             queryParams.push(req.body.status);
         }
-        if (req.body.meaning)
+        if (req.body.entries)
         {
-            updates.push('meaning = ?');
-            queryParams.push(req.body.meaning);
+            req.body.entries = JSON.stringify(req.body.entries);
+
+            updates.push('entries = ?');
+            queryParams.push(req.body.entries);
         }
         if (req.body.notes)
         {
             updates.push('notes = ?');
             queryParams.push(req.body.notes);
-        }
-        if (req.body.reading)
-        {
-            updates.push('reading = ?');
-            queryParams.push(req.body.reading);
         }
         if (req.body.datetimeAdded)
         {

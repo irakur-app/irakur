@@ -29,9 +29,8 @@ const queries: { [key: string]: string } =
         language_id INTEGER NOT NULL,
         content TEXT NOT NULL,
         status INTEGER NOT NULL DEFAULT 0,
-        meaning TEXT,
+        entries TEXT,
         notes TEXT,
-        reading TEXT,
         datetime_added TEXT NOT NULL,
         datetime_updated TEXT NOT NULL,
         FOREIGN KEY(language_id) REFERENCES language(id)
@@ -50,7 +49,7 @@ const queries: { [key: string]: string } =
     editText: 'UPDATE text SET %DYNAMIC% WHERE id = ?',
 
     getWord: 'SELECT * FROM word WHERE id = ?',
-    addWord: 'INSERT INTO word (language_id, content, status, meaning, notes, reading, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    addWord: 'INSERT INTO word (language_id, content, status, entries, notes, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
     deleteWord: 'DELETE FROM word WHERE id = ?',
     editWord: 'UPDATE word SET %DYNAMIC% WHERE id = ?'
 };
