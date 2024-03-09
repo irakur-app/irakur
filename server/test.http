@@ -1,3 +1,13 @@
+POST http://localhost:5000/api/languages
+Content-Type: application/json
+
+{
+    "name": "Test language",
+    "dictionaryUrl": "example.com",
+    "shouldShowSpaces": false
+}
+
+###
 GET http://localhost:5000/api/languages/1
 
 ###
@@ -14,18 +24,26 @@ Content-Type: application/json
 
 {
     "languageId": 1,
-    "title": "Test title",
-    "content": "Test content",
+    "title": "Lorem ipsum",
+    //"content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Amet consectetur adipiscing elit duis. Tempor commodo ullamcorper a lacus vestibulum sed arcu non odio. Dictum sit amet justo donec. Sed adipiscing diam donec adipiscing. Viverra ipsum nunc aliquet bibendum enim facilisis. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus. Est ante in nibh mauris cursus mattis. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et ligula. Dictum sit amet justo donec enim diam vulputate. In massa tempor nec feugiat nisl pretium fusce. Vel quam elementum pulvinar etiam non. Et malesuada fames ac turpis egestas sed tempus urna et. Cursus euismod quis viverra nibh cras. Mi quis hendrerit dolor magna eget est. Nunc scelerisque viverra mauris in aliquam sem fringilla. Aliquet risus feugiat in ante metus dictum at. Volutpat est velit egestas dui id ornare arcu odio ut. Vitae et leo duis ut diam quam nulla porttitor. Malesuada bibendum arcu vitae elementum curabitur vitae. Senectus et netus et malesuada fames ac turpis egestas. Commodo quis imperdiet massa tincidunt nunc pulvinar. Risus quis varius quam quisque id. At in tellus integer feugiat scelerisque varius morbi. Odio aenean sed adipiscing diam donec adipiscing. Leo urna molestie at elementum eu facilisis sed odio morbi. Amet nisl suscipit adipiscing bibendum. Urna molestie at elementum eu facilisis sed odio morbi. Montes nascetur ridiculus mus mauris vitae ultricies. Nunc sed blandit libero volutpat sed cras. Pretium lectus quam id leo. In eu mi bibendum neque egestas congue quisque. Ac turpis egestas integer eget aliquet nibh. Purus semper eget duis at tellus at urna condimentum mattis. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl vel. Pretium aenean pharetra magna ac. Pellentesque habitant morbi tristique senectus et netus et malesuada. Ultricies mi eget mauris pharetra et ultrices. Eget aliquet nibh praesent tristique magna sit amet purus gravida. Id nibh tortor id aliquet lectus. Enim sed faucibus turpis in eu. Quis ipsum suspendisse ultrices gravida dictum fusce ut placerat orci. Posuere lorem ipsum dolor sit. In tellus integer feugiat scelerisque varius morbi. Id semper risus in hendrerit gravida rutrum. Adipiscing tristique risus nec feugiat. Quam id leo in vitae turpis massa. Fringilla ut morbi tincidunt augue interdum velit euismod in pellentesque. Praesent elementum facilisis leo vel fringilla. Pharetra convallis posuere morbi leo urna molestie at elementum eu. Suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Suspendisse in est ante in nibh. Mus mauris vitae ultricies leo. Purus viverra accumsan in nisl nisi scelerisque. In hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Purus faucibus ornare suspendisse sed nisi lacus sed. Et molestie ac feugiat sed. Tincidunt dui ut ornare lectus sit amet est placerat. Nulla facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum. Est placerat in egestas erat imperdiet. Euismod lacinia at quis risus sed vulputate odio ut. Amet volutpat consequat mauris nunc congue. Fames ac turpis egestas sed. Volutpat sed cras ornare arcu. Eget lorem dolor sed viverra. A condimentum vitae sapien pellentesque habitant morbi tristique senectus. Nec ultrices dui sapien eget mi proin. Consequat interdum varius sit amet mattis vulputate. Convallis convallis tellus id interdum. Imperdiet nulla malesuada pellentesque elit eget gravida. Diam maecenas ultricies mi eget mauris pharetra et ultrices neque. Malesuada fames ac turpis egestas. Pharetra magna ac placerat vestibulum lectus. Semper auctor neque vitae tempus. Dolor sit amet consectetur adipiscing elit duis tristique sollicitudin. Viverra accumsan in nisl nisi scelerisque eu ultrices. Ullamcorper a lacus vestibulum sed arcu non odio. Sociis natoque penatibus et magnis. Amet nisl suscipit adipiscing bibendum est ultricies integer. Elit eget gravida cum sociis natoque penatibus et magnis. Donec ac odio tempor orci dapibus ultrices in iaculis. Cras adipiscing enim eu turpis egestas pretium aenean. Viverra tellus in hac habitasse platea dictumst vestibulum rhoncus est. A arcu cursus vitae congue mauris. Et netus et malesuada fames. Ultrices mi tempus imperdiet nulla malesuada pellentesque elit. Proin fermentum leo vel orci porta non pulvinar neque. Semper eget duis at tellus at urna condimentum mattis. Et tortor consequat id porta nibh. Tincidunt arcu non sodales neque sodales.",
+    //"content": "N1. N2. N3. N4. N5. N6. N7. N8. N9. N10. N11. N12. N13. N14. N15. N16. N17. N18. N19. N20. N21. N22. N23. N24. N25. N26. N27. N28. N29. N30. N31. N32. N33. N34. N35. N36. N37. N38. N39. N40. N41. N42. N43. N44. N45. N46. N47. N48. N49. N50. N51. N52. N53. N54. N55. N56. N57. N58. N59. N60. N61. N62. N63. N64. N65. N66. N67. N68. N69. N70. N71. N72. N73. N74. N75. N76. N77. N78. N79. N80. N81. N82. N83. N84. N85. N86.",
+    "content": "N1.N2.N3.N4.N5.N6.N7.N8.N9.",
+    "numberOfPages": 7,
     "sourceUrl": "example.com"
 }
 
 ###
-PATCH http://localhost:5000/api/texts/1
+GET http://localhost:5000/api/texts/9
+
+###
+DELETE http://localhost:5000/api/texts/8
+
+###
+PATCH http://localhost:5000/api/texts/33
 Content-Type: application/json
 
 {
-    "content": "Updated content",
-    "sourceUrl": "example.com/updated"
+    "numberOfPages": 27
 }
 
 ###

@@ -20,16 +20,15 @@ const queries: { [key: string]: string } =
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         language_id INTEGER NOT NULL,
         title TEXT NOT NULL,
-        content TEXT NOT NULL,
         source_url TEXT,
         FOREIGN KEY(language_id) REFERENCES language(id)
     )`,
     createPageTable: `CREATE TABLE IF NOT EXISTS page (
         text_id INTEGER NOT NULL,
-        index INTEGER NOT NULL,
+        number INTEGER NOT NULL,
         content TEXT NOT NULL,
         FOREIGN KEY(text_id) REFERENCES text(id),
-        UNIQUE(text_id, index)
+        UNIQUE(text_id, number)
     )`,
     createWordTable: `CREATE TABLE IF NOT EXISTS word (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -51,15 +50,15 @@ const queries: { [key: string]: string } =
 
     getAllTexts: 'SELECT * FROM text WHERE language_id = ?',
     getText: 'SELECT * FROM text WHERE id = ?',
-    addText: 'INSERT INTO text (language_id, title, content, source_url) VALUES (?, ?, ?, ?)',
+    addText: 'INSERT INTO text (language_id, title, source_url) VALUES (?, ?, ?)',
     deleteText: 'DELETE FROM text WHERE id = ?',
     editText: 'UPDATE text SET %DYNAMIC% WHERE id = ?',
 
     getAllPages: 'SELECT * FROM page WHERE text_id = ?',
-    getPageByIndex: 'SELECT * FROM page WHERE text_id = ? AND index = ?',
-    addPage: 'INSERT INTO page (text_id, index, content) VALUES (?, ?, ?)',
-    deletePage: 'DELETE FROM page WHERE text_id = ? AND index = ?',
-    editPage: 'UPDATE page SET %DYNAMIC% WHERE text_id = ? AND index = ?',
+    getPageByIndex: 'SELECT * FROM page WHERE text_id = ? AND number = ?',
+    addPage: 'INSERT INTO page (text_id, number, content) VALUES (?, ?, ?)',
+    deletePage: 'DELETE FROM page WHERE text_id = ? AND number = ?',
+    editPage: 'UPDATE page SET content = ? WHERE text_id = ? AND number = ?',
 
     getWord: 'SELECT * FROM word WHERE id = ?',
     addWord: 'INSERT INTO word (language_id, content, status, entries, notes, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
