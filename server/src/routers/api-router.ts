@@ -8,10 +8,12 @@ import express from 'express';
 
 import { LanguagesController } from '../controllers/languages-controller';
 import { TextsController } from '../controllers/texts-controller';
+import { PagesController } from '../controllers/pages-controller';
 import { WordsController } from '../controllers/words-controller';
 
 const languagesController = new LanguagesController();
 const textsController = new TextsController();
+const pagesController = new PagesController();
 const wordsController = new WordsController();
 
 const router = express.Router();
@@ -27,6 +29,11 @@ router.get('/texts/:textId', textsController.getText.bind(textsController));
 router.post('/texts/', textsController.addText.bind(textsController));
 router.delete('/texts/:textId', textsController.deleteText.bind(textsController));
 router.patch('/texts/:textId', textsController.editText.bind(textsController));
+
+router.get('/texts/:textId/pages/', pagesController.getAllPages.bind(pagesController));
+router.get('/texts/:textId/pages/:pageId', pagesController.getPage.bind(pagesController));
+//router.get('/texts/:textId/pages/:pageId/words', pagesController.getWords.bind(pagesController));
+router.patch('/texts/:textId/pages/:pageId', pagesController.editPage.bind(pagesController));
 
 router.get('/words/:wordId', wordsController.getWord.bind(wordsController));
 router.post('/words/', wordsController.addWord.bind(wordsController));
