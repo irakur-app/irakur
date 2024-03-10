@@ -74,7 +74,7 @@ class PagesController
             [page.text_id]
         )).language_id;
 
-        const items = page.content.split(/[ \r\n"':;,.¿?¡!()-=。、！？：；「」『』（）…＝・’“”—]/u)
+        const items = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
             .filter((sentence:string) => sentence !== '');
         const wordData = [];
         for (const word of items)
@@ -100,7 +100,7 @@ class PagesController
     }
     isWord(item:string)
     {
-        return (item.match(/[ :;,.¿?¡!()\[\]{}\s'"-=。、！？：；「」『』（）…＝・’“”—]/u) === null);
+        return (item.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
     }
 }
 
