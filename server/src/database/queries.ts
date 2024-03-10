@@ -61,7 +61,7 @@ const queries: { [key: string]: string } =
     editPage: 'UPDATE page SET content = ? WHERE text_id = ? AND number = ?',
 
     getWord: 'SELECT * FROM word WHERE id = ?',
-    findWord: 'SELECT * FROM word WHERE content = ? AND language_id = ?',
+    findWord: 'SELECT * FROM word WHERE LOWER(content) = LOWER(?) AND language_id = ?',
     addWord: 'INSERT INTO word (language_id, content, status, entries, notes, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
     deleteWord: 'DELETE FROM word WHERE id = ?',
     editWord: 'UPDATE word SET %DYNAMIC% WHERE id = ?'
