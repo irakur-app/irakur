@@ -22,7 +22,7 @@ class PagesController
 
     async getPage(req:Request, res:Response)
     {
-        const page = databaseManager.getFirstRow(queries.getPageByIndex,
+        const page = databaseManager.getFirstRow(queries.getPage,
             [req.params.textId, req.params.pageId]
         );
 
@@ -62,6 +62,46 @@ class PagesController
 
             await databaseManager.executeQuery(dynamicQuery, queryParams);
         }
+    }
+
+    async getWords(req:Request, res:Response)
+    {
+        const page = await databaseManager.getFirstRow(queries.getPage,
+            [req.params.textId, req.params.pageId]
+        );
+
+        const languageId = (await databaseManager.getFirstRow(queries.getText,
+            [page.text_id]
+        )).language_id;
+
+        const segments = page.content.split(/(\s+|\W)/);
+        segments.filter((segment:string) => segment !== '');
+        
+        const wordData = [];
+        for (const word of segments)
+        {
+            if (!this.isWord(word))
+            {
+                wordData.push({content: word, type: 'punctuation'});
+            }
+            const wordRow = await databaseManager.getFirstRow(queries.findWord,
+                [word, languageId]
+            );
+            if (!wordRow)
+            {
+                wordData.push({content: word, status: 0, type: 'word'});
+            }
+            else
+            {
+                wordData.push({content: word, status: wordRow.status, type: 'word'});
+            }
+        }
+
+        res.json({words: wordData});
+    }
+    isWord(item:string)
+    {
+        return (item.match(/[ :;,.¿?¡!()\[\]{}\s'"-=。、！？：；「」『』（）…＝・’“”—]/u) === null);
     }
 }
 

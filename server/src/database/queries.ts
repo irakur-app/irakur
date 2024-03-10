@@ -55,12 +55,13 @@ const queries: { [key: string]: string } =
     editText: 'UPDATE text SET %DYNAMIC% WHERE id = ?',
 
     getAllPages: 'SELECT * FROM page WHERE text_id = ?',
-    getPageByIndex: 'SELECT * FROM page WHERE text_id = ? AND number = ?',
+    getPage: 'SELECT * FROM page WHERE text_id = ? AND number = ?',
     addPage: 'INSERT INTO page (text_id, number, content) VALUES (?, ?, ?)',
     deletePage: 'DELETE FROM page WHERE text_id = ? AND number = ?',
     editPage: 'UPDATE page SET content = ? WHERE text_id = ? AND number = ?',
 
     getWord: 'SELECT * FROM word WHERE id = ?',
+    findWord: 'SELECT * FROM word WHERE content = ? AND language_id = ?',
     addWord: 'INSERT INTO word (language_id, content, status, entries, notes, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
     deleteWord: 'DELETE FROM word WHERE id = ?',
     editWord: 'UPDATE word SET %DYNAMIC% WHERE id = ?'

@@ -32,7 +32,7 @@ router.patch('/texts/:textId', textsController.editText.bind(textsController));
 
 router.get('/texts/:textId/pages/', pagesController.getAllPages.bind(pagesController));
 router.get('/texts/:textId/pages/:pageId', pagesController.getPage.bind(pagesController));
-//router.get('/texts/:textId/pages/:pageId/words', pagesController.getWords.bind(pagesController));
+router.get('/texts/:textId/pages/:pageId/words', pagesController.getWords.bind(pagesController));
 router.patch('/texts/:textId/pages/:pageId', pagesController.editPage.bind(pagesController));
 
 router.get('/words/:wordId', wordsController.getWord.bind(wordsController));
