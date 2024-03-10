@@ -82,6 +82,7 @@ class PagesController
             if (!this.isWord(word))
             {
                 wordData.push({content: word, type: 'punctuation'});
+                continue;
             }
             const wordRow = await databaseManager.getFirstRow(queries.findWord,
                 [word, languageId]
