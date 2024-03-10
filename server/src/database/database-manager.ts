@@ -13,105 +13,105 @@ import { get } from 'http';
 
 class DatabaseManager
 {
-    private static instance:DatabaseManager;
-    database:sqlite3.Database;
+	private static instance:DatabaseManager;
+	database:sqlite3.Database;
 
-    constructor(folderPath:string, fileName:string)
-    {
-        if(DatabaseManager.instance)
-        {
-            this.database = DatabaseManager.instance.database;
-            return DatabaseManager.instance;
-        }
+	constructor(folderPath:string, fileName:string)
+	{
+		if(DatabaseManager.instance)
+		{
+			this.database = DatabaseManager.instance.database;
+			return DatabaseManager.instance;
+		}
 
-        const dataFolderPath = folderPath;
-        const databaseFilePath = path.join(dataFolderPath, fileName);
+		const dataFolderPath = folderPath;
+		const databaseFilePath = path.join(dataFolderPath, fileName);
 
-        if (!fs.existsSync(dataFolderPath)){
-            fs.mkdirSync(dataFolderPath);
-        }
+		if (!fs.existsSync(dataFolderPath)){
+			fs.mkdirSync(dataFolderPath);
+		}
 
-        if(!fs.existsSync(databaseFilePath))
-        {
-            console.log('Database not found. Creating empty database.');
-            try
-            {
-                fs.writeFileSync(databaseFilePath, '');
-                console.log('Created empty database.');
-            }
-            catch(error)
-            {
-                console.error(error);
-            }
-        }
+		if(!fs.existsSync(databaseFilePath))
+		{
+			console.log('Database not found. Creating empty database.');
+			try
+			{
+				fs.writeFileSync(databaseFilePath, '');
+				console.log('Created empty database.');
+			}
+			catch(error)
+			{
+				console.error(error);
+			}
+		}
 
-        this.database = new sqlite3.Database(databaseFilePath, (error) =>
-        {
-            if (error)
-            {
-                console.error(error.message);
-            }
-            else
-            {
-                console.log('Connected to the Irakur database.');
-            }
-        });
+		this.database = new sqlite3.Database(databaseFilePath, (error) =>
+		{
+			if (error)
+			{
+				console.error(error.message);
+			}
+			else
+			{
+				console.log('Connected to the Irakur database.');
+			}
+		});
 
-        this.createTables();
+		this.createTables();
 
-        DatabaseManager.instance = this;
-    }
+		DatabaseManager.instance = this;
+	}
 
-    createTables()
-    {
-        this.database.run(queries.createConfigurationTable);
-        this.database.run(queries.createLanguageTable);
-        this.database.run(queries.createTextTable);
-        this.database.run(queries.createPageTable);
-        this.database.run(queries.createWordTable);
-    }
+	createTables()
+	{
+		this.database.run(queries.createConfigurationTable);
+		this.database.run(queries.createLanguageTable);
+		this.database.run(queries.createTextTable);
+		this.database.run(queries.createPageTable);
+		this.database.run(queries.createWordTable);
+	}
 
-    executeQuery(query:string, parameters:string[] = []):Promise<any>
-    {
-        return new Promise((resolve, reject) =>
-        {
-            this.database.all(query, parameters, (error, rows) =>
-            {
-                if (error)
-                {
-                    reject(error);
-                }
-                else
-                {
-                    resolve(rows);
-                }
-            });
-        });
-    }
+	executeQuery(query:string, parameters:string[] = []):Promise<any>
+	{
+		return new Promise((resolve, reject) =>
+		{
+			this.database.all(query, parameters, (error, rows) =>
+			{
+				if (error)
+				{
+					reject(error);
+				}
+				else
+				{
+					resolve(rows);
+				}
+			});
+		});
+	}
 
-    getFirstRow(query:string, parameters:string[] = []):Promise<any>
-    {
-        return new Promise((resolve, reject) =>
-        {
-            this.database.all(query, parameters, (error, rows) =>
-            {
-                if (error)
-                {
-                    reject(error);
-                }
-                else
-                {
-                    resolve(rows[0]);
-                }
-            });
-        });
-    }
+	getFirstRow(query:string, parameters:string[] = []):Promise<any>
+	{
+		return new Promise((resolve, reject) =>
+		{
+			this.database.all(query, parameters, (error, rows) =>
+			{
+				if (error)
+				{
+					reject(error);
+				}
+				else
+				{
+					resolve(rows[0]);
+				}
+			});
+		});
+	}
 
-    //use last_insert_rowid() to get the id of the last inserted row
-    getLastInsertId():Promise<any>
-    {
-        return this.getFirstRow('SELECT last_insert_rowid() AS id');
-    }
+	//use last_insert_rowid() to get the id of the last inserted row
+	getLastInsertId():Promise<any>
+	{
+		return this.getFirstRow('SELECT last_insert_rowid() AS id');
+	}
 }
 
 const databaseManager = new DatabaseManager('data', 'irakur.db')

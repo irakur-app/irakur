@@ -27,5 +27,5 @@ import { router } from './routers/api-router';
 app.use('/api', router);
 
 app.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'));
+	console.log('Server on port', app.get('port'));
 });
