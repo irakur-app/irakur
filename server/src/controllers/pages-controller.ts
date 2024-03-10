@@ -74,11 +74,10 @@ class PagesController
             [page.text_id]
         )).language_id;
 
-        const segments = page.content.split(/(\s+|\W)/);
-        segments.filter((segment:string) => segment !== '');
-        
+        const items = page.content.split(/[ \r\n"':;,.¿?¡!()-=。、！？：；「」『』（）…＝・’“”—]/u)
+            .filter((sentence:string) => sentence !== '');
         const wordData = [];
-        for (const word of segments)
+        for (const word of items)
         {
             if (!this.isWord(word))
             {
