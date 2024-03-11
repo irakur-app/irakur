@@ -41,8 +41,10 @@ class TextsController
 
 	async getAllTexts(req:Request, res:Response)
 	{
+		const languageId = req.query.languageId as string;
+
 		const texts = await databaseManager.executeQuery(queries.getAllTexts,
-			[req.body.languageId]
+			[languageId]
 		);
 		
 		res.json({texts: texts});

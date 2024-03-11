@@ -7,47 +7,41 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-
-type ApiData = {
-	title: string;
-	texts: {
-		id: number;
-		title: string;
-	}[];
-};
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
+import { TextItem } from '../../components/text-item';
 
 const Texts = () => {
-	const [apiData, setApiData] = useState<ApiData | null>(null);
+	const [texts, setTexts] = useState<any | null>(null);
+
+	const languageId = 1; // Hardcoded for now
 
 	useEffect(() => {
-		fetch('/api/texts')
-			.then((response) => response.json())
-			.then((data) => setApiData(data))
-			.catch((error) => console.error('Error fetching data:', error));
-	}, []);
+		backendConnector.getTexts(languageId).then((data) => {
+			setTexts(data);
+		})
+    }, []);
 
-	if (!apiData) {
-		return <p>Loading...</p>;
+	if (!texts) {
+		return <Loading />
 	}
+	console.log(texts);
 
 	// Render your React components using the fetched data
 	return (
 		<HelmetProvider>
 			<Helmet>
-				<title>{apiData.title}</title>
+				<title>Irakur - Texts</title>
 			</Helmet>
-			<h1>{apiData.title}</h1>
-			<a href="/texts/add">Add text</a>
-			{apiData.texts.map((text, i) => (
-				<React.Fragment key={i}>
-					<p>{text.title}</p>
-					<a href={"/texts/edit/" + text.id}>Edit</a>
-					<form method="post" action="/api/texts/delete">
-						<input type="hidden" name="id" value={text.id} />
-						<button type="submit">Delete</button>
-					</form>
-				</React.Fragment>
-			))}
+			<h1>Irakur - Texts</h1>
+			{
+			texts.map((text: any) =>(
+			<React.Fragment key={text.id}>
+				<TextItem title={text.title} languageId={languageId} id={text.id} />
+				<br />
+			</React.Fragment>
+			))
+			}
 
 			<Outlet />
 		</HelmetProvider>

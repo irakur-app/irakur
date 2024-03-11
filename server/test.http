@@ -34,7 +34,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/api/texts/9
+GET http://localhost:5000/api/texts?languageId=1
 
 ###
 DELETE http://localhost:5000/api/texts/8
