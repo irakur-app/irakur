@@ -7,7 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { serviceConnector } from '../../service-connector';
+import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 import { LanguageItem } from '../../components/language-item';
 
@@ -15,7 +15,7 @@ const Languages = () => {
 	const [languages, setLanguages] = useState<any | null>(null);
 
 	useEffect(() => {
-		serviceConnector.getLanguages().then((data) => {
+		backendConnector.getLanguages().then((data) => {
 			setLanguages(data);
 		})
     }, []);

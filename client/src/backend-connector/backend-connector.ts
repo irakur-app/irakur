@@ -4,15 +4,15 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-class ServiceConnector
+class BackendConnector
 {
-	private static instance:ServiceConnector;
+	private static instance: BackendConnector;
 
 	constructor()
 	{
-		if(ServiceConnector.instance)
+		if(BackendConnector.instance)
 		{
-			return ServiceConnector.instance;
+			return BackendConnector.instance;
 		}
 	}
 
@@ -25,5 +25,5 @@ class ServiceConnector
 	}
 }
 
-const serviceConnector = new ServiceConnector();
-export { serviceConnector };
+const backendConnector = new BackendConnector();
+export { backendConnector };
