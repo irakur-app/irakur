@@ -27,9 +27,9 @@ const Languages = () => {
 	return (
 		<HelmetProvider>
 			<Helmet>
-				<title>Home - Languages</title>
+				<title>Irakur - Languages</title>
 			</Helmet>
-			<h1>Home - Languages</h1>
+			<h1>Irakur - Languages</h1>
 			<Link to="/languages/add">Add language</Link>
 			{
 			languages.map((language: any) =>(
