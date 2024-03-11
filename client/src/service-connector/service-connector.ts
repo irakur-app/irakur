@@ -15,6 +15,15 @@ class ServiceConnector
 			return ServiceConnector.instance;
 		}
 	}
+
+	//call localhost:5000/api/languages/
+	async getLanguages()
+	{
+		const response = await fetch('api/languages/');
+		const data = await response.json();
+		return data.languages;
+	}
 }
 
-export { ServiceConnector };
+const serviceConnector = new ServiceConnector();
+export { serviceConnector };
