@@ -39,6 +39,21 @@ class BackendConnector
 		return response.ok;
 	}
 
+	async deleteLanguage(languageId: number)
+	{
+		const response = await fetch('/api/languages/' + languageId, {
+			method: 'DELETE'
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to delete language');
+		} else {
+			console.log('Language deleted');
+		}
+
+		return response.ok;
+	}
+
 	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
 	{
 		const response = await fetch('/api/languages/' + languageId, {
