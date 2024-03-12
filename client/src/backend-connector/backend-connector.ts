@@ -18,14 +18,14 @@ class BackendConnector
 
 	async getLanguages()
 	{
-		const response = await fetch('api/languages/');
+		const response = await fetch('/api/languages/');
 		const data = await response.json();
 		return data.languages;
 	}
 
 	async getTexts(languageId: number)
 	{
-		const response = await fetch('api/texts?languageId=' + languageId);
+		const response = await fetch('/api/texts?languageId=' + languageId);
 		const data = await response.json();
 		return data.texts;
 	}
