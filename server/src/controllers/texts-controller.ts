@@ -88,7 +88,7 @@ class TextsController
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
-		if (req.body.languageId)
+		if (req.body.languageId !== undefined)
 		{
 			const language = await databaseManager.getFirstRow(queries.getLanguage, [req.body.languageId]);
 			if (!language)
@@ -99,17 +99,17 @@ class TextsController
 			updates.push('language_id = ?');
 			queryParams.push(req.body.languageId);
 		}
-		if (req.body.title)
+		if (req.body.title !== undefined)
 		{
 			updates.push('title = ?');
 			queryParams.push(req.body.title);
 		}
-		if (req.body.sourceUrl)
+		if (req.body.sourceUrl !== undefined)
 		{
 			updates.push('source_url = ?');
 			queryParams.push(req.body.sourceUrl);
 		}
-		if (req.body.numberOfPages)
+		if (req.body.numberOfPages !== undefined)
 		{
 			const pages = await databaseManager.executeQuery(queries.getAllPages,
 				[req.params.textId]

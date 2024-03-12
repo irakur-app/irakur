@@ -47,7 +47,7 @@ class WordsController
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
-		if (req.body.languageId)
+		if (req.body.languageId !== undefined)
 		{
 			const language = await databaseManager.getFirstRow(queries.getLanguage, [req.body.languageId]);
 			if (!language)
@@ -58,34 +58,34 @@ class WordsController
 			updates.push('language_id = ?');
 			queryParams.push(req.body.languageId);
 		}
-		if (req.body.content)
+		if (req.body.content !== undefined)
 		{
 			updates.push('content = ?');
 			queryParams.push(req.body.content);
 		}
-		if (req.body.status)
+		if (req.body.status !== undefined)
 		{
 			updates.push('status = ?');
 			queryParams.push(req.body.status);
 		}
-		if (req.body.entries)
+		if (req.body.entries !== undefined)
 		{
 			req.body.entries = JSON.stringify(req.body.entries);
 
 			updates.push('entries = ?');
 			queryParams.push(req.body.entries);
 		}
-		if (req.body.notes)
+		if (req.body.notes !== undefined)
 		{
 			updates.push('notes = ?');
 			queryParams.push(req.body.notes);
 		}
-		if (req.body.datetimeAdded)
+		if (req.body.datetimeAdded !== undefined)
 		{
 			updates.push('datetime_added = ?');
 			queryParams.push(req.body.datetimeAdded);
 		}
-		if (req.body.datetimeUpdated)
+		if (req.body.datetimeUpdated !== undefined)
 		{
 			updates.push('datetime_updated = ?');
 			queryParams.push(req.body.datetimeUpdated);

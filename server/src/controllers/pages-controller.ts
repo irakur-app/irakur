@@ -34,15 +34,15 @@ class PagesController
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 
-		if (req.body.textId)
+		if (req.body.textId !== undefined)
 		{
 			res.status(400).send('Forbidden to change text');
 		}
-		if (req.body.index)
+		if (req.body.index !== undefined)
 		{
 			res.status(400).send('Forbidden to change index');
 		}
-		if (req.body.content)
+		if (req.body.content !== undefined)
 		{
 			updates.push('content = ?');
 			queryParams.push(req.body.content);
