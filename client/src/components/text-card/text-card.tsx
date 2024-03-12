@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const TextItem = (props: any) => {
+const TextCard = (props: any) => {
 	return (
 		<div>
 			<p>Title: {props.title}</p>
@@ -14,4 +14,4 @@ const TextItem = (props: any) => {
 	)
 }
 
-export { TextItem };
+export { TextCard };

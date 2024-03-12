@@ -9,7 +9,7 @@ import { Outlet } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
-import { TextItem } from '../../components/text-item';
+import { TextCard } from '../../components/text-card';
 
 const Texts = () => {
 	const [texts, setTexts] = useState<any | null>(null);
@@ -37,7 +37,7 @@ const Texts = () => {
 			{
 			texts.map((text: any) =>(
 			<React.Fragment key={text.id}>
-				<TextItem title={text.title} languageId={languageId} id={text.id} />
+				<TextCard title={text.title} languageId={languageId} id={text.id} />
 				<br />
 			</React.Fragment>
 			))

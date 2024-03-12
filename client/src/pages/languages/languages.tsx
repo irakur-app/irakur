@@ -9,7 +9,7 @@ import { Outlet, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
-import { LanguageItem } from '../../components/language-item';
+import { LanguageCard } from '../../components/language-card';
 
 const Languages = () => {
 	const [languages, setLanguages] = useState<any | null>(null);
@@ -34,7 +34,7 @@ const Languages = () => {
 			{
 			languages.map((language: any) =>(
 			<React.Fragment key={language.id}>
-				<LanguageItem name={language.name} id={language.id} />
+				<LanguageCard name={language.name} id={language.id} />
 				<br />
 			</React.Fragment>
 			))
