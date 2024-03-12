@@ -29,7 +29,7 @@ class BackendConnector
 				shouldShowSpaces
 			})
 		});
-		//check that response was successful
+		
 		if (!response.ok) {
 			throw new Error('Failed to add language');
 		} else {
@@ -37,6 +37,36 @@ class BackendConnector
 		}
 
 		return response.ok;
+	}
+
+	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	{
+		const response = await fetch('/api/languages/' + languageId, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name,
+				dictionaryUrl,
+				shouldShowSpaces
+			})
+		})
+
+		if (!response.ok) {
+			throw new Error('Failed to edit language');
+		} else {
+			console.log('Language edited');
+		}
+
+		return response.ok;
+	}
+
+	async getLanguage(languageId: number)
+	{
+		const response = await fetch('/api/languages/' + languageId);
+		const data = await response.json();
+		return data.language;
 	}
 
 	async getLanguages()
