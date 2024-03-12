@@ -18,8 +18,8 @@ class WordsController
 		await databaseManager.executeQuery(queries.addWord,
 			[req.body.languageId, req.body.content, req.body.status, req.body.entries, req.body.notes, req.body.datetimeAdded, req.body.datetimeUpdated]
 		)
-		
-		res.redirect('/words');
+
+		res.sendStatus(200);
 	}
 
 	async getWord(req:Request, res:Response)
@@ -38,8 +38,8 @@ class WordsController
 		await databaseManager.executeQuery(queries.deleteWord,
 			[req.params.wordId]
 		)
-		
-		res.redirect('/words');
+
+		res.sendStatus(200);
 	}
 
 	async editWord(req:Request, res:Response)
@@ -104,8 +104,8 @@ class WordsController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-		
-		res.redirect('/words');
+
+		res.sendStatus(200);
 	}
 }
 

@@ -19,7 +19,7 @@ class LanguagesController
 			[req.body.name, req.body.dictionaryUrl, (req.body.shouldShowSpaces === 'on' ? true : false).toString()]
 		);
 
-		res.redirect('/languages');
+		res.sendStatus(200);
 	}
 
 	async deleteLanguage(req:Request, res:Response)
@@ -27,8 +27,8 @@ class LanguagesController
 		await databaseManager.executeQuery(queries.deleteLanguage,
 			[req.params.languageId]
 		);
-		
-		res.redirect('/languages');
+
+		res.sendStatus(200);
 	}
 
 	async editLanguage(req:Request, res:Response)
@@ -65,8 +65,8 @@ class LanguagesController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-		
-		res.redirect('/languages');
+
+		res.sendStatus(200);
 	}
 
 	async getAllLanguages(req:Request, res:Response)

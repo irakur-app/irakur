@@ -35,8 +35,8 @@ class TextsController
 			firstPageIndex = lastPageIndex + 1;
 			lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % req.body.numberOfPages ? 0 : -1);
 		}
-		
-		res.redirect('/texts');
+
+		res.sendStatus(200);
 	}
 
 	async getAllTexts(req:Request, res:Response)
@@ -79,8 +79,8 @@ class TextsController
 		await databaseManager.executeQuery(queries.deleteText,
 			[req.params.textId]
 		)
-		
-		res.redirect('/texts');
+
+		res.sendStatus(200);
 	}
 
 	async editText(req:Request, res:Response)
@@ -163,8 +163,8 @@ class TextsController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-		
-		res.redirect('/texts');
+
+		res.sendStatus(200);
 	}
 }
 

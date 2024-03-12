@@ -62,6 +62,8 @@ class PagesController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
+
+		res.sendStatus(200);
 	}
 
 	async getWords(req:Request, res:Response)
