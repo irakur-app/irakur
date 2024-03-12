@@ -16,7 +16,7 @@ class LanguagesController
 	async addLanguage(req:Request, res:Response)
 	{
 		await databaseManager.executeQuery(queries.addLanguage,
-			[req.body.name, req.body.dictionaryUrl, (req.body.shouldShowSpaces === 'on' ? true : false).toString()]
+			[req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces]
 		);
 
 		res.sendStatus(200);

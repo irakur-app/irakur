@@ -16,6 +16,29 @@ class BackendConnector
 		}
 	}
 
+	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	{
+		const response = await fetch('/api/languages', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name,
+				dictionaryUrl,
+				shouldShowSpaces
+			})
+		});
+		//check that response was successful
+		if (!response.ok) {
+			throw new Error('Failed to add language');
+		} else {
+			console.log('Language added');
+		}
+
+		return response.ok;
+	}
+
 	async getLanguages()
 	{
 		const response = await fetch('/api/languages/');
