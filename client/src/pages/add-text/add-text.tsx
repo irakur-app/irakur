@@ -6,44 +6,56 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-
-type ApiData = {
-	title: string;
-};
+import { backendConnector } from '../../backend-connector';
 
 const AddText = () => {
-	const [apiData, setApiData] = useState<ApiData | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	useEffect(() => {
-		fetch('/api/texts/add')
-			.then((response) => response.json())
-			.then((data) => setApiData(data))
-			.catch((error) => console.error('Error fetching data:', error));
-	}, []);
+	const handleSubmit = async (event: any) => {
+		event.preventDefault();
 
-	if (!apiData) {
-		return <p>Loading...</p>;
+		setIsSubmitting(true);
+		
+		const wasEdited = await backendConnector.addText(
+			event.target.title.value,
+			event.target.languageId.value,
+			event.target.content.value,
+			event.target.numberOfPages.value,
+			event.target.sourceUrl.value,
+		);
+
+		if (wasEdited)
+		{
+			window.location.href = '/texts';
+		}
+
+		setIsSubmitting(false);
 	}
 
 	// Render your React components using the fetched data
 	return (
 		<HelmetProvider>
 			<Helmet>
-				<title>{apiData.title}</title>
+				<title>Irakur - Add text</title>
 			</Helmet>
-			<h1>{apiData.title}</h1>
-			<form method="post" action="/api/texts/add">
+			<h1>Irakur - Add text</h1>
+			<form method="post" onSubmit={handleSubmit}>
 				<label htmlFor="title">Title</label>
 				<input type="text" name="title" id="title" />
 				<br />
-				<label htmlFor="content">Content</label>
-				<textarea name="content" id="content"></textarea>
+				<label htmlFor="languageId">Language</label>
+				<input type="text" name="languageId" id="languageId" />
 				<br />
-				<label htmlFor="sourceUrl">URL</label>
+				<label htmlFor="content">Content</label>
+				<textarea name="content" id="content" />
+				<br />
+				<label htmlFor="numberOfPages">Number of pages</label>
+				<input type="text" name="numberOfPages" id="numberOfPages" />
+				<br />
+				<label htmlFor="sourceUrl">Source URL</label>
 				<input type="text" name="sourceUrl" id="sourceUrl" />
 				<br />
-
-				<button type="submit">Add</button>
+				<button type="submit" disabled={isSubmitting}>Add</button>
 			</form>
 		</HelmetProvider>
 	);

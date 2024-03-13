@@ -10,6 +10,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 import { TextCard } from '../../components/text-card';
+import { Link } from 'react-router-dom';
 
 const Texts = () => {
 	const [texts, setTexts] = useState<any | null>(null);
@@ -34,6 +35,7 @@ const Texts = () => {
 				<title>Irakur - Texts</title>
 			</Helmet>
 			<h1>Irakur - Texts</h1>
+			<Link to="/texts/add">Add text</Link>
 			{
 			texts.map((text: any) =>(
 			<React.Fragment key={text.id}>

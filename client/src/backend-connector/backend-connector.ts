@@ -91,6 +91,31 @@ class BackendConnector
 		return data.languages;
 	}
 
+	async addText(title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string)
+	{
+		const response = await fetch('/api/texts', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				title,
+				languageId,
+				content,
+				numberOfPages,
+				sourceUrl
+			})
+		});
+		
+		if (!response.ok) {
+			throw new Error('Failed to add text');
+		} else {
+			console.log('Text added');
+		}
+
+		return response.ok;
+	}
+
 	async getTexts(languageId: number)
 	{
 		const response = await fetch('/api/texts?languageId=' + languageId);
