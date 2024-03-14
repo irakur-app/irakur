@@ -116,11 +116,50 @@ class BackendConnector
 		return response.ok;
 	}
 
+	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string)
+	{
+		const response = await fetch('/api/texts/' + id, {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				title,
+				languageId,
+				content,
+				numberOfPages,
+				sourceUrl
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to edit text');
+		} else {
+			console.log('Text edited');
+		}
+
+		return response.ok;
+	}
+
+	async getText(textId: number)
+	{
+		const response = await fetch('/api/texts/' + textId);
+		const data = await response.json();
+		return data.text;
+	}
+
 	async getTexts(languageId: number)
 	{
 		const response = await fetch('/api/texts?languageId=' + languageId);
 		const data = await response.json();
 		return data.texts;
+	}
+
+	async getPages(textId: number)
+	{
+		const response = await fetch('/api/texts/' + textId + '/pages');
+		const data = await response.json();
+		return data.pages;
 	}
 }
 

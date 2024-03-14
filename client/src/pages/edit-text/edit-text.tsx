@@ -6,50 +6,82 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
 
-type ApiData = {
-	title: string;
-	text: {
-		id: number;
-		title: string;
-		content: string;
-		source_url: string;
-	};
-};
 
 const EditText = () => {
-	const [apiData, setApiData] = useState<ApiData | null>(null);
+	const [textData, setTextData] = useState<any | null>(null);
+	const [pageData, setPageData] = useState<any | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const textId = document.location.pathname.split('/').pop();
+	const textId = Number(document.location.pathname.split('/').pop());
 
 	useEffect(() => {
-		fetch('/api/texts/edit/' + textId + '/')
-			.then((response) => response.json())
-			.then((data) => setApiData(data))
-			.catch((error) => console.error('Error fetching data:', error));
-	}, []);
+		backendConnector.getText(textId).then((data) => {
+			setTextData(data);
+			console.log(data);
+			backendConnector.getPages(data.id).then((data) => {
+				setPageData(data);
+				console.log(data);
+			})
+		});
+	}, [textId]);
 
-	if (!apiData) {
-		return <p>Loading...</p>;
+	const handleSubmit = async (event: any) => {
+		event.preventDefault();
+
+		setIsSubmitting(true);
+
+		console.log(event.target.id)
+		
+		const wasEdited = await backendConnector.editText(
+			event.target.id.value,
+			event.target.title.value,
+			event.target.languageId.value,
+			event.target.content.value,
+			event.target.numberOfPages.value,
+			event.target.sourceUrl.value,
+		);
+
+		if (wasEdited)
+		{
+			window.location.href = '/texts';
+		}
+
+		setIsSubmitting(false);
 	}
 
-	// Render your React components using the fetched data
+	if (!textData || !pageData) {
+		return <Loading />;
+	}
+
+	const textContent = pageData.map((page: any) => page.content).join('');
+
 	return (
 		<HelmetProvider>
 			<Helmet>
-				<title>{apiData.title}</title>
+				<title>Irakur - Edit text</title>
 			</Helmet>
-			<h1>{apiData.title}</h1>
-			<form method="post" action="/api/texts/edit">
-					<input type="hidden" name="id" value={apiData.text.id}/>
-					<label htmlFor="title">Title</label>
-					<input type="text" name="title" id="title" defaultValue={apiData.text.title}/>
-					<label htmlFor="content">Text</label>
-					<textarea name="content" id="content" defaultValue={apiData.text.content} />
-					<label htmlFor="sourceUrl">URL</label>
-					<input type="text" name="sourceUrl" id="sourceUrl" defaultValue={apiData.text.source_url}/>
-
-					<button type="submit">Add</button>
+			<h1>Irakur - Edit text</h1>
+			<form method="post" onSubmit={handleSubmit}>
+				<input type="hidden" name="id" defaultValue={textData.id}/>
+				<label htmlFor="title">Title</label>
+				<input type="text" name="title" id="title" defaultValue={textData.title}/>
+				<br />
+				<label htmlFor="languageId">Language</label>
+				<input type="text" name="languageId" id="languageId" defaultValue={textData.language_id}/>
+				<br />
+				<label htmlFor="content">Content</label>
+				<textarea name="content" id="content" defaultValue={textContent}/>
+				<br />
+				<label htmlFor="numberOfPages">Number of pages</label>
+				<input type="text" name="numberOfPages" id="numberOfPages" defaultValue={pageData.length}/>
+				<br />
+				<label htmlFor="sourceUrl">Source URL</label>
+				<input type="text" name="sourceUrl" id="sourceUrl" defaultValue={textData.source_url}/>
+				<br />
+				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>
 		</HelmetProvider>
 	);
