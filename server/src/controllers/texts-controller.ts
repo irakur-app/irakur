@@ -109,21 +109,23 @@ class TextsController
 			updates.push('source_url = ?');
 			queryParams.push(req.body.sourceUrl);
 		}
-		if (req.body.numberOfPages !== undefined)
+		if (req.body.numberOfPages !== undefined || req.body.content !== undefined)
 		{
 			const pages = await databaseManager.executeQuery(queries.getAllPages,
 				[req.params.textId]
 			);
-			
-			const content = pages.map((page:any) => page.content).join('');
+
+			const newNumberOfPages = (req.body.numberOfPages !== undefined) ? parseInt(req.body.numberOfPages) : pages.length;
+
+			const content = (req.body.content !== undefined) ? req.body.content : pages.map((page:any) => page.content).join('');
 
 			const sentences = content.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
 				.filter((sentence:string) => sentence !== '');
-			const sentencesPerPage = Math.floor(sentences.length / req.body.numberOfPages);
+			const sentencesPerPage = Math.floor(sentences.length / newNumberOfPages);
 
 			let firstPageIndex = 0;
-			let lastPageIndex = sentencesPerPage + (sentences.length % req.body.numberOfPages > 0 ? 0 : -1);
-			for (let i = 0; i < req.body.numberOfPages; i++)
+			let lastPageIndex = sentencesPerPage + (sentences.length % newNumberOfPages > 0 ? 0 : -1);
+			for (let i = 0; i < newNumberOfPages; i++)
 			{
 				const pageContent = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
 				if(i < pages.length)
@@ -142,10 +144,10 @@ class TextsController
 				firstPageIndex = lastPageIndex + 1;
 				lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % req.body.numberOfPages ? 0 : -1);
 			}
-			for (let i = req.body.numberOfPages; i < pages.length; i++)
+			for (let i = newNumberOfPages; i < pages.length; i++)
 			{
 				await databaseManager.executeQuery(queries.deletePage,
-					[req.params.textId, i+1]
+					[req.params.textId, (i+1).toString()]
 				);
 			}
 		}
