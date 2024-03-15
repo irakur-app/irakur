@@ -48,7 +48,8 @@ const queries: { [key: string]: string } =
 	deleteLanguage: 'DELETE FROM language WHERE id = ?',
 	editLanguage: 'UPDATE language SET %DYNAMIC% WHERE id = ?',
 
-	getAllTexts: 'SELECT * FROM text WHERE language_id = ?',
+	getAllTexts: 'SELECT * FROM text',
+	getTextsByLanguage: 'SELECT * FROM text WHERE language_id = ?',
 	getText: 'SELECT * FROM text WHERE id = ?',
 	addText: 'INSERT INTO text (language_id, title, source_url) VALUES (?, ?, ?)',
 	deleteText: 'DELETE FROM text WHERE id = ?',

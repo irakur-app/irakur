@@ -163,9 +163,17 @@ class BackendConnector
 		return data.text;
 	}
 
-	async getTexts(languageId: number)
+	async getTexts(languageId: number | undefined)
 	{
-		const response = await fetch('/api/texts?languageId=' + languageId);
+		let response;
+		if(languageId !== undefined)
+		{
+			response = await fetch('/api/texts?languageId=' + languageId);
+		}
+		else
+		{
+			response = await fetch('/api/texts');
+		}
 		const data = await response.json();
 		return data.texts;
 	}

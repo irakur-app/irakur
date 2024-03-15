@@ -15,7 +15,8 @@ import { Link } from 'react-router-dom';
 const Texts = () => {
 	const [texts, setTexts] = useState<any | null>(null);
 
-	const languageId = 1; // Hardcoded for now
+	let languageId: number|undefined = Number(document.cookie.split("=")[1]);
+	languageId = (isNaN(languageId) || languageId === 0) ? undefined : languageId;
 
 	useEffect(() => {
 		backendConnector.getTexts(languageId).then((data) => {
