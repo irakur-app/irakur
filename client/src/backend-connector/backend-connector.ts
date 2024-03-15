@@ -116,6 +116,21 @@ class BackendConnector
 		return response.ok;
 	}
 
+	async deleteText(textId: number)
+	{
+		const response = await fetch('/api/texts/' + textId, {
+			method: 'DELETE'
+		});
+
+		if (!response.ok) {
+			throw new Error('Failed to delete text');
+		} else {
+			console.log('Text deleted');
+		}
+
+		return response.ok;
+	}
+
 	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string)
 	{
 		const response = await fetch('/api/texts/' + id, {

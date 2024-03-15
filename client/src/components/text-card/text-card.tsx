@@ -4,15 +4,30 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { backendConnector } from '../../backend-connector';
 import { Link } from 'react-router-dom';
 
 const TextCard = (props: any) => {
+	const handleDelete = async () => {
+		const enteredText = prompt("Do you really want to delete text '" + props.title + "' (ID: " + props.id + ")?\nType 'DELETE' to confirm.");
+		if (enteredText !== "DELETE") {
+			alert("Deletion canceled. Incorrect confirmation text.");
+			return;
+		}
+
+		const wasDeleted = await backendConnector.deleteText(props.id);
+		if (wasDeleted) {
+			window.location.reload();
+		}
+	}
+
 	return (
 		<div>
 			<p>Title: {props.title}</p>
 			<p>ID: {props.id}</p>
 			<p>Language: {props.languageId}</p>
 			<Link to={`/texts/edit/${props.id}`}>Edit</Link>
+			<button onClick={handleDelete}>Delete</button>
 		</div>
 	)
 }
