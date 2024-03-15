@@ -4,57 +4,47 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Request, Response } from 'express';
-
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class PagesController
 {
-	async getAllPages(req:Request, res:Response)
+	async getAllPages(textId: number)
 	{
 		const pages = await databaseManager.executeQuery(queries.getAllPages,
-			[req.params.textId]
+			[textId]
 		);
 
-		res.json({pages: pages});
+		return pages;
 	}
 
-	async getPage(req:Request, res:Response)
+	async getPage(textId: number, pageId: number)
 	{
 		const page = databaseManager.getFirstRow(queries.getPage,
-			[req.params.textId, req.params.pageId]
+			[textId, pageId]
 		);
 
-		res.json({page: page});
+		return page;
 	}
 
-	async editPage(req:Request, res:Response)
+	async editPage(textId: number, index: number, content: string, pageId: number)
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 
-		if (req.body.textId !== undefined)
-		{
-			res.status(400).send('Forbidden to change text');
-		}
-		if (req.body.index !== undefined)
-		{
-			res.status(400).send('Forbidden to change index');
-		}
-		if (req.body.content !== undefined)
+		if (content !== undefined)
 		{
 			updates.push('content = ?');
-			queryParams.push(req.body.content);
+			queryParams.push(content);
 		}
 		
 		if (updates.length > 0)
 		{
-			queryParams.push(req.params.textId);
-			queryParams.push(req.params.pageId);
+			queryParams.push(textId);
+			queryParams.push(pageId);
 			console.log(queryParams);
 
-			const dynamicQuery = queries.editText.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery = queries.editPage.replace(/\%DYNAMIC\%/, () => {
 				return updates.join(', ');
 			});
 
@@ -63,13 +53,13 @@ class PagesController
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async getWords(req:Request, res:Response)
+	async getWords(textId: number, pageId: number)
 	{
 		const page = await databaseManager.getFirstRow(queries.getPage,
-			[req.params.textId, req.params.pageId]
+			[textId, pageId]
 		);
 
 		const languageId = (await databaseManager.getFirstRow(queries.getText,
@@ -99,7 +89,7 @@ class PagesController
 			}
 		}
 
-		res.json({words: wordData});
+		return wordData;
 	}
 	isWord(item:string)
 	{

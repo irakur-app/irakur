@@ -4,28 +4,26 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Request, Response } from 'express';
-
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class TextsController
 {
-	async addText(req:Request, res:Response)
+	async addText(languageId: number, title: string, content: string, sourceUrl: string, numberOfPages: number)
 	{
 		await databaseManager.executeQuery(queries.addText,
-			[req.body.languageId, req.body.title, req.body.sourceUrl]
+			[languageId, title, sourceUrl]
 		);
 
-		const sentences = req.body.content.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
+		const sentences = content.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
 			.filter((sentence:string) => sentence !== '');
-		const sentencesPerPage = Math.floor(sentences.length / req.body.numberOfPages);
+		const sentencesPerPage = Math.floor(sentences.length / numberOfPages);
 
 		const textId = (await databaseManager.getLastInsertId()).id;
 
 		let firstPageIndex = 0;
-		let lastPageIndex = sentencesPerPage + (sentences.length % req.body.numberOfPages > 0 ? 0 : -1);
-		for (let i = 0; i < req.body.numberOfPages; i++)
+		let lastPageIndex = sentencesPerPage + (sentences.length % numberOfPages > 0 ? 0 : -1);
+		for (let i = 0; i < numberOfPages; i++)
 		{
 			const pageContent = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
 			await databaseManager.executeQuery(queries.addPage,
@@ -33,101 +31,102 @@ class TextsController
 			);
 
 			firstPageIndex = lastPageIndex + 1;
-			lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % req.body.numberOfPages ? 0 : -1);
+			lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % numberOfPages ? 0 : -1);
 		}
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async getAllTexts(req:Request, res:Response)
+	async getAllTexts()
 	{
-		const languageId = req.query.languageId as string;
-		let texts;
-		
-		if (req.query.languageId !== undefined)
-		{
-			texts = await databaseManager.executeQuery(queries.getTextsByLanguage,
-				[languageId]
-			);
-		}
-		else
-		{
-			texts = await databaseManager.executeQuery(queries.getAllTexts);
-		}
-		
-		res.json({texts: texts});
+		const texts = await databaseManager.executeQuery(queries.getAllTexts);
+
+		return texts;
 	}
 
-	async getText(req:Request, res:Response)
+	async getTextsByLanguage(languageId: number)
+	{
+		const texts = await databaseManager.executeQuery(queries.getTextsByLanguage,
+			[languageId]
+		);
+
+		return texts;
+	}
+
+	async getText(textId: number)
 	{
 		const text = await databaseManager.getFirstRow(queries.getText,
-			[req.params.textId]
+			[textId]
 		)
-		const numberOfPages = (await databaseManager.executeQuery(queries.getAllPages,
-			[req.params.textId]
-		)).length;
 
-		console.log(text);
-
-		res.json({text: text, numberOfPages: numberOfPages});
+		return text;
 	}
 
-	async deleteText(req:Request, res:Response)
+	async getNumberOfPages(textId: number)
+	{
+		const numberOfPages = (await databaseManager.executeQuery(queries.getAllPages,
+			[textId]
+		)).length;
+
+		return numberOfPages;
+	}
+
+	async deleteText(textId: number)
 	{
 		const pages = await databaseManager.executeQuery(queries.getAllPages,
-			[req.params.textId]
+			[textId]
 		);
 		for (const page of pages)
 		{
 			await databaseManager.executeQuery(queries.deletePage,
-				[req.params.textId, page.number]
+				[textId, page.number]
 			);
 		}
 
 		await databaseManager.executeQuery(queries.deleteText,
-			[req.params.textId]
+			[textId]
 		)
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async editText(req:Request, res:Response)
+	async editText(languageId: number, title: string, sourceUrl: string, numberOfPages: number, content: string, textId: number)
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
-		if (req.body.languageId !== undefined)
+		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(queries.getLanguage, [req.body.languageId]);
+			const language = await databaseManager.getFirstRow(queries.getLanguage, [languageId]);
 			if (!language)
 			{
-				res.status(400).send('Language does not exist');
-				return;
+				console.error('Language does not exist.');
+				return false;
 			}
 			updates.push('language_id = ?');
-			queryParams.push(req.body.languageId);
+			queryParams.push(languageId);
 		}
-		if (req.body.title !== undefined)
+		if (title !== undefined)
 		{
 			updates.push('title = ?');
-			queryParams.push(req.body.title);
+			queryParams.push(title);
 		}
-		if (req.body.sourceUrl !== undefined)
+		if (sourceUrl !== undefined)
 		{
 			updates.push('source_url = ?');
-			queryParams.push(req.body.sourceUrl);
+			queryParams.push(sourceUrl);
 		}
-		if (req.body.numberOfPages !== undefined || req.body.content !== undefined)
+		if (numberOfPages !== undefined || content !== undefined)
 		{
 			const pages = await databaseManager.executeQuery(queries.getAllPages,
-				[req.params.textId]
+				[textId]
 			);
 
-			const newNumberOfPages = (req.body.numberOfPages !== undefined) ? parseInt(req.body.numberOfPages) : pages.length;
+			const newNumberOfPages = (numberOfPages !== undefined) ? numberOfPages : pages.length;
 
-			const content = (req.body.content !== undefined) ? req.body.content : pages.map((page:any) => page.content).join('');
+			const newContent = (content !== undefined) ? content : pages.map((page:any) => page.content).join('');
 
-			const sentences = content.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
+			const sentences = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
 				.filter((sentence:string) => sentence !== '');
 			const sentencesPerPage = Math.floor(sentences.length / newNumberOfPages);
 
@@ -139,30 +138,30 @@ class TextsController
 				if(i < pages.length)
 				{
 					await databaseManager.executeQuery(queries.editPage,
-						[pageContent, req.params.textId, i+1]
+						[pageContent, textId, i+1]
 					);
 				}
 				else
 				{
 					await databaseManager.executeQuery(queries.addPage,
-						[req.params.textId, i+1, pageContent]
+						[textId, i+1, pageContent]
 					);
 				}
 
 				firstPageIndex = lastPageIndex + 1;
-				lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % req.body.numberOfPages ? 0 : -1);
+				lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % numberOfPages ? 0 : -1);
 			}
 			for (let i = newNumberOfPages; i < pages.length; i++)
 			{
 				await databaseManager.executeQuery(queries.deletePage,
-					[req.params.textId, (i+1).toString()]
+					[textId, (i+1).toString()]
 				);
 			}
 		}
 
 		if (updates.length > 0)
 		{
-			queryParams.push(req.params.textId);
+			queryParams.push(textId);
 			console.log(queryParams);
 
 			const dynamicQuery = queries.editText.replace(/\%DYNAMIC\%/, () => {
@@ -174,7 +173,7 @@ class TextsController
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
 
-		res.sendStatus(200);
+		return true;
 	}
 }
 

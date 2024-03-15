@@ -4,96 +4,90 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Request, Response } from 'express';
-
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class WordsController
 {
-	async addWord(req:Request, res:Response)
+	async addWord(languageId: number, content: string, status: number, entries: {meaning: string, reading: string}[], notes: string, datetimeAdded: string, datetimeUpdated: string)
 	{
-		req.body.entries = JSON.stringify(req.body.entries);
-
 		await databaseManager.executeQuery(queries.addWord,
-			[req.body.languageId, req.body.content, req.body.status, req.body.entries, req.body.notes, req.body.datetimeAdded, req.body.datetimeUpdated]
+			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated]
 		)
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async getWord(req:Request, res:Response)
+	async getWord(wordId: number)
 	{
 		const word = await databaseManager.getFirstRow(queries.getWord,
-			[req.params.wordId]
+			[wordId]
 		)
 
 		word.entries = JSON.parse(word.entries);
 
-		res.json({word: word});
+		return word;
 	}
 
-	async deleteWord(req:Request, res:Response)
+	async deleteWord(wordId: number)
 	{
 		await databaseManager.executeQuery(queries.deleteWord,
-			[req.params.wordId]
+			[wordId]
 		)
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async editWord(req:Request, res:Response)
+	async editWord(languageId: number, content: string, status: number, entries: {meaning: string, reading: string}[], notes: string, datetimeAdded: string, datetimeUpdated: string, wordId: number)
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
-		if (req.body.languageId !== undefined)
+		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(queries.getLanguage, [req.body.languageId]);
+			const language = await databaseManager.getFirstRow(queries.getLanguage, [languageId]);
 			if (!language)
 			{
-				res.status(400).send('Language does not exist');
-				return;
+				console.error('Language does not exist.');
+				return false;
 			}
 			updates.push('language_id = ?');
-			queryParams.push(req.body.languageId);
+			queryParams.push(languageId);
 		}
-		if (req.body.content !== undefined)
+		if (content !== undefined)
 		{
 			updates.push('content = ?');
-			queryParams.push(req.body.content);
+			queryParams.push(content);
 		}
-		if (req.body.status !== undefined)
+		if (status !== undefined)
 		{
 			updates.push('status = ?');
-			queryParams.push(req.body.status);
+			queryParams.push(status);
 		}
-		if (req.body.entries !== undefined)
+		if (entries !== undefined)
 		{
-			req.body.entries = JSON.stringify(req.body.entries);
-
 			updates.push('entries = ?');
-			queryParams.push(req.body.entries);
+			queryParams.push(JSON.stringify(entries));
 		}
-		if (req.body.notes !== undefined)
+		if (notes !== undefined)
 		{
 			updates.push('notes = ?');
-			queryParams.push(req.body.notes);
+			queryParams.push(notes);
 		}
-		if (req.body.datetimeAdded !== undefined)
+		if (datetimeAdded !== undefined)
 		{
 			updates.push('datetime_added = ?');
-			queryParams.push(req.body.datetimeAdded);
+			queryParams.push(datetimeAdded);
 		}
-		if (req.body.datetimeUpdated !== undefined)
+		if (datetimeUpdated !== undefined)
 		{
 			updates.push('datetime_updated = ?');
-			queryParams.push(req.body.datetimeUpdated);
+			queryParams.push(datetimeUpdated);
 		}
 
 		if (updates.length > 0)
 		{
-			queryParams.push(req.params.wordId);
+			queryParams.push(wordId);
 			console.log(queryParams);
 	
 			const dynamicQuery = queries.editWord.replace(/\%DYNAMIC\%/, () => {
@@ -105,7 +99,7 @@ class WordsController
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
 
-		res.sendStatus(200);
+		return true;
 	}
 }
 

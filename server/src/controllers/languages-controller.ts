@@ -4,57 +4,53 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Request, Response } from 'express';
-
-import { DatabaseLanguage } from '../types/database';
-
 import { databaseManager } from '../database/database-manager';
 import { queries } from '../database/queries';
 
 class LanguagesController
 {
-	async addLanguage(req:Request, res:Response)
+	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
 	{
 		await databaseManager.executeQuery(queries.addLanguage,
-			[req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces]
+			[name, dictionaryUrl, shouldShowSpaces]
 		);
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async deleteLanguage(req:Request, res:Response)
+	async deleteLanguage(languageId: number)
 	{
 		await databaseManager.executeQuery(queries.deleteLanguage,
-			[req.params.languageId]
+			[languageId]
 		);
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async editLanguage(req:Request, res:Response)
+	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
-		if (req.body.name !== undefined)
+		if (name !== undefined)
 		{
 			updates.push('name = ?');
-			queryParams.push(req.body.name);
+			queryParams.push(name);
 		}
-		if (req.body.dictionaryUrl !== undefined)
+		if (dictionaryUrl !== undefined)
 		{
 			updates.push('dictionary_url = ?');
-			queryParams.push(req.body.dictionaryUrl);
+			queryParams.push(dictionaryUrl);
 		}
-		if (req.body.shouldShowSpaces !== undefined)
+		if (shouldShowSpaces !== undefined)
 		{
 			updates.push('should_show_spaces = ?');
-			queryParams.push(req.body.shouldShowSpaces);
+			queryParams.push(shouldShowSpaces);
 		}
 
 		if (updates.length > 0)
 		{
-			queryParams.push(req.params.languageId);
+			queryParams.push(languageId);
 			console.log(queryParams);
 
 			const dynamicQuery = queries.editLanguage.replace(/\%DYNAMIC\%/, () => {
@@ -66,25 +62,23 @@ class LanguagesController
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
 
-		res.sendStatus(200);
+		return true;
 	}
 
-	async getAllLanguages(req:Request, res:Response)
+	async getAllLanguages()
 	{
 		const languages = await databaseManager.executeQuery(queries.getAllLanguages);
 		
-		res.json({languages: languages});
+		return languages;
 	}
 
-	async getLanguage(req:Request, res:Response)
+	async getLanguage(languageId: number)
 	{
 		let language = await databaseManager.getFirstRow(queries.getLanguage,
-			[req.params.languageId]
+			[languageId]
 		);
-
-		language = language as DatabaseLanguage;
 		
-		res.json({language: language});
+		return language;
 	}
 }
 
