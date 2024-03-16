@@ -18,7 +18,7 @@ const wordsController = new WordsController();
 
 const router = express.Router();
 
-const errorWrapper = (handler: (req: express.Request, res: express.Response) => Promise<void>) => {
+const errorWrapper = (handler: (req: express.Request, res: express.Response) => Promise<void>): express.RequestHandler => {
     return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
         try
 		{

@@ -15,7 +15,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 const Home = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);
 
-	const handleLanguageChange = (event: any) => {
+	const handleLanguageChange = (event: any): void => {
 		if(event.target.value === '')
 		{
 			document.cookie = 'activeLanguage='
@@ -23,8 +23,8 @@ const Home = (): JSX.Element => {
 		document.cookie = `activeLanguage=${event.target.value}`
 	}
 
-	useEffect(() => {
-		backendConnector.getLanguages().then((data: Language[]) => {
+	useEffect((): void => {
+		backendConnector.getLanguages().then((data: Language[]): void => {
 			setLanguages(data);
 		})
 	}, []);

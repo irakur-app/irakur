@@ -161,7 +161,7 @@ class TextsController
 			queryParams.push(textId);
 			console.log(queryParams);
 
-			const dynamicQuery: string = queries.editText.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editText.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
 

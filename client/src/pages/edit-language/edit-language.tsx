@@ -17,13 +17,13 @@ const EditLanguage = (): JSX.Element => {
 
 	const languageId: number = Number(document.location.pathname.split('/').pop());
 
-	useEffect(() => {
-		backendConnector.getLanguage(languageId).then((data) => {
+	useEffect((): void => {
+		backendConnector.getLanguage(languageId).then((data): void => {
 			setLanguageData(data);
 		});
 	}, [languageId]);
 
-	const handleSubmit = async (event: any) => {
+	const handleSubmit = async (event: any): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);

@@ -11,7 +11,7 @@ import { backendConnector } from '../../backend-connector';
 const AddLanguage = (): JSX.Element => {
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const handleSubmit = async (event: any) => {
+	const handleSubmit = async (event: any): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);

@@ -50,7 +50,7 @@ class LanguagesController
 			queryParams.push(languageId);
 			console.log(queryParams);
 
-			const dynamicQuery: string = queries.editLanguage.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editLanguage.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
 

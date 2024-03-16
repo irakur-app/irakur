@@ -19,18 +19,18 @@ const EditText = (): JSX.Element => {
 
 	const textId = Number(document.location.pathname.split('/').pop());
 
-	useEffect(() => {
-		backendConnector.getText(textId).then((data: Text) => {
+	useEffect((): void => {
+		backendConnector.getText(textId).then((data: Text): void => {
 			setTextData(data);
 			console.log(data);
-			backendConnector.getPages(data.id).then((data: Page[]) => {
+			backendConnector.getPages(data.id).then((data: Page[]): void => {
 				setPageData(data);
 				console.log(data);
 			})
 		});
 	}, [textId]);
 
-	const handleSubmit = async (event: any) => {
+	const handleSubmit = async (event: any): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);

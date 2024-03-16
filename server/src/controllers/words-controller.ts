@@ -90,7 +90,7 @@ class WordsController
 			queryParams.push(wordId);
 			console.log(queryParams);
 	
-			const dynamicQuery: string = queries.editWord.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editWord.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
 	

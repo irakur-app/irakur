@@ -20,8 +20,8 @@ const Texts = (): JSX.Element => {
 	let languageId: number | undefined = Number(document.cookie.split("=")[1]);
 	languageId = (isNaN(languageId) || languageId === 0) ? undefined : languageId;
 
-	useEffect(() => {
-		backendConnector.getTexts(languageId).then((data: Text[]) => {
+	useEffect((): void => {
+		backendConnector.getTexts(languageId).then((data: Text[]): void => {
 			setTexts(data);
 		})
 	}, []);

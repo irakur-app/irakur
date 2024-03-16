@@ -16,8 +16,8 @@ import { LanguageCard } from '../../components/language-card';
 const Languages = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);
 
-	useEffect(() => {
-		backendConnector.getLanguages().then((data: Language[]) => {
+	useEffect((): void => {
+		backendConnector.getLanguages().then((data: Language[]): void => {
 			setLanguages(data);
 		})
 	}, []);

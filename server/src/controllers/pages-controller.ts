@@ -45,7 +45,7 @@ class PagesController
 			queryParams.push(pageId);
 			console.log(queryParams);
 
-			const dynamicQuery: string = queries.editPage.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editPage.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
 
