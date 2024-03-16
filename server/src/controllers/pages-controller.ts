@@ -67,7 +67,7 @@ class PagesController
 		)).language_id;
 
 		const items: string[] = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
-			.filter((sentence:string) => sentence !== '');
+			.filter((sentence: string) => sentence !== '');
 		const wordData: ReducedWordData[] = [];
 		for (const word of items)
 		{

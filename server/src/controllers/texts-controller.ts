@@ -124,7 +124,7 @@ class TextsController
 			const newContent: string = (content !== undefined) ? content : pages.map((page: Page) => page.content).join('');
 
 			const sentences: string[] = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
-				.filter((sentence:string) => sentence !== '');
+				.filter((sentence: string) => sentence !== '');
 			const sentencesPerPage: number = Math.floor(sentences.length / newNumberOfPages);
 
 			let firstPageIndex: number = 0;

@@ -71,7 +71,7 @@ class DatabaseManager
 		this.database.run(queries.createWordTable);
 	}
 
-	executeQuery(query:string, parameters:any[] = []): Promise<any>
+	executeQuery(query: string, parameters: any[] = []): Promise<any>
 	{
 		return new Promise((resolve, reject): void =>
 		{
@@ -89,7 +89,7 @@ class DatabaseManager
 		});
 	}
 
-	getFirstRow(query:string, parameters:any[] = []): Promise<any>
+	getFirstRow(query: string, parameters: any[] = []): Promise<any>
 	{
 		return new Promise((resolve, reject): void =>
 		{
