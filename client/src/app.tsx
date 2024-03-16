@@ -12,7 +12,6 @@ import { EditText } from './pages/edit-text';
 import { Languages } from './pages/languages';
 import { AddLanguage } from './pages/add-language';
 import { EditLanguage } from './pages/edit-language';
-import { Settings } from './pages/settings';
 
 const App = () => {
 	return (
@@ -25,7 +24,6 @@ const App = () => {
 				<Route path="/languages" element={<Languages />} />
 				<Route path="/languages/add" element={<AddLanguage />} />
 				<Route path="/languages/edit/:id" element={<EditLanguage />} />
-				<Route path="/settings" element={<Settings />} />
 			</Routes>
 		</BrowserRouter>
 	);
