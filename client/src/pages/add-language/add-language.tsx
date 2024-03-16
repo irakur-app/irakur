@@ -11,15 +11,22 @@ import { backendConnector } from '../../backend-connector';
 const AddLanguage = (): JSX.Element => {
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const handleSubmit = async (event: any): Promise<void> => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);
-		
+
+		if(event.target === null)
+		{
+			return;
+		}
+
+		const form = new FormData(event.target as HTMLFormElement);
+
 		const wasAdded: boolean = await backendConnector.addLanguage(
-			event.target.name.value,
-			event.target.dictionaryUrl.value,
-			event.target.shouldShowSpaces.checked
+			form.get('name') as string,
+			form.get('dictionaryUrl') as string,
+			(form.get('shouldShowSpaces') as string) === 'on'
 		)
 
 		if (wasAdded)

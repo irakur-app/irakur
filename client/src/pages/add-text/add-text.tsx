@@ -11,17 +11,24 @@ import { backendConnector } from '../../backend-connector';
 const AddText = (): JSX.Element => {
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const handleSubmit = async (event: any): Promise<void> => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);
-		
+
+		if(event.target === null)
+		{
+			return;
+		}
+
+		const form = new FormData(event.target as HTMLFormElement);
+
 		const wasEdited: boolean = await backendConnector.addText(
-			event.target.title.value,
-			event.target.languageId.value,
-			event.target.content.value,
-			event.target.numberOfPages.value,
-			event.target.sourceUrl.value,
+			form.get('title') as string,
+			Number(form.get('languageId') as string),
+			form.get('content') as string,
+			Number(form.get('numberOfPages') as string),
+			form.get('sourceUrl') as string,
 		);
 
 		if (wasEdited)

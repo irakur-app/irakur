@@ -15,12 +15,20 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 const Home = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);
 
-	const handleLanguageChange = (event: any): void => {
+	const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+		if(event.target === null)
+		{
+			return;
+		}
+
 		if(event.target.value === '')
 		{
 			document.cookie = 'activeLanguage='
 		}
-		document.cookie = `activeLanguage=${event.target.value}`
+		else
+		{
+			document.cookie = `activeLanguage=${event.target.value}`
+		}
 	}
 
 	useEffect((): void => {
