@@ -9,14 +9,14 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 
 const AddText = (): JSX.Element => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 
 		setIsSubmitting(true);
 		
-		const wasEdited = await backendConnector.addText(
+		const wasEdited: boolean = await backendConnector.addText(
 			event.target.title.value,
 			event.target.languageId.value,
 			event.target.content.value,

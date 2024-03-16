@@ -50,7 +50,7 @@ class LanguagesController
 			queryParams.push(languageId);
 			console.log(queryParams);
 
-			const dynamicQuery = queries.editLanguage.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editLanguage.replace(/\%DYNAMIC\%/, () => {
 				return updates.join(', ');
 			});
 
@@ -62,14 +62,14 @@ class LanguagesController
 
 	async getAllLanguages(): Promise<Language[]>
 	{
-		const languages = await databaseManager.executeQuery(queries.getAllLanguages);
+		const languages: Language[] = await databaseManager.executeQuery(queries.getAllLanguages);
 		
 		return languages;
 	}
 
 	async getLanguage(languageId: number): Promise<Language>
 	{
-		const language = await databaseManager.getFirstRow(queries.getLanguage,
+		const language: Language = await databaseManager.getFirstRow(queries.getLanguage,
 			[languageId]
 		);
 		

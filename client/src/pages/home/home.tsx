@@ -4,6 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Language } from '../../../../common/types';
+
 import React, { useState, useEffect } from 'react';
 import { Loading } from '../../components/loading';
 import { backendConnector } from '../../backend-connector';
@@ -11,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const Home = (): JSX.Element => {
-	const [languages, setLanguages] = useState<any | null>(null);
+	const [languages, setLanguages] = useState<Language[] | null>(null);
 
 	const handleLanguageChange = (event: any) => {
 		if(event.target.value === '')
@@ -22,7 +24,7 @@ const Home = (): JSX.Element => {
 	}
 
 	useEffect(() => {
-		backendConnector.getLanguages().then((data) => {
+		backendConnector.getLanguages().then((data: Language[]) => {
 			setLanguages(data);
 		})
 	}, []);
@@ -41,7 +43,7 @@ const Home = (): JSX.Element => {
 			<select name="activeLanguage" id="activeLanguage" onChange={handleLanguageChange}>
 				<option value="">Select language</option>
 				{
-					languages.map((language: any) =>(
+					languages.map((language: Language) =>(
 						<option key={language.id} value={language.id}>{language.name}</option>
 					))
 				}

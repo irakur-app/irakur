@@ -6,6 +6,8 @@
 
 import express from 'express';
 
+import { Text } from '../../../common/types';
+
 import { LanguagesController } from '../controllers/languages-controller';
 import { TextsController } from '../controllers/texts-controller';
 import { PagesController } from '../controllers/pages-controller';
@@ -41,7 +43,7 @@ router.get(
 router.get(
 	'/languages/:languageId',
 	errorWrapper(async (req:express.Request, res:express.Response): Promise<void> => {
-		res.json({language: await languagesController.getLanguage(parseInt(req.params.languageId))});
+		res.json(await languagesController.getLanguage(parseInt(req.params.languageId)));
 	})
 );
 router.post(
@@ -86,7 +88,7 @@ router.get(
 	errorWrapper(async (req:express.Request, res:express.Response): Promise<void> => {
 		res.json(
 			{
-				text: await textsController.getText(parseInt(req.params.textId)),
+				...await textsController.getText(parseInt(req.params.textId)),
 				numberOfPages: await textsController.getNumberOfPages(parseInt(req.params.textId))
 			}
 		);
@@ -125,7 +127,7 @@ router.get(
 router.get(
 	'/texts/:textId/pages/:pageId',
 	errorWrapper(async (req:express.Request, res:express.Response): Promise<void> => {
-		res.json({page: await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pageId))});
+		res.json(await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pageId)));
 	})
 );
 router.get(
@@ -147,7 +149,7 @@ router.patch(
 router.get(
 	'/words/:wordId',
 	errorWrapper(async (req:express.Request, res:express.Response): Promise<void> => {
-		res.json({word: await wordsController.getWord(parseInt(req.params.wordId))});
+		res.json(await wordsController.getWord(parseInt(req.params.wordId)));
 	})
 );
 router.post(

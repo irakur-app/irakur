@@ -20,7 +20,7 @@ class BackendConnector
 
 	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
-		const response = await fetch('/api/languages', {
+		const response: Response = await fetch('/api/languages', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ class BackendConnector
 
 	async deleteLanguage(languageId: number): Promise<boolean>
 	{
-		const response = await fetch('/api/languages/' + languageId, {
+		const response: Response = await fetch('/api/languages/' + languageId, {
 			method: 'DELETE'
 		});
 
@@ -58,7 +58,7 @@ class BackendConnector
 
 	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
-		const response = await fetch('/api/languages/' + languageId, {
+		const response: Response = await fetch('/api/languages/' + languageId, {
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
@@ -81,21 +81,21 @@ class BackendConnector
 
 	async getLanguage(languageId: number): Promise<Language>
 	{
-		const response = await fetch('/api/languages/' + languageId);
-		const data = await response.json();
-		return data.language;
+		const response: Response = await fetch('/api/languages/' + languageId);
+		const language: Language = await response.json();
+		return language;
 	}
 
 	async getLanguages(): Promise<Language[]>
 	{
-		const response = await fetch('/api/languages/');
-		const data = await response.json();
-		return data.languages;
+		const response: Response = await fetch('/api/languages/');
+		const languages: Language[] = (await response.json()).languages;
+		return languages;
 	}
 
 	async addText(title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
-		const response = await fetch('/api/texts', {
+		const response: Response = await fetch('/api/texts', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ class BackendConnector
 
 	async deleteText(textId: number): Promise<boolean>
 	{
-		const response = await fetch('/api/texts/' + textId, {
+		const response: Response = await fetch('/api/texts/' + textId, {
 			method: 'DELETE'
 		});
 
@@ -135,7 +135,7 @@ class BackendConnector
 
 	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
-		const response = await fetch('/api/texts/' + id, {
+		const response: Response = await fetch('/api/texts/' + id, {
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
@@ -160,14 +160,14 @@ class BackendConnector
 
 	async getText(textId: number): Promise<Text>
 	{
-		const response = await fetch('/api/texts/' + textId);
-		const data = await response.json();
-		return data.text;
+		const response: Response = await fetch('/api/texts/' + textId);
+		const text: Text = await response.json();
+		return text;
 	}
 
 	async getTexts(languageId: number | undefined): Promise<Text[]>
 	{
-		let response;
+		let response: Response;
 		if(languageId !== undefined)
 		{
 			response = await fetch('/api/texts?languageId=' + languageId);
@@ -176,17 +176,17 @@ class BackendConnector
 		{
 			response = await fetch('/api/texts');
 		}
-		const data = await response.json();
-		return data.texts;
+		const texts: Text[] = (await response.json()).texts;
+		return texts;
 	}
 
 	async getPages(textId: number): Promise<Page[]>
 	{
-		const response = await fetch('/api/texts/' + textId + '/pages');
-		const data = await response.json();
-		return data.pages;
+		const response: Response = await fetch('/api/texts/' + textId + '/pages');
+		const pages = (await response.json()).pages;
+		return pages;
 	}
 }
 
-const backendConnector = new BackendConnector();
+const backendConnector: BackendConnector = new BackendConnector();
 export { backendConnector };

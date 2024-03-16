@@ -4,16 +4,18 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Language } from '../../../../common/types';
+
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
 const EditLanguage = (): JSX.Element => {
-	const [languageData, setLanguageData] = useState<any | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [languageData, setLanguageData] = useState<Language | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const languageId = Number(document.location.pathname.split('/').pop());
+	const languageId: number = Number(document.location.pathname.split('/').pop());
 
 	useEffect(() => {
 		backendConnector.getLanguage(languageId).then((data) => {
@@ -28,7 +30,7 @@ const EditLanguage = (): JSX.Element => {
 
 		console.log(event.target.shouldShowSpaces.checked);
 		
-		const wasEdited = await backendConnector.editLanguage(
+		const wasEdited: boolean = await backendConnector.editLanguage(
 			event.target.id.value,
 			event.target.name.value,
 			event.target.dictionaryUrl.value,

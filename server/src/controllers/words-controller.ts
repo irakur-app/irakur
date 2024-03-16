@@ -4,8 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Entry } from "../../../common/types";
-import { Word } from "../../../common/types";
+import { Entry, RawWord, Word } from "../../../common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -20,11 +19,14 @@ class WordsController
 
 	async getWord(wordId: number): Promise<Word>
 	{
-		const word = await databaseManager.getFirstRow(queries.getWord,
+		const rawWord: RawWord = await databaseManager.getFirstRow(queries.getWord,
 			[wordId]
 		)
 
-		word.entries = JSON.parse(word.entries);
+		const word: Word = {
+			...rawWord,
+			entries: JSON.parse(rawWord.entries)
+		};
 
 		return word;
 	}
@@ -88,7 +90,7 @@ class WordsController
 			queryParams.push(wordId);
 			console.log(queryParams);
 	
-			const dynamicQuery = queries.editWord.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editWord.replace(/\%DYNAMIC\%/, () => {
 				return updates.join(', ');
 			});
 	

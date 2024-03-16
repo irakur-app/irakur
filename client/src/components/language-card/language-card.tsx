@@ -8,14 +8,14 @@ import { backendConnector } from '../../backend-connector';
 import { Link } from 'react-router-dom';
 
 const LanguageCard = (props: any): JSX.Element => {
-	const handleDelete = async () => {
-		const enteredText = prompt("Do you really want to delete language '" + props.name + "' (ID: " + props.id + ")?\n*It will permanently delete all texts and all words associated with it*.\nType 'DELETE' to confirm.");
+	const handleDelete = async (): Promise<void> => {
+		const enteredText: string | null = prompt("Do you really want to delete language '" + props.name + "' (ID: " + props.id + ")?\n*It will permanently delete all texts and all words associated with it*.\nType 'DELETE' to confirm.");
 		if (enteredText !== "DELETE") {
 			alert("Deletion canceled. Incorrect confirmation text.");
 			return;
 		}
 
-		const wasDeleted = await backendConnector.deleteLanguage(props.id);
+		const wasDeleted: boolean = await backendConnector.deleteLanguage(props.id);
 		if (wasDeleted) {
 			window.location.reload();
 		}

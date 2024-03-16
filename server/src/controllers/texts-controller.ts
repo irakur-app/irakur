@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Text } from '../../../common/types';
+import { Text, Page } from '../../../common/types';
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -16,17 +16,17 @@ class TextsController
 			[languageId, title, sourceUrl]
 		);
 
-		const sentences = content.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
-			.filter((sentence:string) => sentence !== '');
-		const sentencesPerPage = Math.floor(sentences.length / numberOfPages);
+		const sentences: string[] = content.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
+			.filter((sentence: string) => sentence !== '');
+		const sentencesPerPage: number = Math.floor(sentences.length / numberOfPages);
 
-		const textId = (await databaseManager.getLastInsertId()).id;
+		const textId: number = (await databaseManager.getLastInsertId()).id;
 
-		let firstPageIndex = 0;
-		let lastPageIndex = sentencesPerPage + (sentences.length % numberOfPages > 0 ? 0 : -1);
+		let firstPageIndex: number = 0;
+		let lastPageIndex: number = sentencesPerPage + (sentences.length % numberOfPages > 0 ? 0 : -1);
 		for (let i = 0; i < numberOfPages; i++)
 		{
-			const pageContent = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
+			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
 			await databaseManager.executeQuery(queries.addPage,
 				[textId, i+1, pageContent]
 			);
@@ -38,14 +38,14 @@ class TextsController
 
 	async getAllTexts(): Promise<Text[]>
 	{
-		const texts = await databaseManager.executeQuery(queries.getAllTexts);
+		const texts: Text[] = await databaseManager.executeQuery(queries.getAllTexts);
 
 		return texts;
 	}
 
 	async getTextsByLanguage(languageId: number): Promise<Text[]>
 	{
-		const texts = await databaseManager.executeQuery(queries.getTextsByLanguage,
+		const texts: Text[] = await databaseManager.executeQuery(queries.getTextsByLanguage,
 			[languageId]
 		);
 
@@ -54,7 +54,7 @@ class TextsController
 
 	async getText(textId: number): Promise<Text>
 	{
-		const text = await databaseManager.getFirstRow(queries.getText,
+		const text: Text = await databaseManager.getFirstRow(queries.getText,
 			[textId]
 		)
 
@@ -63,7 +63,7 @@ class TextsController
 
 	async getNumberOfPages(textId: number): Promise<number>
 	{
-		const numberOfPages = (await databaseManager.executeQuery(queries.getAllPages,
+		const numberOfPages: number = (await databaseManager.executeQuery(queries.getAllPages,
 			[textId]
 		)).length;
 
@@ -72,7 +72,7 @@ class TextsController
 
 	async deleteText(textId: number): Promise<void>
 	{
-		const pages = await databaseManager.executeQuery(queries.getAllPages,
+		const pages: Page[] = await databaseManager.executeQuery(queries.getAllPages,
 			[textId]
 		);
 		for (const page of pages)
@@ -115,23 +115,23 @@ class TextsController
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
-			const pages = await databaseManager.executeQuery(queries.getAllPages,
+			const pages: Page[] = await databaseManager.executeQuery(queries.getAllPages,
 				[textId]
 			);
 
-			const newNumberOfPages = (numberOfPages !== undefined) ? numberOfPages : pages.length;
+			const newNumberOfPages: number = (numberOfPages !== undefined) ? numberOfPages : pages.length;
 
-			const newContent = (content !== undefined) ? content : pages.map((page:any) => page.content).join('');
+			const newContent: string = (content !== undefined) ? content : pages.map((page:any) => page.content).join('');
 
-			const sentences = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
+			const sentences: string[] = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
 				.filter((sentence:string) => sentence !== '');
-			const sentencesPerPage = Math.floor(sentences.length / newNumberOfPages);
+			const sentencesPerPage: number = Math.floor(sentences.length / newNumberOfPages);
 
-			let firstPageIndex = 0;
-			let lastPageIndex = sentencesPerPage + (sentences.length % newNumberOfPages > 0 ? 0 : -1);
+			let firstPageIndex: number = 0;
+			let lastPageIndex: number = sentencesPerPage + (sentences.length % newNumberOfPages > 0 ? 0 : -1);
 			for (let i = 0; i < newNumberOfPages; i++)
 			{
-				const pageContent = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
+				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
 				if(i < pages.length)
 				{
 					await databaseManager.executeQuery(queries.editPage,
@@ -161,7 +161,7 @@ class TextsController
 			queryParams.push(textId);
 			console.log(queryParams);
 
-			const dynamicQuery = queries.editText.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editText.replace(/\%DYNAMIC\%/, () => {
 				return updates.join(', ');
 			});
 

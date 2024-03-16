@@ -5,7 +5,7 @@
  */
 
 import express from 'express';
-const app = express();
+const app: express.Application = express();
 import path from 'path';
 import morgan from 'morgan';
 

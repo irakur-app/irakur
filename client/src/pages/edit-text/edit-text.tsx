@@ -4,6 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Text, Page } from '../../../../common/types';
+
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
@@ -11,17 +13,17 @@ import { Loading } from '../../components/loading';
 
 
 const EditText = (): JSX.Element => {
-	const [textData, setTextData] = useState<any | null>(null);
-	const [pageData, setPageData] = useState<any | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [textData, setTextData] = useState<Text | null>(null);
+	const [pageData, setPageData] = useState<Page[] | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const textId = Number(document.location.pathname.split('/').pop());
 
 	useEffect(() => {
-		backendConnector.getText(textId).then((data) => {
+		backendConnector.getText(textId).then((data: Text) => {
 			setTextData(data);
 			console.log(data);
-			backendConnector.getPages(data.id).then((data) => {
+			backendConnector.getPages(data.id).then((data: Page[]) => {
 				setPageData(data);
 				console.log(data);
 			})
@@ -35,7 +37,7 @@ const EditText = (): JSX.Element => {
 
 		console.log(event.target.id)
 		
-		const wasEdited = await backendConnector.editText(
+		const wasEdited: boolean = await backendConnector.editText(
 			event.target.id.value,
 			event.target.title.value,
 			event.target.languageId.value,
@@ -56,7 +58,7 @@ const EditText = (): JSX.Element => {
 		return <Loading />;
 	}
 
-	const textContent = pageData.map((page: any) => page.content).join('');
+	const textContent: string = pageData.map((page: Page) => page.content).join('');
 
 	return (
 		<HelmetProvider>

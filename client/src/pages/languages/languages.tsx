@@ -4,6 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Language } from '../../../../common/types';
+
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
@@ -12,10 +14,10 @@ import { Loading } from '../../components/loading';
 import { LanguageCard } from '../../components/language-card';
 
 const Languages = (): JSX.Element => {
-	const [languages, setLanguages] = useState<any | null>(null);
+	const [languages, setLanguages] = useState<Language[] | null>(null);
 
 	useEffect(() => {
-		backendConnector.getLanguages().then((data) => {
+		backendConnector.getLanguages().then((data: Language[]) => {
 			setLanguages(data);
 		})
 	}, []);
@@ -32,7 +34,7 @@ const Languages = (): JSX.Element => {
 			<h1>Irakur - Languages</h1>
 			<Link to="/languages/add">Add language</Link>
 			{
-			languages.map((language: any) =>(
+			languages.map((language: Language) =>(
 			<React.Fragment key={language.id}>
 				<LanguageCard name={language.name} id={language.id} />
 				<br />

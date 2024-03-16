@@ -9,14 +9,14 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 
 const AddLanguage = (): JSX.Element => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 
 		setIsSubmitting(true);
 		
-		const wasAdded = await backendConnector.addLanguage(
+		const wasAdded: boolean = await backendConnector.addLanguage(
 			event.target.name.value,
 			event.target.dictionaryUrl.value,
 			event.target.shouldShowSpaces.checked

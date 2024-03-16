@@ -13,10 +13,10 @@ import { get } from 'http';
 
 class DatabaseManager
 {
-	private static instance:DatabaseManager;
-	database:sqlite3.Database;
+	private static instance: DatabaseManager;
+	database: sqlite3.Database;
 
-	constructor(folderPath:string, fileName:string)
+	constructor(folderPath: string, fileName: string)
 	{
 		if(DatabaseManager.instance)
 		{
@@ -24,8 +24,8 @@ class DatabaseManager
 			return DatabaseManager.instance;
 		}
 
-		const dataFolderPath = folderPath;
-		const databaseFilePath = path.join(dataFolderPath, fileName);
+		const dataFolderPath: string = folderPath;
+		const databaseFilePath: string = path.join(dataFolderPath, fileName);
 
 		if (!fs.existsSync(dataFolderPath)){
 			fs.mkdirSync(dataFolderPath);

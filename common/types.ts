@@ -1,7 +1,7 @@
 type Language = {
 	id: number; 
 	name: string; 
-	should_show_spaces: number;
+	should_show_spaces: boolean;
 	dictionary_url: string; 
 }
 
@@ -40,4 +40,15 @@ type Word = {
 	datetime_updated: string;
 }
 
-export type { Language, Text, Page, ReducedWordData, Entry, Word };
+type RawWord = {
+	id: number;
+	language_id: number;
+	content: string;
+	status: number;
+	entries: string;
+	notes: string;
+	datetime_added: string;
+	datetime_updated: string;
+}
+
+export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };

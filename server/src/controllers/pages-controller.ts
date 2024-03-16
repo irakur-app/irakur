@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Page } from "../../../common/types";
+import { Page, Word } from "../../../common/types";
 import { ReducedWordData } from "../../../common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
@@ -13,7 +13,7 @@ class PagesController
 {
 	async getAllPages(textId: number): Promise<Page[]>
 	{
-		const pages = await databaseManager.executeQuery(queries.getAllPages,
+		const pages: Page[] = await databaseManager.executeQuery(queries.getAllPages,
 			[textId]
 		);
 
@@ -22,7 +22,7 @@ class PagesController
 
 	async getPage(textId: number, pageId: number): Promise<Page>
 	{
-		const page = databaseManager.getFirstRow(queries.getPage,
+		const page: Page = await databaseManager.getFirstRow(queries.getPage,
 			[textId, pageId]
 		);
 
@@ -46,7 +46,7 @@ class PagesController
 			queryParams.push(pageId);
 			console.log(queryParams);
 
-			const dynamicQuery = queries.editPage.replace(/\%DYNAMIC\%/, () => {
+			const dynamicQuery: string = queries.editPage.replace(/\%DYNAMIC\%/, () => {
 				return updates.join(', ');
 			});
 
@@ -58,17 +58,17 @@ class PagesController
 
 	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
 	{
-		const page = await databaseManager.getFirstRow(queries.getPage,
+		const page: Page = await databaseManager.getFirstRow(queries.getPage,
 			[textId, pageId]
 		);
 
-		const languageId = (await databaseManager.getFirstRow(queries.getText,
+		const languageId: number = (await databaseManager.getFirstRow(queries.getText,
 			[page.text_id]
 		)).language_id;
 
-		const items = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
+		const items: string[] = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
 			.filter((sentence:string) => sentence !== '');
-		const wordData = [];
+		const wordData: ReducedWordData[] = [];
 		for (const word of items)
 		{
 			if (!this.isWord(word))
@@ -76,7 +76,7 @@ class PagesController
 				wordData.push({content: word, type: 'punctuation'});
 				continue;
 			}
-			const wordRow = await databaseManager.getFirstRow(queries.findWord,
+			const wordRow: Word = await databaseManager.getFirstRow(queries.findWord,
 				[word, languageId]
 			);
 			if (!wordRow)
@@ -92,7 +92,7 @@ class PagesController
 		return wordData;
 	}
 	
-	isWord(item:string): boolean
+	isWord(item: string): boolean
 	{
 		return (item.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
 	}
