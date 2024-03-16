@@ -21,8 +21,8 @@ const Texts = (): JSX.Element => {
 	languageId = (isNaN(languageId) || languageId === 0) ? undefined : languageId;
 
 	useEffect((): void => {
-		backendConnector.getTexts(languageId).then((data: Text[]): void => {
-			setTexts(data);
+		backendConnector.getTexts(languageId).then((texts: Text[]): void => {
+			setTexts(texts);
 		})
 	}, []);
 

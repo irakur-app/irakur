@@ -13,17 +13,17 @@ import { Loading } from '../../components/loading';
 
 
 const EditText = (): JSX.Element => {
-	const [textData, setTextData] = useState<Text | null>(null);
-	const [pageData, setPageData] = useState<Page[] | null>(null);
+	const [text, setText] = useState<Text | null>(null);
+	const [pages, setPages] = useState<Page[] | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const textId = Number(document.location.pathname.split('/').pop());
 
 	useEffect((): void => {
-		backendConnector.getText(textId).then((data: Text): void => {
-			setTextData(data);
-			backendConnector.getPages(data.id).then((data: Page[]): void => {
-				setPageData(data);
+		backendConnector.getText(textId).then((text: Text): void => {
+			setText(text);
+			backendConnector.getPages(text.id).then((pages: Page[]): void => {
+				setPages(pages);
 			})
 		});
 	}, [textId]);
@@ -57,11 +57,11 @@ const EditText = (): JSX.Element => {
 		setIsSubmitting(false);
 	}
 
-	if (!textData || !pageData) {
+	if (!text || !pages) {
 		return <Loading />;
 	}
 
-	const textContent: string = pageData.map((page: Page) => page.content).join('');
+	const textContent: string = pages.map((page: Page) => page.content).join('');
 
 	return (
 		<HelmetProvider>
@@ -70,21 +70,21 @@ const EditText = (): JSX.Element => {
 			</Helmet>
 			<h1>Irakur - Edit text</h1>
 			<form method="post" onSubmit={handleSubmit}>
-				<input type="hidden" name="id" defaultValue={textData.id}/>
+				<input type="hidden" name="id" defaultValue={text.id}/>
 				<label htmlFor="title">Title</label>
-				<input type="text" name="title" id="title" defaultValue={textData.title}/>
+				<input type="text" name="title" id="title" defaultValue={text.title}/>
 				<br />
 				<label htmlFor="languageId">Language</label>
-				<input type="text" name="languageId" id="languageId" defaultValue={textData.language_id}/>
+				<input type="text" name="languageId" id="languageId" defaultValue={text.language_id}/>
 				<br />
 				<label htmlFor="content">Content</label>
 				<textarea name="content" id="content" defaultValue={textContent}/>
 				<br />
 				<label htmlFor="numberOfPages">Number of pages</label>
-				<input type="text" name="numberOfPages" id="numberOfPages" defaultValue={pageData.length}/>
+				<input type="text" name="numberOfPages" id="numberOfPages" defaultValue={pages.length}/>
 				<br />
 				<label htmlFor="sourceUrl">Source URL</label>
-				<input type="text" name="sourceUrl" id="sourceUrl" defaultValue={textData.source_url}/>
+				<input type="text" name="sourceUrl" id="sourceUrl" defaultValue={text.source_url}/>
 				<br />
 				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>

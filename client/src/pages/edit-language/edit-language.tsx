@@ -12,14 +12,14 @@ import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
 const EditLanguage = (): JSX.Element => {
-	const [languageData, setLanguageData] = useState<Language | null>(null);
+	const [language, setLanguage] = useState<Language | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const languageId: number = Number(document.location.pathname.split('/').pop());
 
 	useEffect((): void => {
-		backendConnector.getLanguage(languageId).then((data): void => {
-			setLanguageData(data);
+		backendConnector.getLanguage(languageId).then((language): void => {
+			setLanguage(language);
 		});
 	}, [languageId]);
 
@@ -61,15 +61,15 @@ const EditLanguage = (): JSX.Element => {
 			</Helmet>
 			<h1>Irakur - Edit language</h1>
 			<form method="post" onSubmit={handleSubmit}>
-				<input type="hidden" name="id" defaultValue={languageData.id}/>
+				<input type="hidden" name="id" defaultValue={language.id}/>
 				<label htmlFor="name">Name</label>
-				<input type="text" name="name" id="name" defaultValue={languageData.name}/>
+				<input type="text" name="name" id="name" defaultValue={language.name}/>
 				<br />
 				<label htmlFor="dictionaryUrl">Dictionary</label>
-				<input type="text" name="dictionaryUrl" id="dictionaryUrl" defaultValue={languageData.dictionary_url}/>
+				<input type="text" name="dictionaryUrl" id="dictionaryUrl" defaultValue={language.dictionary_url}/>
 				<br />
 				<label htmlFor="shouldShowSpaces">Show spaces</label>
-				<input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" defaultChecked={languageData.should_show_spaces}/>
+				<input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" defaultChecked={language.should_show_spaces}/>
 
 				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>

@@ -32,8 +32,8 @@ const Home = (): JSX.Element => {
 	}
 
 	useEffect((): void => {
-		backendConnector.getLanguages().then((data: Language[]): void => {
-			setLanguages(data);
+		backendConnector.getLanguages().then((languages: Language[]): void => {
+			setLanguages(languages);
 		})
 	}, []);
 
