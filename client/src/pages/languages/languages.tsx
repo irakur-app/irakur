@@ -36,7 +36,7 @@ const Languages = (): JSX.Element => {
 			{
 			languages.map((language: Language) =>(
 			<React.Fragment key={language.id}>
-				<LanguageCard name={language.name} id={language.id} />
+				<LanguageCard language = {language} />
 				<br />
 			</React.Fragment>
 			))

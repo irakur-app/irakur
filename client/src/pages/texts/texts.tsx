@@ -42,7 +42,7 @@ const Texts = (): JSX.Element => {
 			{
 			texts.map((text: Text) =>(
 			<React.Fragment key={text.id}>
-				<TextCard title={text.title} languageId={languageId} id={text.id} />
+				<TextCard text = {text} />
 				<br />
 			</React.Fragment>
 			))
