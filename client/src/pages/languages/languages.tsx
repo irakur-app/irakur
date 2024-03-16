@@ -18,7 +18,7 @@ const Languages = () => {
 		backendConnector.getLanguages().then((data) => {
 			setLanguages(data);
 		})
-    }, []);
+	}, []);
 
 	if (!languages) {
 		return <Loading />;

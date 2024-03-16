@@ -22,7 +22,7 @@ const Texts = () => {
 		backendConnector.getTexts(languageId).then((data) => {
 			setTexts(data);
 		})
-    }, []);
+	}, []);
 
 	if (!texts) {
 		return <Loading />
