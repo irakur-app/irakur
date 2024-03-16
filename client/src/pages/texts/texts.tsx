@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Text } from '../../../../common/types';
+import { Text } from '@common/types';
 
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';

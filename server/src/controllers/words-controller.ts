@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Entry, RawWord, Word } from "../../../common/types";
+import { Entry, RawWord, Word } from "@common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 

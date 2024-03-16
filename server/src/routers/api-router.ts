@@ -6,8 +6,6 @@
 
 import express from 'express';
 
-import { Text } from '../../../common/types';
-
 import { LanguagesController } from '../controllers/languages-controller';
 import { TextsController } from '../controllers/texts-controller';
 import { PagesController } from '../controllers/pages-controller';
