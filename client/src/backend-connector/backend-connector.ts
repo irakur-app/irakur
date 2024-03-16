@@ -31,7 +31,7 @@ class BackendConnector
 		});
 		
 		if (!response.ok) {
-			throw new Error('Failed to add language');
+			console.error('Failed to add language');
 		} else {
 			console.log('Language added');
 		}
@@ -46,7 +46,7 @@ class BackendConnector
 		});
 
 		if (!response.ok) {
-			throw new Error('Failed to delete language');
+			console.error('Failed to delete language');
 		} else {
 			console.log('Language deleted');
 		}
@@ -69,7 +69,7 @@ class BackendConnector
 		})
 
 		if (!response.ok) {
-			throw new Error('Failed to edit language');
+			console.error('Failed to edit language');
 		} else {
 			console.log('Language edited');
 		}
@@ -108,7 +108,7 @@ class BackendConnector
 		});
 		
 		if (!response.ok) {
-			throw new Error('Failed to add text');
+			console.error('Failed to add text');
 		} else {
 			console.log('Text added');
 		}
@@ -123,7 +123,7 @@ class BackendConnector
 		});
 
 		if (!response.ok) {
-			throw new Error('Failed to delete text');
+			console.error('Failed to delete text');
 		} else {
 			console.log('Text deleted');
 		}
@@ -148,7 +148,7 @@ class BackendConnector
 		});
 
 		if (!response.ok) {
-			throw new Error('Failed to edit text');
+			console.error('Failed to edit text');
 		} else {
 			console.log('Text edited');
 		}
