@@ -121,7 +121,7 @@ class TextsController
 
 			const newNumberOfPages: number = (numberOfPages !== undefined) ? numberOfPages : pages.length;
 
-			const newContent: string = (content !== undefined) ? content : pages.map((page:any) => page.content).join('');
+			const newContent: string = (content !== undefined) ? content : pages.map((page: Page) => page.content).join('');
 
 			const sentences: string[] = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
 				.filter((sentence:string) => sentence !== '');
