@@ -9,7 +9,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
-const EditLanguage = () => {
+const EditLanguage = (): JSX.Element => {
 	const [languageData, setLanguageData] = useState<any | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 

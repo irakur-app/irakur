@@ -13,7 +13,7 @@ import { Languages } from './pages/languages';
 import { AddLanguage } from './pages/add-language';
 import { EditLanguage } from './pages/edit-language';
 
-const App = () => {
+const App = (): JSX.Element => {
 	return (
 		<BrowserRouter>
 			<Routes>

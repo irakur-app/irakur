@@ -4,12 +4,14 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Page } from "../../../common/types";
+import { ReducedWordData } from "../../../common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class PagesController
 {
-	async getAllPages(textId: number)
+	async getAllPages(textId: number): Promise<Page[]>
 	{
 		const pages = await databaseManager.executeQuery(queries.getAllPages,
 			[textId]
@@ -18,7 +20,7 @@ class PagesController
 		return pages;
 	}
 
-	async getPage(textId: number, pageId: number)
+	async getPage(textId: number, pageId: number): Promise<Page>
 	{
 		const page = databaseManager.getFirstRow(queries.getPage,
 			[textId, pageId]
@@ -27,7 +29,7 @@ class PagesController
 		return page;
 	}
 
-	async editPage(textId: number, index: number, content: string, pageId: number)
+	async editPage(textId: number, index: number, content: string, pageId: number): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -52,11 +54,9 @@ class PagesController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-
-		return true;
 	}
 
-	async getWords(textId: number, pageId: number)
+	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
 	{
 		const page = await databaseManager.getFirstRow(queries.getPage,
 			[textId, pageId]
@@ -91,7 +91,8 @@ class PagesController
 
 		return wordData;
 	}
-	isWord(item:string)
+	
+	isWord(item:string): boolean
 	{
 		return (item.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
 	}

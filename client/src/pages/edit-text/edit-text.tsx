@@ -10,7 +10,7 @@ import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
 
-const EditText = () => {
+const EditText = (): JSX.Element => {
 	const [textData, setTextData] = useState<any | null>(null);
 	const [pageData, setPageData] = useState<any | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);

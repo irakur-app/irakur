@@ -12,7 +12,7 @@ import { Loading } from '../../components/loading';
 import { TextCard } from '../../components/text-card';
 import { Link } from 'react-router-dom';
 
-const Texts = () => {
+const Texts = (): JSX.Element => {
 	const [texts, setTexts] = useState<any | null>(null);
 
 	let languageId: number|undefined = Number(document.cookie.split("=")[1]);

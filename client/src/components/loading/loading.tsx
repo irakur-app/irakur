@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Loading = () => {
+const Loading = (): JSX.Element => {
 	return (
 		<p>Loading...</p>
 	);

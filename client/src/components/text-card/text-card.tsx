@@ -7,7 +7,7 @@
 import { backendConnector } from '../../backend-connector';
 import { Link } from 'react-router-dom';
 
-const TextCard = (props: any) => {
+const TextCard = (props: any): JSX.Element => {
 	const handleDelete = async () => {
 		const enteredText = prompt("Do you really want to delete text '" + props.title + "' (ID: " + props.id + ")?\nType 'DELETE' to confirm.");
 		if (enteredText !== "DELETE") {

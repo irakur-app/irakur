@@ -45,7 +45,7 @@ class DatabaseManager
 			}
 		}
 
-		this.database = new sqlite3.Database(databaseFilePath, (error) =>
+		this.database = new sqlite3.Database(databaseFilePath, (error): void =>
 		{
 			if (error)
 			{
@@ -62,7 +62,7 @@ class DatabaseManager
 		DatabaseManager.instance = this;
 	}
 
-	createTables()
+	createTables(): void
 	{
 		this.database.run(queries.createConfigurationTable);
 		this.database.run(queries.createLanguageTable);
@@ -71,9 +71,9 @@ class DatabaseManager
 		this.database.run(queries.createWordTable);
 	}
 
-	executeQuery(query:string, parameters:any[] = []):Promise<any>
+	executeQuery(query:string, parameters:any[] = []): Promise<any>
 	{
-		return new Promise((resolve, reject) =>
+		return new Promise((resolve, reject): void =>
 		{
 			this.database.all(query, parameters, (error, rows) =>
 			{
@@ -89,9 +89,9 @@ class DatabaseManager
 		});
 	}
 
-	getFirstRow(query:string, parameters:any[] = []):Promise<any>
+	getFirstRow(query:string, parameters:any[] = []): Promise<any>
 	{
-		return new Promise((resolve, reject) =>
+		return new Promise((resolve, reject): void =>
 		{
 			this.database.all(query, parameters, (error, rows) =>
 			{
@@ -108,7 +108,7 @@ class DatabaseManager
 	}
 
 	//use last_insert_rowid() to get the id of the last inserted row
-	getLastInsertId():Promise<any>
+	getLastInsertId(): Promise<any>
 	{
 		return this.getFirstRow('SELECT last_insert_rowid() AS id');
 	}

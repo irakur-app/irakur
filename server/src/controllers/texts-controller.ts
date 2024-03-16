@@ -4,12 +4,13 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Text } from '../../../common/types';
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class TextsController
 {
-	async addText(languageId: number, title: string, content: string, sourceUrl: string, numberOfPages: number)
+	async addText(languageId: number, title: string, content: string, sourceUrl: string, numberOfPages: number): Promise<void>
 	{
 		await databaseManager.executeQuery(queries.addText,
 			[languageId, title, sourceUrl]
@@ -33,18 +34,16 @@ class TextsController
 			firstPageIndex = lastPageIndex + 1;
 			lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % numberOfPages ? 0 : -1);
 		}
-
-		return true;
 	}
 
-	async getAllTexts()
+	async getAllTexts(): Promise<Text[]>
 	{
 		const texts = await databaseManager.executeQuery(queries.getAllTexts);
 
 		return texts;
 	}
 
-	async getTextsByLanguage(languageId: number)
+	async getTextsByLanguage(languageId: number): Promise<Text[]>
 	{
 		const texts = await databaseManager.executeQuery(queries.getTextsByLanguage,
 			[languageId]
@@ -53,7 +52,7 @@ class TextsController
 		return texts;
 	}
 
-	async getText(textId: number)
+	async getText(textId: number): Promise<Text>
 	{
 		const text = await databaseManager.getFirstRow(queries.getText,
 			[textId]
@@ -62,7 +61,7 @@ class TextsController
 		return text;
 	}
 
-	async getNumberOfPages(textId: number)
+	async getNumberOfPages(textId: number): Promise<number>
 	{
 		const numberOfPages = (await databaseManager.executeQuery(queries.getAllPages,
 			[textId]
@@ -71,7 +70,7 @@ class TextsController
 		return numberOfPages;
 	}
 
-	async deleteText(textId: number)
+	async deleteText(textId: number): Promise<void>
 	{
 		const pages = await databaseManager.executeQuery(queries.getAllPages,
 			[textId]
@@ -86,11 +85,9 @@ class TextsController
 		await databaseManager.executeQuery(queries.deleteText,
 			[textId]
 		)
-
-		return true;
 	}
 
-	async editText(languageId: number, title: string, sourceUrl: string, numberOfPages: number, content: string, textId: number)
+	async editText(languageId: number, title: string, sourceUrl: string, numberOfPages: number, content: string, textId: number): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -101,7 +98,7 @@ class TextsController
 			if (!language)
 			{
 				console.error('Language does not exist.');
-				return false;
+				return;
 			}
 			updates.push('language_id = ?');
 			queryParams.push(languageId);
@@ -172,8 +169,6 @@ class TextsController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-
-		return true;
 	}
 }
 

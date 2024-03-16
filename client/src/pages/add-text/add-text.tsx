@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { backendConnector } from '../../backend-connector';
 
-const AddText = () => {
+const AddText = (): JSX.Element => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleSubmit = async (event: any) => {

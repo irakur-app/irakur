@@ -4,30 +4,27 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Language } from '../../../common/types';
 import { databaseManager } from '../database/database-manager';
 import { queries } from '../database/queries';
 
 class LanguagesController
 {
-	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
 	{
 		await databaseManager.executeQuery(queries.addLanguage,
 			[name, dictionaryUrl, shouldShowSpaces]
 		);
-
-		return true;
 	}
 
-	async deleteLanguage(languageId: number)
+	async deleteLanguage(languageId: number): Promise<void>
 	{
 		await databaseManager.executeQuery(queries.deleteLanguage,
 			[languageId]
 		);
-
-		return true;
 	}
 
-	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -61,20 +58,18 @@ class LanguagesController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-
-		return true;
 	}
 
-	async getAllLanguages()
+	async getAllLanguages(): Promise<Language[]>
 	{
 		const languages = await databaseManager.executeQuery(queries.getAllLanguages);
 		
 		return languages;
 	}
 
-	async getLanguage(languageId: number)
+	async getLanguage(languageId: number): Promise<Language>
 	{
-		let language = await databaseManager.getFirstRow(queries.getLanguage,
+		const language = await databaseManager.getFirstRow(queries.getLanguage,
 			[languageId]
 		);
 		

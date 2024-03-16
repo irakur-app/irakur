@@ -10,7 +10,7 @@ import { backendConnector } from '../../backend-connector';
 import { Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-const Home = () => {
+const Home = (): JSX.Element => {
 	const [languages, setLanguages] = useState<any | null>(null);
 
 	const handleLanguageChange = (event: any) => {

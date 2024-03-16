@@ -11,7 +11,7 @@ import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 import { LanguageCard } from '../../components/language-card';
 
-const Languages = () => {
+const Languages = (): JSX.Element => {
 	const [languages, setLanguages] = useState<any | null>(null);
 
 	useEffect(() => {

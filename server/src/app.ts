@@ -26,6 +26,6 @@ app.use(express.urlencoded({limit: '50mb', extended: false}));
 import { router } from './routers/api-router';
 app.use('/api', router);
 
-app.listen(app.get('port'), () => {
+app.listen(app.get('port'), (): void => {
 	console.log('Server on port', app.get('port'));
 });

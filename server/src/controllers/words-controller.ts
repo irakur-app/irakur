@@ -4,21 +4,21 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Entry } from "../../../common/types";
+import { Word } from "../../../common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class WordsController
 {
-	async addWord(languageId: number, content: string, status: number, entries: {meaning: string, reading: string}[], notes: string, datetimeAdded: string, datetimeUpdated: string)
+	async addWord(languageId: number, content: string, status: number, entries: Entry[], notes: string, datetimeAdded: string, datetimeUpdated: string): Promise<void>
 	{
 		await databaseManager.executeQuery(queries.addWord,
 			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated]
-		)
-
-		return true;
+		);
 	}
 
-	async getWord(wordId: number)
+	async getWord(wordId: number): Promise<Word>
 	{
 		const word = await databaseManager.getFirstRow(queries.getWord,
 			[wordId]
@@ -29,16 +29,14 @@ class WordsController
 		return word;
 	}
 
-	async deleteWord(wordId: number)
+	async deleteWord(wordId: number): Promise<void>
 	{
 		await databaseManager.executeQuery(queries.deleteWord,
 			[wordId]
 		)
-
-		return true;
 	}
 
-	async editWord(languageId: number, content: string, status: number, entries: {meaning: string, reading: string}[], notes: string, datetimeAdded: string, datetimeUpdated: string, wordId: number)
+	async editWord(languageId: number, content: string, status: number, entries: {meaning: string, reading: string}[], notes: string, datetimeAdded: string, datetimeUpdated: string, wordId: number): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -49,7 +47,7 @@ class WordsController
 			if (!language)
 			{
 				console.error('Language does not exist.');
-				return false;
+				return;
 			}
 			updates.push('language_id = ?');
 			queryParams.push(languageId);
@@ -98,8 +96,6 @@ class WordsController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
-
-		return true;
 	}
 }
 

@@ -4,6 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { Language, Text, Page } from '../../../common/types';
+
 class BackendConnector
 {
 	private static instance: BackendConnector;
@@ -16,7 +18,7 @@ class BackendConnector
 		}
 	}
 
-	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
 		const response = await fetch('/api/languages', {
 			method: 'POST',
@@ -39,7 +41,7 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async deleteLanguage(languageId: number)
+	async deleteLanguage(languageId: number): Promise<boolean>
 	{
 		const response = await fetch('/api/languages/' + languageId, {
 			method: 'DELETE'
@@ -54,7 +56,7 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
 		const response = await fetch('/api/languages/' + languageId, {
 			method: 'PATCH',
@@ -77,21 +79,21 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async getLanguage(languageId: number)
+	async getLanguage(languageId: number): Promise<Language>
 	{
 		const response = await fetch('/api/languages/' + languageId);
 		const data = await response.json();
 		return data.language;
 	}
 
-	async getLanguages()
+	async getLanguages(): Promise<Language[]>
 	{
 		const response = await fetch('/api/languages/');
 		const data = await response.json();
 		return data.languages;
 	}
 
-	async addText(title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string)
+	async addText(title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
 		const response = await fetch('/api/texts', {
 			method: 'POST',
@@ -116,7 +118,7 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async deleteText(textId: number)
+	async deleteText(textId: number): Promise<boolean>
 	{
 		const response = await fetch('/api/texts/' + textId, {
 			method: 'DELETE'
@@ -131,7 +133,7 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string)
+	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
 		const response = await fetch('/api/texts/' + id, {
 			method: 'PATCH',
@@ -156,14 +158,14 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async getText(textId: number)
+	async getText(textId: number): Promise<Text>
 	{
 		const response = await fetch('/api/texts/' + textId);
 		const data = await response.json();
 		return data.text;
 	}
 
-	async getTexts(languageId: number | undefined)
+	async getTexts(languageId: number | undefined): Promise<Text[]>
 	{
 		let response;
 		if(languageId !== undefined)
@@ -178,7 +180,7 @@ class BackendConnector
 		return data.texts;
 	}
 
-	async getPages(textId: number)
+	async getPages(textId: number): Promise<Page[]>
 	{
 		const response = await fetch('/api/texts/' + textId + '/pages');
 		const data = await response.json();
