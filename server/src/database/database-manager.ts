@@ -45,7 +45,7 @@ class DatabaseManager
 			}
 		}
 
-		this.database = new sqlite3.Database(databaseFilePath, (error): void =>
+		this.database = new sqlite3.Database(databaseFilePath, (error: Error | null): void =>
 		{
 			if (error)
 			{
@@ -73,9 +73,9 @@ class DatabaseManager
 
 	executeQuery(query: string, parameters: any[] = []): Promise<any>
 	{
-		return new Promise((resolve, reject): void =>
+		return new Promise((resolve: (value: any) => void, reject: (reason?: any) => void): void =>
 		{
-			this.database.all(query, parameters, (error, rows) =>
+			this.database.all(query, parameters, (error: Error | null, rows: unknown[]) =>
 			{
 				if (error)
 				{
@@ -91,9 +91,9 @@ class DatabaseManager
 
 	getFirstRow(query: string, parameters: any[] = []): Promise<any>
 	{
-		return new Promise((resolve, reject): void =>
+		return new Promise((resolve: (value: any) => void, reject: (reason?: any) => void): void =>
 		{
-			this.database.all(query, parameters, (error, rows) =>
+			this.database.all(query, parameters, (error: Error | null, rows: unknown[]) =>
 			{
 				if (error)
 				{
