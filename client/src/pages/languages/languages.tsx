@@ -5,53 +5,42 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-
-type ApiData = {
-  title: string;
-  languages: {
-    id: number;
-    name: string;
-  }[];
-};
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
+import { LanguageCard } from '../../components/language-card';
 
 const Languages = () => {
-  const [apiData, setApiData] = useState<ApiData | null>(null);
+	const [languages, setLanguages] = useState<any | null>(null);
 
-  useEffect(() => {
-    fetch('/api/languages')
-      .then((response) => response.json())
-      .then((data) => setApiData(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+	useEffect(() => {
+		backendConnector.getLanguages().then((data) => {
+			setLanguages(data);
+		})
+	}, []);
 
-  if (!apiData) {
-    return <p>Loading...</p>;
-  }
+	if (!languages) {
+		return <Loading />;
+	}
 
-  // Render your React components using the fetched data
-  return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{apiData.title}</title>
-      </Helmet>
-      <h1>{apiData.title}</h1>
-      <a href="/languages/add">Add language</a>
-      {apiData.languages.map((language, i) => (
-        <React.Fragment key={i}>
-          <p>{language.name}</p>
-          <a href={"/languages/edit/" + language.id}>Edit</a>
-          <form method="post" action="/api/languages/delete">
-            <input type="hidden" name="id" value={language.id} />
-            <button type="submit">Delete</button>
-          </form>
-        </React.Fragment>
-      ))}
-
-      <Outlet />
-    </HelmetProvider>
-  );
+	return (
+		<HelmetProvider>
+			<Helmet>
+				<title>Irakur - Languages</title>
+			</Helmet>
+			<h1>Irakur - Languages</h1>
+			<Link to="/languages/add">Add language</Link>
+			{
+			languages.map((language: any) =>(
+			<React.Fragment key={language.id}>
+				<LanguageCard name={language.name} id={language.id} />
+				<br />
+			</React.Fragment>
+			))
+			}
+		</HelmetProvider>
+	);
 };
 
 export { Languages };

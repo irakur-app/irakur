@@ -12,23 +12,21 @@ import { EditText } from './pages/edit-text';
 import { Languages } from './pages/languages';
 import { AddLanguage } from './pages/add-language';
 import { EditLanguage } from './pages/edit-language';
-import { Settings } from './pages/settings';
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/texts" element={<Texts />} />
-        <Route path="/texts/add" element={<AddText />} />
-        <Route path="/texts/edit/:id" element={<EditText />} />
-        <Route path="/languages" element={<Languages />} />
-        <Route path="/languages/add" element={<AddLanguage />} />
-        <Route path="/languages/edit/:id" element={<EditLanguage />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/texts" element={<Texts />} />
+				<Route path="/texts/add" element={<AddText />} />
+				<Route path="/texts/edit/:id" element={<EditText />} />
+				<Route path="/languages" element={<Languages />} />
+				<Route path="/languages/add" element={<AddLanguage />} />
+				<Route path="/languages/edit/:id" element={<EditLanguage />} />
+			</Routes>
+		</BrowserRouter>
+	);
 };
 
 export { App };

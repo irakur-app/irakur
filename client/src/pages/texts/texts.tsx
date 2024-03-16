@@ -7,51 +7,48 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-
-type ApiData = {
-  title: string;
-  texts: {
-    id: number;
-    title: string;
-  }[];
-};
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
+import { TextCard } from '../../components/text-card';
+import { Link } from 'react-router-dom';
 
 const Texts = () => {
-  const [apiData, setApiData] = useState<ApiData | null>(null);
+	const [texts, setTexts] = useState<any | null>(null);
 
-  useEffect(() => {
-    fetch('/api/texts')
-      .then((response) => response.json())
-      .then((data) => setApiData(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+	let languageId: number|undefined = Number(document.cookie.split("=")[1]);
+	languageId = (isNaN(languageId) || languageId === 0) ? undefined : languageId;
 
-  if (!apiData) {
-    return <p>Loading...</p>;
-  }
+	useEffect(() => {
+		backendConnector.getTexts(languageId).then((data) => {
+			setTexts(data);
+		})
+	}, []);
 
-  // Render your React components using the fetched data
-  return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{apiData.title}</title>
-      </Helmet>
-      <h1>{apiData.title}</h1>
-      <a href="/texts/add">Add text</a>
-      {apiData.texts.map((text, i) => (
-        <React.Fragment key={i}>
-          <p>{text.title}</p>
-          <a href={"/texts/edit/" + text.id}>Edit</a>
-          <form method="post" action="/api/texts/delete">
-            <input type="hidden" name="id" value={text.id} />
-            <button type="submit">Delete</button>
-          </form>
-        </React.Fragment>
-      ))}
+	if (!texts) {
+		return <Loading />
+	}
+	console.log(texts);
 
-      <Outlet />
-    </HelmetProvider>
-  );
+	// Render your React components using the fetched data
+	return (
+		<HelmetProvider>
+			<Helmet>
+				<title>Irakur - Texts</title>
+			</Helmet>
+			<h1>Irakur - Texts</h1>
+			<Link to="/texts/add">Add text</Link>
+			{
+			texts.map((text: any) =>(
+			<React.Fragment key={text.id}>
+				<TextCard title={text.title} languageId={languageId} id={text.id} />
+				<br />
+			</React.Fragment>
+			))
+			}
+
+			<Outlet />
+		</HelmetProvider>
+	);
 };
 
 export { Texts };

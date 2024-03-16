@@ -23,9 +23,9 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: false}));
 
 //routes
-import { apiRouter } from './routers/api-router';
-app.use('/api', apiRouter);
+import { router } from './routers/api-router';
+app.use('/api', router);
 
 app.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'));
+	console.log('Server on port', app.get('port'));
 });

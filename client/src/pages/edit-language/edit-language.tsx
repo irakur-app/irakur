@@ -6,53 +6,68 @@
 
 import React, { useState, useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-
-type ApiData = {
-  title: string;
-  language: {
-    id: number;
-    name: string;
-    dictionary_url: string;
-    should_show_spaces: boolean;
-  };
-};
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
 
 const EditLanguage = () => {
-  const [apiData, setApiData] = useState<ApiData | null>(null);
+	const [languageData, setLanguageData] = useState<any | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const languageId = document.location.pathname.split('/').pop();
+	const languageId = Number(document.location.pathname.split('/').pop());
 
-  useEffect(() => {
-    fetch('/api/languages/edit/' + languageId + '/')
-      .then((response) => response.json())
-      .then((data) => setApiData(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+	useEffect(() => {
+		backendConnector.getLanguage(languageId).then((data) => {
+			setLanguageData(data);
+		});
+	}, [languageId]);
 
-  if (!apiData) {
-    return <p>Loading...</p>;
-  }
+	const handleSubmit = async (event: any) => {
+		event.preventDefault();
 
-  // Render your React components using the fetched data
-  return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{apiData.title}</title>
-      </Helmet>
-      <h1>{apiData.title}</h1>
-      <form method="post" action="/api/languages/edit">
-          <input type="hidden" name="id" defaultValue={apiData.language.id}/>
-          <label htmlFor="name">Name</label>
-          <input type="text" name="name" id="name" defaultValue={apiData.language.name}/>
-          <label htmlFor="dictionaryUrl">Dictionary</label>
-          <input type="text" name="dictionaryUrl" id="dictionaryUrl" defaultValue={apiData.language.dictionary_url}/>
-          <label htmlFor="shouldShowSpaces">Show spaces</label>
-          <input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" defaultChecked={apiData.language.should_show_spaces}/>
+		setIsSubmitting(true);
 
-          <button type="submit">Add</button>
-      </form>
-    </HelmetProvider>
-  );
+		console.log(event.target.shouldShowSpaces.checked);
+		
+		const wasEdited = await backendConnector.editLanguage(
+			event.target.id.value,
+			event.target.name.value,
+			event.target.dictionaryUrl.value,
+			event.target.shouldShowSpaces.checked
+		);
+
+		if (wasEdited)
+		{
+			window.location.href = '/languages';
+		}
+
+		setIsSubmitting(false);
+	}
+
+	if (!languageData) {
+		return <Loading />;
+	}
+
+	return (
+		<HelmetProvider>
+			<Helmet>
+				<title>Irakur - Edit language</title>
+			</Helmet>
+			<h1>Irakur - Edit language</h1>
+			<form method="post" onSubmit={handleSubmit}>
+				<input type="hidden" name="id" defaultValue={languageData.id}/>
+				<label htmlFor="name">Name</label>
+				<input type="text" name="name" id="name" defaultValue={languageData.name}/>
+				<br />
+				<label htmlFor="dictionaryUrl">Dictionary</label>
+				<input type="text" name="dictionaryUrl" id="dictionaryUrl" defaultValue={languageData.dictionary_url}/>
+				<br />
+				<label htmlFor="shouldShowSpaces">Show spaces</label>
+				<input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" defaultChecked={languageData.should_show_spaces}/>
+
+				<button type="submit" disabled={isSubmitting}>Update</button>
+			</form>
+		</HelmetProvider>
+	);
 };
 
 export { EditLanguage };

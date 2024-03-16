@@ -4,14 +4,4 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-class Settings
-{
-    title:string;
-
-    constructor()
-    {
-        this.title = "Irakur — Settings";
-    }
-};
-  
-export { Settings };
+export * from './language-card';

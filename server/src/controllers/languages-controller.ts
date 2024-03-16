@@ -4,76 +4,82 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Request, Response } from 'express';
-
-import { Languages } from '../models/languages';
-
-import { DatabaseLanguage } from '../types/database';
+import { databaseManager } from '../database/database-manager';
+import { queries } from '../database/queries';
 
 class LanguagesController
 {
-    languages:Languages;
+	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	{
+		await databaseManager.executeQuery(queries.addLanguage,
+			[name, dictionaryUrl, shouldShowSpaces]
+		);
 
-    constructor()
-    {
-        this.languages = new Languages();
-    }
+		return true;
+	}
 
-    renderLanguages(req:Request, res:Response)
-    {
-        this.languages.getLanguages().then((languages) =>
-        {
-            res.json({title: this.languages.title, languages: languages});
-        });
-    }
+	async deleteLanguage(languageId: number)
+	{
+		await databaseManager.executeQuery(queries.deleteLanguage,
+			[languageId]
+		);
 
-    renderAddLanguage(req:Request, res:Response)
-    {
-        res.json({title: this.languages.title});
-    }
+		return true;
+	}
 
-    renderEditLanguage(req:Request, res:Response)
-    {
-        this.languages.getLanguage(req.params.id).then((language) =>
-        {
-            language = language as DatabaseLanguage;
-            
-            res.json({title: language?.name, language: language});
-        });
-    }
+	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean)
+	{
+		const queryParams: any[] = [];
+		const updates: string[] = [];
+	
+		if (name !== undefined)
+		{
+			updates.push('name = ?');
+			queryParams.push(name);
+		}
+		if (dictionaryUrl !== undefined)
+		{
+			updates.push('dictionary_url = ?');
+			queryParams.push(dictionaryUrl);
+		}
+		if (shouldShowSpaces !== undefined)
+		{
+			updates.push('should_show_spaces = ?');
+			queryParams.push(shouldShowSpaces);
+		}
 
-    addLanguage(req:Request, res:Response)
-    {
-        this.languages.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
-        {
-            res.redirect('/languages');
-        });
-    }
+		if (updates.length > 0)
+		{
+			queryParams.push(languageId);
+			console.log(queryParams);
 
-    deleteLanguage(req:Request, res:Response)
-    {
-        this.languages.deleteLanguage(req.body.id).then(() =>
-        {
-            res.redirect('/languages');
-        });
-    }
+			const dynamicQuery = queries.editLanguage.replace(/\%DYNAMIC\%/, () => {
+				return updates.join(', ');
+			});
 
-    editLanguage(req:Request, res:Response)
-    {
-        this.languages.editLanguage(req.body.id, req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces === 'on' ? true : false).then(() =>
-        {
-            res.redirect('/languages');
-        });
-    }
+			console.log(dynamicQuery);
 
-    setActiveLanguage(req:Request, res:Response)
-    {
-        console.log(req.body);
-        this.languages.setActiveLanguage(req.body.activeLanguage).then(() =>
-        {
-            res.redirect('back');
-        });
-    }
+			await databaseManager.executeQuery(dynamicQuery, queryParams);
+		}
+
+		return true;
+	}
+
+	async getAllLanguages()
+	{
+		const languages = await databaseManager.executeQuery(queries.getAllLanguages);
+		
+		return languages;
+	}
+
+	async getLanguage(languageId: number)
+	{
+		let language = await databaseManager.getFirstRow(queries.getLanguage,
+			[languageId]
+		);
+		
+		return language;
+	}
 }
 
 export { LanguagesController };
