@@ -159,13 +159,10 @@ class TextsController
 		if (updates.length > 0)
 		{
 			queryParams.push(textId);
-			console.log(queryParams);
 
 			const dynamicQuery: string = queries.editText.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
-
-			console.log(dynamicQuery);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}

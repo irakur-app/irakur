@@ -29,7 +29,6 @@ const Texts = (): JSX.Element => {
 	if (!texts) {
 		return <Loading />
 	}
-	console.log(texts);
 
 	// Render your React components using the fetched data
 	return (

@@ -43,13 +43,10 @@ class PagesController
 		{
 			queryParams.push(textId);
 			queryParams.push(pageId);
-			console.log(queryParams);
 
 			const dynamicQuery: string = queries.editPage.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
-
-			console.log(dynamicQuery);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}

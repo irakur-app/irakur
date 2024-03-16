@@ -22,10 +22,8 @@ const EditText = (): JSX.Element => {
 	useEffect((): void => {
 		backendConnector.getText(textId).then((data: Text): void => {
 			setTextData(data);
-			console.log(data);
 			backendConnector.getPages(data.id).then((data: Page[]): void => {
 				setPageData(data);
-				console.log(data);
 			})
 		});
 	}, [textId]);

@@ -88,13 +88,10 @@ class WordsController
 		if (updates.length > 0)
 		{
 			queryParams.push(wordId);
-			console.log(queryParams);
 	
 			const dynamicQuery: string = queries.editWord.replace(/\%DYNAMIC\%/, (): string => {
 				return updates.join(', ');
 			});
-	
-			console.log(dynamicQuery);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
