@@ -24,7 +24,7 @@ const EditText = (): JSX.Element => {
 			setText(text);
 			backendConnector.getPages(text.id).then((pages: Page[]): void => {
 				setPages(pages);
-			})
+			});
 		});
 	}, [textId]);
 
@@ -55,7 +55,7 @@ const EditText = (): JSX.Element => {
 		}
 
 		setIsSubmitting(false);
-	}
+	};
 
 	if (!text || !pages) {
 		return <Loading />;

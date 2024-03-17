@@ -23,18 +23,18 @@ const Home = (): JSX.Element => {
 
 		if(event.target.value === '')
 		{
-			document.cookie = 'activeLanguage='
+			document.cookie = 'activeLanguage=';
 		}
 		else
 		{
-			document.cookie = `activeLanguage=${event.target.value}`
+			document.cookie = `activeLanguage=${event.target.value}`;
 		}
-	}
+	};
 
 	useEffect((): void => {
 		backendConnector.getLanguages().then((languages: Language[]): void => {
 			setLanguages(languages);
-		})
+		});
 	}, []);
 
 	if (!languages) {

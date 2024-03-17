@@ -68,7 +68,7 @@ class BackendConnector
 				dictionaryUrl,
 				shouldShowSpaces
 			})
-		})
+		});
 
 		if (!response.ok) {
 			console.error('Failed to edit language');

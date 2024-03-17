@@ -27,7 +27,7 @@ const AddLanguage = (): JSX.Element => {
 			form.get('name') as string,
 			form.get('dictionaryUrl') as string,
 			(form.get('shouldShowSpaces') as string) === 'on'
-		)
+		);
 
 		if (wasAdded)
 		{
@@ -35,7 +35,7 @@ const AddLanguage = (): JSX.Element => {
 		}
 
 		setIsSubmitting(false);
-	}
+	};
 
 	return (
 		<HelmetProvider>

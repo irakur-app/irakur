@@ -3,31 +3,31 @@ type Language = {
 	name: string; 
 	should_show_spaces: boolean;
 	dictionary_url: string; 
-}
+};
 
 type Text = {
 	id: number; 
 	language_id: number; 
 	title: string; 
 	source_url: string; 
-}
+};
 
 type Page = {
 	text_id: number; 
 	number: number; 
 	content: string; 
-}
+};
 
 type ReducedWordData = {
 	content: string;
 	status?: number;
 	type: string;
-}
+};
 
 type Entry = {
 	meaning: string,
 	reading: string
-}
+};
 
 type Word = {
 	id: number;
@@ -38,7 +38,7 @@ type Word = {
 	notes: string;
 	datetime_added: string;
 	datetime_updated: string;
-}
+};
 
 type RawWord = {
 	id: number;
@@ -49,6 +49,6 @@ type RawWord = {
 	notes: string;
 	datetime_added: string;
 	datetime_updated: string;
-}
+};
 
 export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };

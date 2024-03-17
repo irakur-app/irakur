@@ -21,7 +21,7 @@ class WordsController
 	{
 		const rawWord: RawWord = await databaseManager.getFirstRow(queries.getWord,
 			[wordId]
-		)
+		);
 
 		const word: Word = {
 			...rawWord,
@@ -35,7 +35,7 @@ class WordsController
 	{
 		await databaseManager.executeQuery(queries.deleteWord,
 			[wordId]
-		)
+		);
 	}
 
 	async editWord(languageId: number, content: string, status: number, entries: {meaning: string, reading: string}[], notes: string, datetimeAdded: string, datetimeUpdated: string, wordId: number): Promise<void>

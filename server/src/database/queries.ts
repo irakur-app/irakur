@@ -68,4 +68,4 @@ const queries: { [key: string]: string } =
 	editWord: 'UPDATE word SET %DYNAMIC% WHERE id = ?'
 };
 
-export { queries }
+export { queries };

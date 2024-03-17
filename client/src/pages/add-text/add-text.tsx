@@ -37,7 +37,7 @@ const AddText = (): JSX.Element => {
 		}
 
 		setIsSubmitting(false);
-	}
+	};
 
 	// Render your React components using the fetched data
 	return (

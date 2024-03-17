@@ -21,7 +21,7 @@ const LanguageCard = ({ language }: { language: Language }): JSX.Element => {
 		if (wasDeleted) {
 			window.location.reload();
 		}
-	}
+	};
 
 	return (
 		<div>
@@ -30,7 +30,7 @@ const LanguageCard = ({ language }: { language: Language }): JSX.Element => {
 			<Link to={`/languages/edit/${language.id}`}>Edit</Link>
 			<button onClick={handleDelete}>Delete</button>
 		</div>
-	)
-}
+	);
+};
 
 export { LanguageCard };

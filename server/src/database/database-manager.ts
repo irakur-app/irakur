@@ -114,5 +114,5 @@ class DatabaseManager
 	}
 }
 
-const databaseManager = new DatabaseManager('data', 'irakur.db')
+const databaseManager = new DatabaseManager('data', 'irakur.db');
 export { databaseManager };

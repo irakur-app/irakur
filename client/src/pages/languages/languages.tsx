@@ -19,7 +19,7 @@ const Languages = (): JSX.Element => {
 	useEffect((): void => {
 		backendConnector.getLanguages().then((languages: Language[]): void => {
 			setLanguages(languages);
-		})
+		});
 	}, []);
 
 	if (!languages) {

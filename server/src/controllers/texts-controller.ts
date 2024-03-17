@@ -26,7 +26,7 @@ class TextsController
 		let lastPageIndex: number = sentencesPerPage + (sentences.length % numberOfPages > 0 ? 0 : -1);
 		for (let i = 0; i < numberOfPages; i++)
 		{
-			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
+			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join(''); // Do not trim! It will cause data loss
 			await databaseManager.executeQuery(queries.addPage,
 				[textId, i+1, pageContent]
 			);
@@ -56,7 +56,7 @@ class TextsController
 	{
 		const text: Text = await databaseManager.getFirstRow(queries.getText,
 			[textId]
-		)
+		);
 
 		return text;
 	}
@@ -84,7 +84,7 @@ class TextsController
 
 		await databaseManager.executeQuery(queries.deleteText,
 			[textId]
-		)
+		);
 	}
 
 	async editText(languageId: number, title: string, sourceUrl: string, numberOfPages: number, content: string, textId: number): Promise<void>
@@ -131,7 +131,7 @@ class TextsController
 			let lastPageIndex: number = sentencesPerPage + (sentences.length % newNumberOfPages > 0 ? 0 : -1);
 			for (let i = 0; i < newNumberOfPages; i++)
 			{
-				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('') // Do not trim! It will cause data loss
+				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join(''); // Do not trim! It will cause data loss
 				if(i < pages.length)
 				{
 					await databaseManager.executeQuery(queries.editPage,

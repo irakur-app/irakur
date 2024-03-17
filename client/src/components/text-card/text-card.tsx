@@ -21,7 +21,7 @@ const TextCard = ({ text }: { text: Text }): JSX.Element => {
 		if (wasDeleted) {
 			window.location.reload();
 		}
-	}
+	};
 
 	return (
 		<div>
@@ -31,7 +31,7 @@ const TextCard = ({ text }: { text: Text }): JSX.Element => {
 			<Link to={`/texts/edit/${text.id}`}>Edit</Link>
 			<button onClick={handleDelete}>Delete</button>
 		</div>
-	)
-}
+	);
+};
 
 export { TextCard };

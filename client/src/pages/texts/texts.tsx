@@ -23,11 +23,11 @@ const Texts = (): JSX.Element => {
 	useEffect((): void => {
 		backendConnector.getTexts(languageId).then((texts: Text[]): void => {
 			setTexts(texts);
-		})
+		});
 	}, []);
 
 	if (!texts) {
-		return <Loading />
+		return <Loading />;
 	}
 
 	// Render your React components using the fetched data
