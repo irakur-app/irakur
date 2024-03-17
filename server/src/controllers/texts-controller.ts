@@ -27,7 +27,8 @@ class TextsController
 		let lastPageIndex: number = sentencesPerPage + (sentences.length % numberOfPages > 0 ? 0 : -1);
 		for (let i = 0; i < numberOfPages; i++)
 		{
-			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join(''); // Do not trim! It will cause data loss
+			// Do not trim the following string! Separators must be preserved in case the number of pages is changed
+			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
 			await databaseManager.executeQuery(
 				queries.addPage,
 				[textId, i+1, pageContent]
@@ -95,7 +96,8 @@ class TextsController
 		);
 	}
 
-	async editText(languageId: number, title: string, sourceUrl: string, numberOfPages: number, content: string, textId: number): Promise<void>
+	async editText(languageId: number, title: string,
+		sourceUrl: string, numberOfPages: number, content: string, textId: number): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -133,7 +135,14 @@ class TextsController
 
 			const newNumberOfPages: number = (numberOfPages !== undefined) ? numberOfPages : pages.length;
 
-			const newContent: string = (content !== undefined) ? content : pages.map((page: Page) => page.content).join('');
+			let newContent: string;
+			if (content !== undefined) {
+				newContent = content;
+			}
+			else
+			{
+				newContent = pages.map((page: Page) => page.content).join('');
+			}
 
 			const sentences: string[] = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
 				.filter((sentence: string) => sentence !== '');
@@ -143,7 +152,8 @@ class TextsController
 			let lastPageIndex: number = sentencesPerPage + (sentences.length % newNumberOfPages > 0 ? 0 : -1);
 			for (let i = 0; i < newNumberOfPages; i++)
 			{
-				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join(''); // Do not trim! It will cause data loss
+				// Do not trim the following string! Separators must be preserved in case the number of pages is changed
+				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
 				if(i < pages.length)
 				{
 					await databaseManager.executeQuery(
@@ -160,7 +170,9 @@ class TextsController
 				}
 
 				firstPageIndex = lastPageIndex + 1;
-				lastPageIndex = firstPageIndex + sentencesPerPage + ((i + 1) < sentences.length % numberOfPages ? 0 : -1);
+				lastPageIndex = firstPageIndex +
+					sentencesPerPage +
+					((i + 1) < sentences.length % numberOfPages ? 0 : -1);
 			}
 			for (let i = newNumberOfPages; i < pages.length; i++)
 			{

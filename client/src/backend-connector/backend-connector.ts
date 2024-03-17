@@ -62,7 +62,8 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
+	async editLanguage(languageId: number, name: string,
+		dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
 		const response: Response = await fetch(
 			'/api/languages/' + languageId,
@@ -102,7 +103,8 @@ class BackendConnector
 		return languages;
 	}
 
-	async addText(title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
+	async addText(title: string, languageId: number,
+		content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
 		const response: Response = await fetch(
 			'/api/texts',
@@ -148,7 +150,8 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
+	async editText(id: number, title: string, languageId: number,
+		content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
 		const response: Response = await fetch(
 			'/api/texts/' + id,

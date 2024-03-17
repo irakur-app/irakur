@@ -18,11 +18,11 @@ const wordsController = new WordsController();
 
 const router = express.Router();
 
-const errorWrapper = (handler: (req: express.Request, res: express.Response) => Promise<void>): express.RequestHandler => {
+const errorWrapper = (handler: express.RequestHandler): express.RequestHandler => {
     return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
         try
 		{
-            await handler(req, res);
+            await handler(req, res, next);
         }
 		catch (error)
 		{
@@ -70,7 +70,12 @@ router.patch(
 	'/languages/:languageId',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			await languagesController.editLanguage(parseInt(req.params.languageId), req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces);
+			await languagesController.editLanguage(
+				parseInt(req.params.languageId),
+				req.body.name,
+				req.body.dictionaryUrl,
+				req.body.shouldShowSpaces
+			);
 			res.sendStatus(200);
 		}
 	)
@@ -110,7 +115,13 @@ router.post(
 	'/texts/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			await textsController.addText(req.body.languageId, req.body.title, req.body.content, req.body.sourceUrl, req.body.numberOfPages);
+			await textsController.addText(
+				req.body.languageId,
+				req.body.title,
+				req.body.content,
+				req.body.sourceUrl,
+				req.body.numberOfPages
+			);
 			res.sendStatus(200);
 		}
 	)
@@ -128,7 +139,14 @@ router.patch(
 	'/texts/:textId',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			await textsController.editText(req.body.languageId, req.body.title, req.body.sourceUrl, req.body.numberOfPages, req.body.content, parseInt(req.params.textId));
+			await textsController.editText(
+				req.body.languageId,
+				req.body.title,
+				req.body.sourceUrl,
+				req.body.numberOfPages,
+				req.body.content,
+				parseInt(req.params.textId)
+			);
 			res.sendStatus(200);
 		}
 	)
@@ -164,7 +182,12 @@ router.patch(
 	'/texts/:textId/pages/:pageId',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			await pagesController.editPage(parseInt(req.params.textId), req.body.index, req.body.content, parseInt(req.params.pageId));
+			await pagesController.editPage(
+				parseInt(req.params.textId),
+				req.body.index,
+				req.body.content,
+				parseInt(req.params.pageId)
+			);
 			res.sendStatus(200);
 		}
 	)
@@ -184,7 +207,15 @@ router.post(
 	'/words/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			await wordsController.addWord(req.body.languageId, req.body.content, req.body.status, req.body.entries, req.body.notes, req.body.datetimeAdded, req.body.datetimeUpdated);
+			await wordsController.addWord(
+				req.body.languageId,
+				req.body.content,
+				req.body.status,
+				req.body.entries,
+				req.body.notes,
+				req.body.datetimeAdded,
+				req.body.datetimeUpdated
+			);
 			res.sendStatus(200);
 		}
 	)
@@ -202,7 +233,16 @@ router.patch(
 	'/words/:wordId',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			await wordsController.editWord(req.body.languageId, req.body.content, req.body.status, req.body.entries, req.body.notes, req.body.datetimeAdded, req.body.datetimeUpdated, parseInt(req.params.wordId));
+			await wordsController.editWord(
+				req.body.languageId,
+				req.body.content,
+				req.body.status,
+				req.body.entries,
+				req.body.notes,
+				req.body.datetimeAdded,
+				req.body.datetimeUpdated,
+				parseInt(req.params.wordId)
+			);
 			res.sendStatus(200);
 		}
 	)
