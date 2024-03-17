@@ -27,11 +27,13 @@ class BackendConnector
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					name,
-					dictionaryUrl,
-					shouldShowSpaces
-				})
+				body: JSON.stringify(
+					{
+						name,
+						dictionaryUrl,
+						shouldShowSpaces
+					}
+				)
 			}
 		);
 		
@@ -72,11 +74,13 @@ class BackendConnector
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					name,
-					dictionaryUrl,
-					shouldShowSpaces
-				})
+				body: JSON.stringify(
+					{
+						name,
+						dictionaryUrl,
+						shouldShowSpaces
+					}
+				)
 			}
 		);
 
@@ -113,13 +117,15 @@ class BackendConnector
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					title,
-					languageId,
-					content,
-					numberOfPages,
-					sourceUrl
-				})
+				body: JSON.stringify(
+					{
+						title,
+						languageId,
+						content,
+						numberOfPages,
+						sourceUrl
+					}
+				)
 			}
 		);
 		
@@ -160,13 +166,15 @@ class BackendConnector
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					title,
-					languageId,
-					content,
-					numberOfPages,
-					sourceUrl
-				})
+				body: JSON.stringify(
+					{
+						title,
+						languageId,
+						content,
+						numberOfPages,
+						sourceUrl
+					}
+				)
 			}
 		);
 
