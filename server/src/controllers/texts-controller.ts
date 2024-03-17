@@ -10,7 +10,8 @@ import { queries } from "../database/queries";
 
 class TextsController
 {
-	async addText(languageId: number, title: string, content: string, sourceUrl: string, numberOfPages: number): Promise<void>
+	async addText(languageId: number, title: string,
+		content: string, sourceUrl: string, numberOfPages: number): Promise<void>
 	{
 		await databaseManager.executeQuery(
 			queries.addText,
