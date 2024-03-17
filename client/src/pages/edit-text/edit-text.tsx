@@ -75,7 +75,7 @@ const EditText = (): JSX.Element => {
 				<input type="text" name="title" id="title" defaultValue={text.title}/>
 				<br />
 				<label htmlFor="languageId">Language</label>
-				<input type="text" name="languageId" id="languageId" defaultValue={text.language_id}/>
+				<input type="text" name="languageId" id="languageId" defaultValue={text.languageId}/>
 				<br />
 				<label htmlFor="content">Content</label>
 				<textarea name="content" id="content" defaultValue={textContent}/>
@@ -84,7 +84,7 @@ const EditText = (): JSX.Element => {
 				<input type="text" name="numberOfPages" id="numberOfPages" defaultValue={pages.length}/>
 				<br />
 				<label htmlFor="sourceUrl">Source URL</label>
-				<input type="text" name="sourceUrl" id="sourceUrl" defaultValue={text.source_url}/>
+				<input type="text" name="sourceUrl" id="sourceUrl" defaultValue={text.sourceUrl}/>
 				<br />
 				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>

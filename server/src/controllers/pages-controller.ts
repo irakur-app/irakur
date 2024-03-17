@@ -59,8 +59,8 @@ class PagesController
 		);
 
 		const languageId: number = (await databaseManager.getFirstRow(queries.getText,
-			[page.text_id]
-		)).language_id;
+			[page.textId]
+		)).languageId;
 
 		const items: string[] = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
 			.filter((sentence: string) => sentence !== '');

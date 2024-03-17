@@ -1,19 +1,19 @@
 type Language = {
 	id: number; 
 	name: string; 
-	should_show_spaces: boolean;
-	dictionary_url: string; 
+	shouldShowSpaces: boolean;
+	dictionaryUrl: string; 
 };
 
 type Text = {
 	id: number; 
-	language_id: number; 
+	languageId: number; 
 	title: string; 
-	source_url: string; 
+	sourceUrl: string; 
 };
 
 type Page = {
-	text_id: number; 
+	textId: number; 
 	number: number; 
 	content: string; 
 };
@@ -31,24 +31,24 @@ type Entry = {
 
 type Word = {
 	id: number;
-	language_id: number;
+	languageId: number;
 	content: string;
 	status: number;
 	entries: Entry[];
 	notes: string;
-	datetime_added: string;
-	datetime_updated: string;
+	datetimeAdded: string;
+	datetimeUpdated: string;
 };
 
 type RawWord = {
 	id: number;
-	language_id: number;
+	languageId: number;
 	content: string;
 	status: number;
-	entries: string;
+	entries: string,
 	notes: string;
-	datetime_added: string;
-	datetime_updated: string;
+	datetimeAdded: string;
+	datetimeUpdated: string;
 };
 
 export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };

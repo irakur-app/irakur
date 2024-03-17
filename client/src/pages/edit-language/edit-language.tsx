@@ -66,10 +66,10 @@ const EditLanguage = (): JSX.Element => {
 				<input type="text" name="name" id="name" defaultValue={language.name}/>
 				<br />
 				<label htmlFor="dictionaryUrl">Dictionary</label>
-				<input type="text" name="dictionaryUrl" id="dictionaryUrl" defaultValue={language.dictionary_url}/>
+				<input type="text" name="dictionaryUrl" id="dictionaryUrl" defaultValue={language.dictionaryUrl}/>
 				<br />
 				<label htmlFor="shouldShowSpaces">Show spaces</label>
-				<input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" defaultChecked={language.should_show_spaces}/>
+				<input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" defaultChecked={language.shouldShowSpaces}/>
 
 				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>

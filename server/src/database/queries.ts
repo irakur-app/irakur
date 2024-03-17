@@ -42,27 +42,27 @@ const queries: { [key: string]: string } =
 		FOREIGN KEY(language_id) REFERENCES language(id)
 	)`,
 
-	getAllLanguages: 'SELECT * FROM language',
-	getLanguage: 'SELECT * FROM language WHERE id = ?',
+	getAllLanguages: 'SELECT id, name, dictionary_url AS dictionaryUrl, should_show_spaces AS shouldShowSpaces FROM language',
+	getLanguage: 'SELECT id, name, dictionary_url AS dictionaryUrl, should_show_spaces AS shouldShowSpaces FROM language WHERE id = ?',
 	addLanguage: 'INSERT INTO language (name, dictionary_url, should_show_spaces) VALUES (?, ?, ?)',
 	deleteLanguage: 'DELETE FROM language WHERE id = ?',
 	editLanguage: 'UPDATE language SET %DYNAMIC% WHERE id = ?',
 
-	getAllTexts: 'SELECT * FROM text',
-	getTextsByLanguage: 'SELECT * FROM text WHERE language_id = ?',
-	getText: 'SELECT * FROM text WHERE id = ?',
+	getAllTexts: 'SELECT id, language_id AS languageId, title, source_url AS sourceUrl FROM text',
+	getTextsByLanguage: 'SELECT id, language_id AS languageId, title, source_url AS sourceUrl FROM text WHERE language_id = ?',
+	getText: 'SELECT id, language_id AS languageId, title, source_url AS sourceUrl FROM text WHERE id = ?',
 	addText: 'INSERT INTO text (language_id, title, source_url) VALUES (?, ?, ?)',
 	deleteText: 'DELETE FROM text WHERE id = ?',
 	editText: 'UPDATE text SET %DYNAMIC% WHERE id = ?',
 
-	getAllPages: 'SELECT * FROM page WHERE text_id = ?',
-	getPage: 'SELECT * FROM page WHERE text_id = ? AND number = ?',
+	getAllPages: 'SELECT text_id AS textId, number, content FROM page WHERE text_id = ?',
+	getPage: 'SELECT text_id AS textId, number, content FROM page WHERE text_id = ? AND number = ?',
 	addPage: 'INSERT INTO page (text_id, number, content) VALUES (?, ?, ?)',
 	deletePage: 'DELETE FROM page WHERE text_id = ? AND number = ?',
 	editPage: 'UPDATE page SET content = ? WHERE text_id = ? AND number = ?',
 
-	getWord: 'SELECT * FROM word WHERE id = ?',
-	findWord: 'SELECT * FROM word WHERE LOWER(content) = LOWER(?) AND language_id = ?',
+	getWord: 'SELECT id, language_id AS languageId, content, status, entries, notes, datetime_added AS datetimeAdded, datetime_updated AS datetimeUpdated FROM word WHERE id = ?',
+	findWord: 'SELECT id, language_id AS languageId, content, status, entries, notes, datetime_added AS datetimeAdded, datetime_updated AS datetimeUpdated FROM word WHERE LOWER(content) = LOWER(?) AND language_id = ?',
 	addWord: 'INSERT INTO word (language_id, content, status, entries, notes, datetime_added, datetime_updated) VALUES (?, ?, ?, ?, ?, ?, ?)',
 	deleteWord: 'DELETE FROM word WHERE id = ?',
 	editWord: 'UPDATE word SET %DYNAMIC% WHERE id = ?'

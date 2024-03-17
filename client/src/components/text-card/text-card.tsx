@@ -27,7 +27,7 @@ const TextCard = ({ text }: { text: Text }): JSX.Element => {
 		<div>
 			<p>Title: {text.title}</p>
 			<p>ID: {text.id}</p>
-			<p>Language: {text.language_id}</p>
+			<p>Language: {text.languageId}</p>
 			<Link to={`/texts/edit/${text.id}`}>Edit</Link>
 			<button onClick={handleDelete}>Delete</button>
 		</div>
