@@ -12,7 +12,8 @@ class TextsController
 {
 	async addText(languageId: number, title: string, content: string, sourceUrl: string, numberOfPages: number): Promise<void>
 	{
-		await databaseManager.executeQuery(queries.addText,
+		await databaseManager.executeQuery(
+			queries.addText,
 			[languageId, title, sourceUrl]
 		);
 
@@ -27,7 +28,8 @@ class TextsController
 		for (let i = 0; i < numberOfPages; i++)
 		{
 			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join(''); // Do not trim! It will cause data loss
-			await databaseManager.executeQuery(queries.addPage,
+			await databaseManager.executeQuery(
+				queries.addPage,
 				[textId, i+1, pageContent]
 			);
 
@@ -45,7 +47,8 @@ class TextsController
 
 	async getTextsByLanguage(languageId: number): Promise<Text[]>
 	{
-		const texts: Text[] = await databaseManager.executeQuery(queries.getTextsByLanguage,
+		const texts: Text[] = await databaseManager.executeQuery(
+			queries.getTextsByLanguage,
 			[languageId]
 		);
 
@@ -54,7 +57,8 @@ class TextsController
 
 	async getText(textId: number): Promise<Text>
 	{
-		const text: Text = await databaseManager.getFirstRow(queries.getText,
+		const text: Text = await databaseManager.getFirstRow(
+			queries.getText,
 			[textId]
 		);
 
@@ -63,7 +67,8 @@ class TextsController
 
 	async getNumberOfPages(textId: number): Promise<number>
 	{
-		const numberOfPages: number = (await databaseManager.executeQuery(queries.getAllPages,
+		const numberOfPages: number = (await databaseManager.executeQuery(
+			queries.getAllPages,
 			[textId]
 		)).length;
 
@@ -72,17 +77,20 @@ class TextsController
 
 	async deleteText(textId: number): Promise<void>
 	{
-		const pages: Page[] = await databaseManager.executeQuery(queries.getAllPages,
+		const pages: Page[] = await databaseManager.executeQuery(
+			queries.getAllPages,
 			[textId]
 		);
 		for (const page of pages)
 		{
-			await databaseManager.executeQuery(queries.deletePage,
+			await databaseManager.executeQuery(
+				queries.deletePage,
 				[textId, page.number]
 			);
 		}
 
-		await databaseManager.executeQuery(queries.deleteText,
+		await databaseManager.executeQuery(
+			queries.deleteText,
 			[textId]
 		);
 	}
@@ -94,7 +102,10 @@ class TextsController
 	
 		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(queries.getLanguage, [languageId]);
+			const language = await databaseManager.getFirstRow(
+				queries.getLanguage,
+				[languageId]
+			);
 			if (!language)
 			{
 				console.error('Language does not exist.');
@@ -115,7 +126,8 @@ class TextsController
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
-			const pages: Page[] = await databaseManager.executeQuery(queries.getAllPages,
+			const pages: Page[] = await databaseManager.executeQuery(
+				queries.getAllPages,
 				[textId]
 			);
 
@@ -134,13 +146,15 @@ class TextsController
 				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join(''); // Do not trim! It will cause data loss
 				if(i < pages.length)
 				{
-					await databaseManager.executeQuery(queries.editPage,
+					await databaseManager.executeQuery(
+						queries.editPage,
 						[pageContent, textId, i+1]
 					);
 				}
 				else
 				{
-					await databaseManager.executeQuery(queries.addPage,
+					await databaseManager.executeQuery(
+						queries.addPage,
 						[textId, i+1, pageContent]
 					);
 				}
@@ -150,7 +164,8 @@ class TextsController
 			}
 			for (let i = newNumberOfPages; i < pages.length; i++)
 			{
-				await databaseManager.executeQuery(queries.deletePage,
+				await databaseManager.executeQuery(
+					queries.deletePage,
 					[textId, (i+1).toString()]
 				);
 			}
@@ -160,9 +175,12 @@ class TextsController
 		{
 			queryParams.push(textId);
 
-			const dynamicQuery: string = queries.editText.replace(/\%DYNAMIC\%/, (): string => {
-				return updates.join(', ');
-			});
+			const dynamicQuery: string = queries.editText.replace(
+				/\%DYNAMIC\%/,
+				(): string => {
+					return updates.join(', ');
+				}
+			);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}

@@ -31,11 +31,16 @@ const Home = (): JSX.Element => {
 		}
 	};
 
-	useEffect((): void => {
-		backendConnector.getLanguages().then((languages: Language[]): void => {
-			setLanguages(languages);
-		});
-	}, []);
+	useEffect(
+		(): void => {
+			backendConnector.getLanguages().then(
+				(languages: Language[]): void => {
+					setLanguages(languages);
+				}
+			);
+		},
+		[]
+	);
 
 	if (!languages) {
 		return <Loading />;
@@ -51,9 +56,11 @@ const Home = (): JSX.Element => {
 			<select name="activeLanguage" id="activeLanguage" onChange={handleLanguageChange}>
 				<option value="">Select language</option>
 				{
-					languages.map((language: Language) =>(
-						<option key={language.id} value={language.id}>{language.name}</option>
-					))
+					languages.map(
+						(language: Language) =>(
+							<option key={language.id} value={language.id}>{language.name}</option>
+						)
+					)
 				}
 			</select>
 			<br />

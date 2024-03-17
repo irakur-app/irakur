@@ -20,12 +20,16 @@ const EditText = (): JSX.Element => {
 	const textId = Number(document.location.pathname.split('/').pop());
 
 	useEffect((): void => {
-		backendConnector.getText(textId).then((text: Text): void => {
-			setText(text);
-			backendConnector.getPages(text.id).then((pages: Page[]): void => {
-				setPages(pages);
-			});
-		});
+		backendConnector.getText(textId).then(
+			(text: Text): void => {
+				setText(text);
+				backendConnector.getPages(text.id).then(
+					(pages: Page[]): void => {
+						setPages(pages);
+					}
+				);
+			}
+		);
 	}, [textId]);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {

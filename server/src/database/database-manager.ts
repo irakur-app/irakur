@@ -45,17 +45,19 @@ class DatabaseManager
 			}
 		}
 
-		this.database = new sqlite3.Database(databaseFilePath, (error: Error | null): void =>
-		{
-			if (error)
-			{
-				console.error(error.message);
+		this.database = new sqlite3.Database(
+			databaseFilePath,
+			(error: Error | null): void => {
+				if (error)
+				{
+					console.error(error.message);
+				}
+				else
+				{
+					console.log('Connected to the Irakur database.');
+				}
 			}
-			else
-			{
-				console.log('Connected to the Irakur database.');
-			}
-		});
+		);
 
 		this.createTables();
 
@@ -73,38 +75,46 @@ class DatabaseManager
 
 	executeQuery(query: string, parameters: any[] = []): Promise<any>
 	{
-		return new Promise((resolve: (value: any) => void, reject: (reason?: any) => void): void =>
-		{
-			this.database.all(query, parameters, (error: Error | null, rows: unknown[]) =>
-			{
-				if (error)
-				{
-					reject(error);
-				}
-				else
-				{
-					resolve(rows);
-				}
-			});
-		});
+		return new Promise(
+			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
+				this.database.all(
+					query,
+					parameters,
+					(error: Error | null, rows: unknown[]) => {
+						if (error)
+						{
+							reject(error);
+						}
+						else
+						{
+							resolve(rows);
+						}
+					}
+				);
+			}
+		);
 	}
 
 	getFirstRow(query: string, parameters: any[] = []): Promise<any>
 	{
-		return new Promise((resolve: (value: any) => void, reject: (reason?: any) => void): void =>
-		{
-			this.database.all(query, parameters, (error: Error | null, rows: unknown[]) =>
-			{
-				if (error)
-				{
-					reject(error);
-				}
-				else
-				{
-					resolve(rows[0]);
-				}
-			});
-		});
+		return new Promise(
+			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
+				this.database.all(
+					query,
+					parameters,
+					(error: Error | null, rows: unknown[]) => {
+						if (error)
+						{
+							reject(error);
+						}
+						else
+						{
+							resolve(rows[0]);
+						}
+					}
+				);
+			}
+		);
 	}
 
 	//use last_insert_rowid() to get the id of the last inserted row

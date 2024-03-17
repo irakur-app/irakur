@@ -12,14 +12,16 @@ class LanguagesController
 {
 	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
 	{
-		await databaseManager.executeQuery(queries.addLanguage,
+		await databaseManager.executeQuery(
+			queries.addLanguage,
 			[name, dictionaryUrl, shouldShowSpaces]
 		);
 	}
 
 	async deleteLanguage(languageId: number): Promise<void>
 	{
-		await databaseManager.executeQuery(queries.deleteLanguage,
+		await databaseManager.executeQuery(
+			queries.deleteLanguage,
 			[languageId]
 		);
 	}
@@ -49,9 +51,12 @@ class LanguagesController
 		{
 			queryParams.push(languageId);
 
-			const dynamicQuery: string = queries.editLanguage.replace(/\%DYNAMIC\%/, (): string => {
-				return updates.join(', ');
-			});
+			const dynamicQuery: string = queries.editLanguage.replace(
+				/\%DYNAMIC\%/,
+				(): string => {
+					return updates.join(', ');
+				}
+			);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
@@ -66,7 +71,8 @@ class LanguagesController
 
 	async getLanguage(languageId: number): Promise<Language>
 	{
-		const language: Language = await databaseManager.getFirstRow(queries.getLanguage,
+		const language: Language = await databaseManager.getFirstRow(
+			queries.getLanguage,
 			[languageId]
 		);
 		

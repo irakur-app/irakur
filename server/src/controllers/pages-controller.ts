@@ -12,7 +12,8 @@ class PagesController
 {
 	async getAllPages(textId: number): Promise<Page[]>
 	{
-		const pages: Page[] = await databaseManager.executeQuery(queries.getAllPages,
+		const pages: Page[] = await databaseManager.executeQuery(
+			queries.getAllPages,
 			[textId]
 		);
 
@@ -21,7 +22,8 @@ class PagesController
 
 	async getPage(textId: number, pageId: number): Promise<Page>
 	{
-		const page: Page = await databaseManager.getFirstRow(queries.getPage,
+		const page: Page = await databaseManager.getFirstRow(
+			queries.getPage,
 			[textId, pageId]
 		);
 
@@ -44,9 +46,12 @@ class PagesController
 			queryParams.push(textId);
 			queryParams.push(pageId);
 
-			const dynamicQuery: string = queries.editPage.replace(/\%DYNAMIC\%/, (): string => {
-				return updates.join(', ');
-			});
+			const dynamicQuery: string = queries.editPage.replace(
+				/\%DYNAMIC\%/,
+				(): string => {
+					return updates.join(', ');
+				}
+			);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
@@ -54,11 +59,13 @@ class PagesController
 
 	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
 	{
-		const page: Page = await databaseManager.getFirstRow(queries.getPage,
+		const page: Page = await databaseManager.getFirstRow(
+			queries.getPage,
 			[textId, pageId]
 		);
 
-		const languageId: number = (await databaseManager.getFirstRow(queries.getText,
+		const languageId: number = (await databaseManager.getFirstRow(
+			queries.getText,
 			[page.textId]
 		)).languageId;
 
@@ -72,7 +79,8 @@ class PagesController
 				wordData.push({content: word, type: 'punctuation'});
 				continue;
 			}
-			const wordRow: Word = await databaseManager.getFirstRow(queries.findWord,
+			const wordRow: Word = await databaseManager.getFirstRow(
+				queries.findWord,
 				[word, languageId]
 			);
 			if (!wordRow)

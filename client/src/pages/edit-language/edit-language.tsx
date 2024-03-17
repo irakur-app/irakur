@@ -17,11 +17,16 @@ const EditLanguage = (): JSX.Element => {
 
 	const languageId: number = Number(document.location.pathname.split('/').pop());
 
-	useEffect((): void => {
-		backendConnector.getLanguage(languageId).then((language): void => {
-			setLanguage(language);
-		});
-	}, [languageId]);
+	useEffect(
+		(): void => {
+			backendConnector.getLanguage(languageId).then(
+				(language): void => {
+					setLanguage(language);
+				}
+			);
+		},
+		[languageId]
+	);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();

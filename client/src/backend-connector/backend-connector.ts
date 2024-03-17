@@ -20,17 +20,20 @@ class BackendConnector
 
 	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
-		const response: Response = await fetch('/api/languages', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name,
-				dictionaryUrl,
-				shouldShowSpaces
-			})
-		});
+		const response: Response = await fetch(
+			'/api/languages',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name,
+					dictionaryUrl,
+					shouldShowSpaces
+				})
+			}
+		);
 		
 		if (!response.ok) {
 			console.error('Failed to add language');
@@ -43,9 +46,12 @@ class BackendConnector
 
 	async deleteLanguage(languageId: number): Promise<boolean>
 	{
-		const response: Response = await fetch('/api/languages/' + languageId, {
-			method: 'DELETE'
-		});
+		const response: Response = await fetch(
+			'/api/languages/' + languageId,
+			{
+				method: 'DELETE'
+			}
+		);
 
 		if (!response.ok) {
 			console.error('Failed to delete language');
@@ -58,17 +64,20 @@ class BackendConnector
 
 	async editLanguage(languageId: number, name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
 	{
-		const response: Response = await fetch('/api/languages/' + languageId, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name,
-				dictionaryUrl,
-				shouldShowSpaces
-			})
-		});
+		const response: Response = await fetch(
+			'/api/languages/' + languageId,
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name,
+					dictionaryUrl,
+					shouldShowSpaces
+				})
+			}
+		);
 
 		if (!response.ok) {
 			console.error('Failed to edit language');
@@ -95,19 +104,22 @@ class BackendConnector
 
 	async addText(title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
-		const response: Response = await fetch('/api/texts', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				title,
-				languageId,
-				content,
-				numberOfPages,
-				sourceUrl
-			})
-		});
+		const response: Response = await fetch(
+			'/api/texts',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					title,
+					languageId,
+					content,
+					numberOfPages,
+					sourceUrl
+				})
+			}
+		);
 		
 		if (!response.ok) {
 			console.error('Failed to add text');
@@ -120,9 +132,12 @@ class BackendConnector
 
 	async deleteText(textId: number): Promise<boolean>
 	{
-		const response: Response = await fetch('/api/texts/' + textId, {
-			method: 'DELETE'
-		});
+		const response: Response = await fetch(
+			'/api/texts/' + textId,
+			{
+				method: 'DELETE'
+			}
+		);
 
 		if (!response.ok) {
 			console.error('Failed to delete text');
@@ -135,19 +150,22 @@ class BackendConnector
 
 	async editText(id: number, title: string, languageId: number, content: string, numberOfPages: number, sourceUrl: string): Promise<boolean>
 	{
-		const response: Response = await fetch('/api/texts/' + id, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				title,
-				languageId,
-				content,
-				numberOfPages,
-				sourceUrl
-			})
-		});
+		const response: Response = await fetch(
+			'/api/texts/' + id,
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					title,
+					languageId,
+					content,
+					numberOfPages,
+					sourceUrl
+				})
+			}
+		);
 
 		if (!response.ok) {
 			console.error('Failed to edit text');

@@ -20,11 +20,16 @@ const Texts = (): JSX.Element => {
 	let languageId: number | undefined = Number(document.cookie.split("=")[1]);
 	languageId = (isNaN(languageId) || languageId === 0) ? undefined : languageId;
 
-	useEffect((): void => {
-		backendConnector.getTexts(languageId).then((texts: Text[]): void => {
-			setTexts(texts);
-		});
-	}, []);
+	useEffect(
+		(): void => {
+			backendConnector.getTexts(languageId).then(
+				(texts: Text[]): void => {
+					setTexts(texts);
+				}
+			);
+		},
+		[]
+	);
 
 	if (!texts) {
 		return <Loading />;
@@ -39,12 +44,14 @@ const Texts = (): JSX.Element => {
 			<h1>Irakur - Texts</h1>
 			<Link to="/texts/add">Add text</Link>
 			{
-			texts.map((text: Text) =>(
-			<React.Fragment key={text.id}>
-				<TextCard text = {text} />
-				<br />
-			</React.Fragment>
-			))
+				texts.map(
+					(text: Text) => (
+						<React.Fragment key={text.id}>
+							<TextCard text = {text} />
+							<br />
+						</React.Fragment>
+					)
+				)
 			}
 
 			<Outlet />

@@ -12,14 +12,16 @@ class WordsController
 {
 	async addWord(languageId: number, content: string, status: number, entries: Entry[], notes: string, datetimeAdded: string, datetimeUpdated: string): Promise<void>
 	{
-		await databaseManager.executeQuery(queries.addWord,
+		await databaseManager.executeQuery(
+			queries.addWord,
 			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated]
 		);
 	}
 
 	async getWord(wordId: number): Promise<Word>
 	{
-		const rawWord: RawWord = await databaseManager.getFirstRow(queries.getWord,
+		const rawWord: RawWord = await databaseManager.getFirstRow(
+			queries.getWord,
 			[wordId]
 		);
 
@@ -33,7 +35,8 @@ class WordsController
 
 	async deleteWord(wordId: number): Promise<void>
 	{
-		await databaseManager.executeQuery(queries.deleteWord,
+		await databaseManager.executeQuery(
+			queries.deleteWord,
 			[wordId]
 		);
 	}
@@ -45,7 +48,10 @@ class WordsController
 	
 		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(queries.getLanguage, [languageId]);
+			const language = await databaseManager.getFirstRow(
+				queries.getLanguage,
+				[languageId]
+			);
 			if (!language)
 			{
 				console.error('Language does not exist.');
@@ -89,9 +95,12 @@ class WordsController
 		{
 			queryParams.push(wordId);
 	
-			const dynamicQuery: string = queries.editWord.replace(/\%DYNAMIC\%/, (): string => {
-				return updates.join(', ');
-			});
+			const dynamicQuery: string = queries.editWord.replace(
+				/\%DYNAMIC\%/,
+				(): string => {
+					return updates.join(', ');
+				}
+			);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}

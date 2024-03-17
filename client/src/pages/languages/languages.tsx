@@ -16,11 +16,16 @@ import { LanguageCard } from '../../components/language-card';
 const Languages = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);
 
-	useEffect((): void => {
-		backendConnector.getLanguages().then((languages: Language[]): void => {
-			setLanguages(languages);
-		});
-	}, []);
+	useEffect(
+		(): void => {
+			backendConnector.getLanguages().then(
+				(languages: Language[]): void => {
+					setLanguages(languages);
+				}
+			);
+		},
+		[]
+	);
 
 	if (!languages) {
 		return <Loading />;
@@ -34,12 +39,14 @@ const Languages = (): JSX.Element => {
 			<h1>Irakur - Languages</h1>
 			<Link to="/languages/add">Add language</Link>
 			{
-			languages.map((language: Language) =>(
-			<React.Fragment key={language.id}>
-				<LanguageCard language = {language} />
-				<br />
-			</React.Fragment>
-			))
+				languages.map(
+					(language: Language) => (
+						<React.Fragment key={language.id}>
+							<LanguageCard language = {language} />
+							<br />
+						</React.Fragment>
+					)
+				)
 			}
 		</HelmetProvider>
 	);
