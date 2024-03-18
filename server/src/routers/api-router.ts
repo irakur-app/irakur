@@ -87,7 +87,7 @@ router.get(
 	'/texts/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			if(req.query.languageId !== undefined)
+			if (req.query.languageId !== undefined)
 			{
 				res.json({ texts: await textsController.getTextsByLanguage(parseInt(req.query.languageId as string)) });
 			}

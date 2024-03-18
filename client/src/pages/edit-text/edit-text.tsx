@@ -37,7 +37,7 @@ const EditText = (): JSX.Element => {
 
 		setIsSubmitting(true);
 
-		if(event.target === null)
+		if (event.target === null)
 		{
 			return;
 		}

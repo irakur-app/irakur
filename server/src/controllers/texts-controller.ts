@@ -155,7 +155,7 @@ class TextsController
 			{
 				// Do not trim the following string! Separators must be preserved in case the number of pages is changed
 				const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
-				if(i < pages.length)
+				if (i < pages.length)
 				{
 					await databaseManager.executeQuery(
 						queries.editPage,

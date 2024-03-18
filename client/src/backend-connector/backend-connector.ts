@@ -12,7 +12,7 @@ class BackendConnector
 
 	constructor()
 	{
-		if(BackendConnector.instance)
+		if (BackendConnector.instance)
 		{
 			return BackendConnector.instance;
 		}
@@ -197,7 +197,7 @@ class BackendConnector
 	async getTexts(languageId: number | undefined): Promise<Text[]>
 	{
 		let response: Response;
-		if(languageId !== undefined)
+		if (languageId !== undefined)
 		{
 			response = await fetch('/api/texts?languageId=' + languageId);
 		}

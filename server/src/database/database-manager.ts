@@ -18,7 +18,7 @@ class DatabaseManager
 
 	constructor(folderPath: string, fileName: string)
 	{
-		if(DatabaseManager.instance)
+		if (DatabaseManager.instance)
 		{
 			this.database = DatabaseManager.instance.database;
 			return DatabaseManager.instance;
@@ -31,7 +31,7 @@ class DatabaseManager
 			fs.mkdirSync(dataFolderPath);
 		}
 
-		if(!fs.existsSync(databaseFilePath))
+		if (!fs.existsSync(databaseFilePath))
 		{
 			console.log('Database not found. Creating empty database.');
 			try

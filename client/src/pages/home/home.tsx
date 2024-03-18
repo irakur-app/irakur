@@ -16,12 +16,12 @@ const Home = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);
 
 	const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-		if(event.target === null)
+		if (event.target === null)
 		{
 			return;
 		}
 
-		if(event.target.value === '')
+		if (event.target.value === '')
 		{
 			document.cookie = 'activeLanguage=';
 		}
