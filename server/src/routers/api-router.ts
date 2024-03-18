@@ -36,7 +36,7 @@ router.get(
 	'/languages/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({languages: await languagesController.getAllLanguages()});
+			res.json({ languages: await languagesController.getAllLanguages() });
 		}
 	)
 );
@@ -89,11 +89,11 @@ router.get(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			if(req.query.languageId !== undefined)
 			{
-				res.json({texts: await textsController.getTextsByLanguage(parseInt(req.query.languageId as string))});
+				res.json({ texts: await textsController.getTextsByLanguage(parseInt(req.query.languageId as string)) });
 			}
 			else
 			{
-				res.json({texts: await textsController.getAllTexts()});
+				res.json({ texts: await textsController.getAllTexts() });
 			}
 		}
 	)
@@ -158,7 +158,7 @@ router.get(
 	'/texts/:textId/pages/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({pages: await pagesController.getAllPages(parseInt(req.params.textId))});
+			res.json({ pages: await pagesController.getAllPages(parseInt(req.params.textId)) });
 		}
 	)
 );
@@ -174,7 +174,11 @@ router.get(
 	'/texts/:textId/pages/:pageId/words',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pageId))});
+			res.json(
+				{
+					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pageId))
+				}
+			);
 		}
 	)
 );

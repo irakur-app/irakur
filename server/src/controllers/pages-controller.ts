@@ -76,7 +76,7 @@ class PagesController
 		{
 			if (!this.isWord(word))
 			{
-				wordData.push({content: word, type: 'punctuation'});
+				wordData.push({ content: word, type: 'punctuation' });
 				continue;
 			}
 			const wordRow: Word = await databaseManager.getFirstRow(
@@ -85,11 +85,11 @@ class PagesController
 			);
 			if (!wordRow)
 			{
-				wordData.push({content: word, status: 0, type: 'word'});
+				wordData.push({ content: word, status: 0, type: 'word' });
 			}
 			else
 			{
-				wordData.push({content: word, status: wordRow.status, type: 'word'});
+				wordData.push({ content: word, status: wordRow.status, type: 'word' });
 			}
 		}
 
