@@ -16,13 +16,15 @@ const TextCard = ({ text }: { text: Text }): JSX.Element => {
 				"' (ID: " + text.id + ")?\n" +
 				"Type 'DELETE' to confirm."
 		);
-		if (enteredText !== "DELETE") {
+		if (enteredText !== "DELETE")
+		{
 			alert("Deletion canceled. Incorrect confirmation text.");
 			return;
 		}
 
 		const wasDeleted: boolean = await backendConnector.deleteText(text.id);
-		if (wasDeleted) {
+		if (wasDeleted)
+		{
 			window.location.reload();
 		}
 	};

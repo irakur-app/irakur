@@ -61,7 +61,8 @@ const EditText = (): JSX.Element => {
 		setIsSubmitting(false);
 	};
 
-	if (!text || !pages) {
+	if (!text || !pages)
+	{
 		return <Loading />;
 	}
 

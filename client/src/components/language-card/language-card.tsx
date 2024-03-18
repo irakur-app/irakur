@@ -16,13 +16,15 @@ const LanguageCard = ({ language }: { language: Language }): JSX.Element => {
 				"' (ID: " + language.id + ")?\n" +
 				"*It will permanently delete all texts and all words associated with it*.\nType 'DELETE' to confirm."
 		);
-		if (enteredText !== "DELETE") {
+		if (enteredText !== "DELETE")
+		{
 			alert("Deletion canceled. Incorrect confirmation text.");
 			return;
 		}
 
 		const wasDeleted: boolean = await backendConnector.deleteLanguage(language.id);
-		if (wasDeleted) {
+		if (wasDeleted)
+		{
 			window.location.reload();
 		}
 	};

@@ -55,7 +55,8 @@ const EditLanguage = (): JSX.Element => {
 		setIsSubmitting(false);
 	};
 
-	if (!language) {
+	if (!language)
+	{
 		return <Loading />;
 	}
 

@@ -137,7 +137,8 @@ class TextsController
 			const newNumberOfPages: number = (numberOfPages !== undefined) ? numberOfPages : pages.length;
 
 			let newContent: string;
-			if (content !== undefined) {
+			if (content !== undefined)
+			{
 				newContent = content;
 			}
 			else

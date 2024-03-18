@@ -27,7 +27,8 @@ class DatabaseManager
 		const dataFolderPath: string = folderPath;
 		const databaseFilePath: string = path.join(dataFolderPath, fileName);
 
-		if (!fs.existsSync(dataFolderPath)){
+		if (!fs.existsSync(dataFolderPath))
+		{
 			fs.mkdirSync(dataFolderPath);
 		}
 

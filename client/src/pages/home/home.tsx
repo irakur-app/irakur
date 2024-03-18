@@ -42,7 +42,8 @@ const Home = (): JSX.Element => {
 		[]
 	);
 
-	if (!languages) {
+	if (!languages)
+	{
 		return <Loading />;
 	}
 

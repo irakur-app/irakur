@@ -31,7 +31,8 @@ const Texts = (): JSX.Element => {
 		[]
 	);
 
-	if (!texts) {
+	if (!texts)
+	{
 		return <Loading />;
 	}
 
