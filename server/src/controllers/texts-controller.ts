@@ -172,9 +172,9 @@ class TextsController
 				}
 
 				firstPageIndex = lastPageIndex + 1;
-				lastPageIndex = firstPageIndex +
-					sentencesPerPage +
-					((i + 1) < sentences.length % numberOfPages ? 0 : -1);
+				lastPageIndex = firstPageIndex
+					+ sentencesPerPage
+					+ ((i + 1) < sentences.length % numberOfPages ? 0 : -1);
 			}
 			for (let i = newNumberOfPages; i < pages.length; i++)
 			{

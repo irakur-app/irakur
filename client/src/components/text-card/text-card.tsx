@@ -12,9 +12,9 @@ import { Link } from 'react-router-dom';
 const TextCard = ({ text }: { text: Text }): JSX.Element => {
 	const handleDelete = async (): Promise<void> => {
 		const enteredText: string | null = prompt(
-			"Do you really want to delete text '" + text.title +
-				"' (ID: " + text.id + ")?\n" +
-				"Type 'DELETE' to confirm."
+			"Do you really want to delete text '" + text.title
+				+ "' (ID: " + text.id + ")?\n"
+				+ "Type 'DELETE' to confirm."
 		);
 		if (enteredText !== "DELETE")
 		{
