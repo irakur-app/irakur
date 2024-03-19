@@ -12,17 +12,17 @@ import morgan from 'morgan';
 import cors from 'cors';
 app.use(cors());
 
-//settings
+// Settings
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-//middlewares
+// Middlewares
 app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: false }));
 
-//routes
+// Routes
 import { router } from './routers/api-router';
 app.use('/api', router);
 

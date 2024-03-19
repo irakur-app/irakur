@@ -118,7 +118,6 @@ class DatabaseManager
 		);
 	}
 
-	//use last_insert_rowid() to get the id of the last inserted row
 	getLastInsertId(): Promise<any>
 	{
 		return this.getFirstRow('SELECT last_insert_rowid() AS id');
