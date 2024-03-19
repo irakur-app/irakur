@@ -1,4 +1,4 @@
-/* 
+/*
  * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
@@ -45,7 +45,7 @@ const queries: { [key: string]: string } =
 	//#endregion
 
 	//#region Language
-	getAllLanguages: `SELECT 
+	getAllLanguages: `SELECT
 			id,
 			name,
 			dictionary_url AS dictionaryUrl,

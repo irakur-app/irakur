@@ -1,21 +1,21 @@
 type Language = {
-	id: number; 
-	name: string; 
+	id: number;
+	name: string;
 	shouldShowSpaces: boolean;
-	dictionaryUrl: string; 
+	dictionaryUrl: string;
 };
 
 type Text = {
-	id: number; 
-	languageId: number; 
-	title: string; 
-	sourceUrl: string; 
+	id: number;
+	languageId: number;
+	title: string;
+	sourceUrl: string;
 };
 
 type Page = {
-	textId: number; 
-	number: number; 
-	content: string; 
+	textId: number;
+	number: number;
+	content: string;
 };
 
 type ReducedWordData = {
