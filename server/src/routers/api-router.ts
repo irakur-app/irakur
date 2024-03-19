@@ -19,16 +19,16 @@ const wordsController = new WordsController();
 const router = express.Router();
 
 const errorWrapper = (handler: express.RequestHandler): express.RequestHandler => {
-    return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
-        try
+	return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
+		try
 		{
-            await handler(req, res, next);
-        }
+			await handler(req, res, next);
+		}
 		catch (error)
 		{
-            res.sendStatus(500);
-        }
-    };
+			res.sendStatus(500);
+		}
+	};
 };
 
 //#region Languages
