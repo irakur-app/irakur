@@ -4,8 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const queries: { [key: string]: string } =
-{
+const queries: { [key: string]: string } = {
 	//#region Create tables
 	createConfigurationTable: `CREATE TABLE IF NOT EXISTS configuration (
 		key TEXT NOT NULL PRIMARY KEY,
