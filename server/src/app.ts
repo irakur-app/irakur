@@ -4,12 +4,14 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import express from 'express';
-const app: express.Application = express();
-import path from 'path';
-import morgan from 'morgan';
-
 import cors from 'cors';
+import express from 'express';
+import morgan from 'morgan';
+import path from 'path';
+
+import { router } from './routers/api-router';
+
+const app: express.Application = express();
 app.use(cors());
 
 // Settings
@@ -23,7 +25,6 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: false }));
 
 // Routes
-import { router } from './routers/api-router';
 app.use('/api', router);
 
 app.listen(

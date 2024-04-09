@@ -4,15 +4,14 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Text } from '@common/types';
-
-import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Link, Outlet } from 'react-router-dom';
+
+import { Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 import { TextCard } from '../../components/text-card';
-import { Link } from 'react-router-dom';
 
 const Texts = (): JSX.Element => {
 	const [texts, setTexts] = useState<Text[] | null>(null);

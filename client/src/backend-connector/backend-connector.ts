@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Language, Text, Page } from '@common/types';
+import { Language, Page, Text } from '@common/types';
 
 class BackendConnector
 {

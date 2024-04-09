@@ -7,8 +7,8 @@
 import express from 'express';
 
 import { LanguagesController } from '../controllers/languages-controller';
-import { TextsController } from '../controllers/texts-controller';
 import { PagesController } from '../controllers/pages-controller';
+import { TextsController } from '../controllers/texts-controller';
 import { WordsController } from '../controllers/words-controller';
 
 const languagesController = new LanguagesController();

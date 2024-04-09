@@ -4,10 +4,10 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Language } from '@common/types';
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+
+import { Language } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 

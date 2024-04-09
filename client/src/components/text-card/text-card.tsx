@@ -4,10 +4,10 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Text } from '@common/types';
-
-import { backendConnector } from '../../backend-connector';
 import { Link } from 'react-router-dom';
+
+import { Text } from '@common/types';
+import { backendConnector } from '../../backend-connector';
 
 const TextCard = ({ text }: { text: Text }): JSX.Element => {
 	const handleDelete = async (): Promise<void> => {

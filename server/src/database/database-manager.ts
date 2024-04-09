@@ -4,12 +4,11 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
+import sqlite3 from 'sqlite3';
 
 import { queries } from './queries';
-import { get } from 'http';
 
 class DatabaseManager
 {
