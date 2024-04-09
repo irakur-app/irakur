@@ -8,8 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import { Language } from '@common/types';
-import { backendConnector } from '../../backend-connector';
-import { Loading } from '../../components/loading';
+import { backendConnector } from '@src/backend-connector';
+import { Loading } from '@src/components/loading';
 
 const EditLanguage = (): JSX.Element => {
 	const [language, setLanguage] = useState<Language | null>(null);

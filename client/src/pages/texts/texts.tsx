@@ -9,9 +9,9 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link, Outlet } from 'react-router-dom';
 
 import { Text } from '@common/types';
-import { backendConnector } from '../../backend-connector';
-import { Loading } from '../../components/loading';
-import { TextCard } from '../../components/text-card';
+import { backendConnector } from '@src/backend-connector';
+import { Loading } from '@src/components/loading';
+import { TextCard } from '@src/components/text-card';
 
 const Texts = (): JSX.Element => {
 	const [texts, setTexts] = useState<Text[] | null>(null);

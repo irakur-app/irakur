@@ -7,7 +7,7 @@
 import { Link } from 'react-router-dom';
 
 import { Language } from '@common/types';
-import { backendConnector } from '../../backend-connector';
+import { backendConnector } from '@src/backend-connector';
 
 const LanguageCard = ({ language }: { language: Language }): JSX.Element => {
 	const handleDelete = async (): Promise<void> => {

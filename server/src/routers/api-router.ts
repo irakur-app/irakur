@@ -6,10 +6,10 @@
 
 import express from 'express';
 
-import { LanguagesController } from '../controllers/languages-controller';
-import { PagesController } from '../controllers/pages-controller';
-import { TextsController } from '../controllers/texts-controller';
-import { WordsController } from '../controllers/words-controller';
+import { LanguagesController } from '@src/controllers/languages-controller';
+import { PagesController } from '@src/controllers/pages-controller';
+import { TextsController } from '@src/controllers/texts-controller';
+import { WordsController } from '@src/controllers/words-controller';
 
 const languagesController = new LanguagesController();
 const textsController = new TextsController();
