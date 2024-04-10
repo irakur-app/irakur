@@ -167,7 +167,7 @@ export { Loading };
 export * from "./loading";
 
 // pages/home/home.tsx
-import { Loading } from "../../components/loading";
+import { Loading } from "@src/components/loading";
 ...
 if (!languages)
 {
