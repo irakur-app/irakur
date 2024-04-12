@@ -9,8 +9,8 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
 import { Language } from '@common/types';
-import { backendConnector } from '@src/backend-connector';
-import { Loading } from '@src/components/loading';
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
 
 const Home = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);

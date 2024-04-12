@@ -7,7 +7,7 @@
 import React, { useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import { backendConnector } from '@src/backend-connector';
+import { backendConnector } from '../../backend-connector';
 
 const AddLanguage = (): JSX.Element => {
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

@@ -9,9 +9,9 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
 import { Language } from '@common/types';
-import { backendConnector } from '@src/backend-connector';
-import { LanguageCard } from '@src/components/language-card';
-import { Loading } from '@src/components/loading';
+import { backendConnector } from '../../backend-connector';
+import { LanguageCard } from '../../components/language-card';
+import { Loading } from '../../components/loading';
 
 const Languages = (): JSX.Element => {
 	const [languages, setLanguages] = useState<Language[] | null>(null);

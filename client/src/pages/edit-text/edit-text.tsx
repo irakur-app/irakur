@@ -8,8 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import { Page, Text } from '@common/types';
-import { backendConnector } from '@src/backend-connector';
-import { Loading } from '@src/components/loading';
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
 
 
 const EditText = (): JSX.Element => {

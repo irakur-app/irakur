@@ -5,8 +5,8 @@
  */
 
 import { Page, Text } from '@common/types';
-import { databaseManager } from "@src/database/database-manager";
-import { queries } from "@src/database/queries";
+import { databaseManager } from "../database/database-manager";
+import { queries } from "../database/queries";
 
 class TextsController
 {

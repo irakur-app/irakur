@@ -7,7 +7,7 @@
 import { Link } from 'react-router-dom';
 
 import { Text } from '@common/types';
-import { backendConnector } from '@src/backend-connector';
+import { backendConnector } from '../../backend-connector';
 
 const TextCard = ({ text }: { text: Text }): JSX.Element => {
 	const handleDelete = async (): Promise<void> => {
