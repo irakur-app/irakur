@@ -26,8 +26,12 @@ class LanguagesController
 		);
 	}
 
-	async editLanguage(languageId: number, name: string,
-		dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
+	async editLanguage(
+		languageId: number,
+		name: string,
+		dictionaryUrl: string,
+		shouldShowSpaces: boolean
+	): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];

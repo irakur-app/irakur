@@ -10,8 +10,15 @@ import { queries } from "../database/queries";
 
 class WordsController
 {
-	async addWord(languageId: number, content: string, status: number,
-		entries: Entry[], notes: string, datetimeAdded: string, datetimeUpdated: string): Promise<void>
+	async addWord(
+		languageId: number,
+		content: string,
+		status: number,
+		entries: Entry[],
+		notes: string,
+		datetimeAdded: string,
+		datetimeUpdated: string
+	): Promise<void>
 	{
 		await databaseManager.executeQuery(
 			queries.addWord,
@@ -42,8 +49,16 @@ class WordsController
 		);
 	}
 
-	async editWord(languageId: number, content: string, status: number, entries: Entry[],
-		notes: string, datetimeAdded: string, datetimeUpdated: string, wordId: number): Promise<void>
+	async editWord(
+		languageId: number,
+		content: string,
+		status: number,
+		entries: Entry[],
+		notes: string,
+		datetimeAdded: string,
+		datetimeUpdated: string,
+		wordId: number
+	): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];

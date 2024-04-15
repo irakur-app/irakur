@@ -10,8 +10,13 @@ import { queries } from "../database/queries";
 
 class TextsController
 {
-	async addText(languageId: number, title: string,
-		content: string, sourceUrl: string, numberOfPages: number): Promise<void>
+	async addText(
+		languageId: number,
+		title: string,
+		content: string,
+		sourceUrl: string,
+		numberOfPages: number
+	): Promise<void>
 	{
 		await databaseManager.executeQuery(
 			queries.addText,
@@ -80,8 +85,14 @@ class TextsController
 		);
 	}
 
-	async editText(languageId: number, title: string,
-		sourceUrl: string, numberOfPages: number, content: string, textId: number): Promise<void>
+	async editText(
+		languageId: number,
+		title: string,
+		sourceUrl: string,
+		numberOfPages: number,
+		content: string,
+		textId: number
+	): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
