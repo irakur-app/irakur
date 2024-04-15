@@ -154,7 +154,11 @@ const queries: { [key: string]: string } = {
 		)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,
-	editWord: `UPDATE word SET %DYNAMIC% WHERE id = ?`
+	editWord: `UPDATE word SET %DYNAMIC% WHERE id = ?`,
+	//#endregion
+
+	//#region Utils
+	getLastInsertId: `SELECT last_insert_rowid() AS id`
 	//#endregion
 };
 

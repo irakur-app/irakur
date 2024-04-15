@@ -119,7 +119,7 @@ class DatabaseManager
 
 	getLastInsertId(): Promise<any>
 	{
-		return this.getFirstRow('SELECT last_insert_rowid() AS id');
+		return this.getFirstRow(queries.getLastInsertId);
 	}
 }
 
