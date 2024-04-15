@@ -158,7 +158,7 @@ const queries: { [key: string]: string } = {
 	//#endregion
 
 	//#region Utils
-	getLastInsertId: `SELECT last_insert_rowid() AS id`
+	getLastInsertId: `SELECT last_insert_rowid() AS id`,
 	//#endregion
 };
 

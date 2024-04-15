@@ -105,7 +105,7 @@ router.get(
 			res.json(
 				{
 					...await textsController.getText(parseInt(req.params.textId)),
-					numberOfPages: await textsController.getNumberOfPages(parseInt(req.params.textId))
+					numberOfPages: await textsController.getNumberOfPages(parseInt(req.params.textId)),
 				}
 			);
 		}
@@ -176,7 +176,7 @@ router.get(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			res.json(
 				{
-					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pageId))
+					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pageId)),
 				}
 			);
 		}

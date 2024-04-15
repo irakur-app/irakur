@@ -31,9 +31,9 @@ class BackendConnector
 					{
 						name,
 						dictionaryUrl,
-						shouldShowSpaces
+						shouldShowSpaces,
 					}
-				)
+				),
 			}
 		);
 		
@@ -54,7 +54,7 @@ class BackendConnector
 		const response: Response = await fetch(
 			'/api/languages/' + languageId,
 			{
-				method: 'DELETE'
+				method: 'DELETE',
 			}
 		);
 
@@ -84,9 +84,9 @@ class BackendConnector
 					{
 						name,
 						dictionaryUrl,
-						shouldShowSpaces
+						shouldShowSpaces,
 					}
-				)
+				),
 			}
 		);
 
@@ -132,9 +132,9 @@ class BackendConnector
 						languageId,
 						content,
 						numberOfPages,
-						sourceUrl
+						sourceUrl,
 					}
-				)
+				),
 			}
 		);
 		
@@ -155,7 +155,7 @@ class BackendConnector
 		const response: Response = await fetch(
 			'/api/texts/' + textId,
 			{
-				method: 'DELETE'
+				method: 'DELETE',
 			}
 		);
 
@@ -187,9 +187,9 @@ class BackendConnector
 						languageId,
 						content,
 						numberOfPages,
-						sourceUrl
+						sourceUrl,
 					}
-				)
+				),
 			}
 		);
 
