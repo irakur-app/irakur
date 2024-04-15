@@ -38,7 +38,7 @@ const dictionaryUrl: string = ...;
 const shouldShowSpaces: boolean = ...;
 ```
 
-### Indenting and Whitespaces
+### Indenting and punctuation
 
 * A single tab MUST be used to indent once (no spaces).
 * There SHOULD NOT be two consecutive whitespaces.
@@ -48,6 +48,7 @@ const shouldShowSpaces: boolean = ...;
 * In a function call, all parameters MUST be at the same indentation level.
 * Closing brackets MUST be at the same indentation level as the opening bracket.
 * The contents of a single line object MUST be surrounded by spaces.
+* Multi-line objects MUST use a trailing comma.
 
 ```Typescript
 // Wrong
@@ -83,7 +84,7 @@ import { Home } from './pages/home';
 * Opening braces MUST be placed on a new line when opening a block, except when the block is the body of a lambda function.
 * Braces MUST be used even when there is only one statement in the block.
 * Lines MUST be wrapped at 120 characters.
-* When wrapping a function call, if the opening and closing parentheses are on separate lines, all parameters MUST be on separate lines and the first parameter MUST be on a new line.
+* When wrapping a function call or a function declaration, if the opening and closing parentheses are on separate lines, all parameters MUST be on separate lines and the first parameter MUST be on a new line.
 * When wrapping a line, commas MUST be placed at the end of wrapped lines, and operators MUST be at the beginning of the new lines.
 * There MUST NOT be a line break immediately after an equal sign.
 
