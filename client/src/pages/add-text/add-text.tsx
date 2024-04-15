@@ -1,27 +1,35 @@
-/* 
+/*
  * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+
 import { backendConnector } from '../../backend-connector';
 
-const AddText = () => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+const AddText = (): JSX.Element => {
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const handleSubmit = async (event: any) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);
-		
-		const wasEdited = await backendConnector.addText(
-			event.target.title.value,
-			event.target.languageId.value,
-			event.target.content.value,
-			event.target.numberOfPages.value,
-			event.target.sourceUrl.value,
+
+		if (event.target === null)
+		{
+			return;
+		}
+
+		const form = new FormData(event.target as HTMLFormElement);
+
+		const wasEdited: boolean = await backendConnector.addText(
+			form.get('title') as string,
+			Number(form.get('languageId') as string),
+			form.get('content') as string,
+			Number(form.get('numberOfPages') as string),
+			form.get('sourceUrl') as string,
 		);
 
 		if (wasEdited)
@@ -30,7 +38,7 @@ const AddText = () => {
 		}
 
 		setIsSubmitting(false);
-	}
+	};
 
 	// Render your React components using the fetched data
 	return (

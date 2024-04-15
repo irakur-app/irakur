@@ -1,26 +1,34 @@
-/* 
+/*
  * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+
 import { backendConnector } from '../../backend-connector';
 
-const AddLanguage = () => {
-	const [isSubmitting, setIsSubmitting] = useState(false);
+const AddLanguage = (): JSX.Element => {
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-	const handleSubmit = async (event: any) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
 
 		setIsSubmitting(true);
-		
-		const wasAdded = await backendConnector.addLanguage(
-			event.target.name.value,
-			event.target.dictionaryUrl.value,
-			event.target.shouldShowSpaces.checked
-		)
+
+		if (event.target === null)
+		{
+			return;
+		}
+
+		const form = new FormData(event.target as HTMLFormElement);
+
+		const wasAdded: boolean = await backendConnector.addLanguage(
+			form.get('name') as string,
+			form.get('dictionaryUrl') as string,
+			(form.get('shouldShowSpaces') as string) === 'on'
+		);
 
 		if (wasAdded)
 		{
@@ -28,7 +36,7 @@ const AddLanguage = () => {
 		}
 
 		setIsSubmitting(false);
-	}
+	};
 
 	return (
 		<HelmetProvider>

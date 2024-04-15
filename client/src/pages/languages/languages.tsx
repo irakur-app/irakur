@@ -1,26 +1,34 @@
-/* 
+/*
  * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState, useEffect } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+
+import { Language } from '@common/types';
 import { backendConnector } from '../../backend-connector';
-import { Loading } from '../../components/loading';
 import { LanguageCard } from '../../components/language-card';
+import { Loading } from '../../components/loading';
 
-const Languages = () => {
-	const [languages, setLanguages] = useState<any | null>(null);
+const Languages = (): JSX.Element => {
+	const [languages, setLanguages] = useState<Language[] | null>(null);
 
-	useEffect(() => {
-		backendConnector.getLanguages().then((data) => {
-			setLanguages(data);
-		})
-	}, []);
+	useEffect(
+		(): void => {
+			backendConnector.getLanguages().then(
+				(languages: Language[]): void => {
+					setLanguages(languages);
+				}
+			);
+		},
+		[]
+	);
 
-	if (!languages) {
+	if (!languages)
+	{
 		return <Loading />;
 	}
 
@@ -32,12 +40,14 @@ const Languages = () => {
 			<h1>Irakur - Languages</h1>
 			<Link to="/languages/add">Add language</Link>
 			{
-			languages.map((language: any) =>(
-			<React.Fragment key={language.id}>
-				<LanguageCard name={language.name} id={language.id} />
-				<br />
-			</React.Fragment>
-			))
+				languages.map(
+					(language: Language) => (
+						<React.Fragment key={language.id}>
+							<LanguageCard language={language} />
+							<br />
+						</React.Fragment>
+					)
+				)
 			}
 		</HelmetProvider>
 	);

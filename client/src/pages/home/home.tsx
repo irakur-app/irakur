@@ -1,33 +1,49 @@
-/* 
+/*
  * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState, useEffect } from 'react';
-import { Loading } from '../../components/loading';
-import { backendConnector } from '../../backend-connector';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 
-const Home = () => {
-	const [languages, setLanguages] = useState<any | null>(null);
+import { Language } from '@common/types';
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
 
-	const handleLanguageChange = (event: any) => {
-		if(event.target.value === '')
+const Home = (): JSX.Element => {
+	const [languages, setLanguages] = useState<Language[] | null>(null);
+
+	const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+		if (event.target === null)
 		{
-			document.cookie = 'activeLanguage='
+			return;
 		}
-		document.cookie = `activeLanguage=${event.target.value}`
-	}
 
-	useEffect(() => {
-		backendConnector.getLanguages().then((data) => {
-			setLanguages(data);
-		})
-	}, []);
+		if (event.target.value === '')
+		{
+			document.cookie = 'activeLanguage=';
+		}
+		else
+		{
+			document.cookie = `activeLanguage=${event.target.value}`;
+		}
+	};
 
-	if (!languages) {
+	useEffect(
+		(): void => {
+			backendConnector.getLanguages().then(
+				(languages: Language[]): void => {
+					setLanguages(languages);
+				}
+			);
+		},
+		[]
+	);
+
+	if (!languages)
+	{
 		return <Loading />;
 	}
 
@@ -37,13 +53,14 @@ const Home = () => {
 				<title>Irakur - Home</title>
 			</Helmet>
 			<h1>Irakur - Home</h1>
-			{/*select active language*/}
 			<select name="activeLanguage" id="activeLanguage" onChange={handleLanguageChange}>
 				<option value="">Select language</option>
 				{
-					languages.map((language: any) =>(
-						<option key={language.id} value={language.id}>{language.name}</option>
-					))
+					languages.map(
+						(language: Language) =>(
+							<option key={language.id} value={language.id}>{language.name}</option>
+						)
+					)
 				}
 			</select>
 			<br />

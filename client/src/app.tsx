@@ -1,19 +1,20 @@
-/* 
+/*
  * Irakur - Learn languages through immersion
  * Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Home } from './pages/home';
-import { Texts } from './pages/texts';
-import { AddText } from './pages/add-text';
-import { EditText } from './pages/edit-text';
-import { Languages } from './pages/languages';
-import { AddLanguage } from './pages/add-language';
-import { EditLanguage } from './pages/edit-language';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-const App = () => {
+import { AddLanguage } from './pages/add-language';
+import { AddText } from './pages/add-text';
+import { EditLanguage } from './pages/edit-language';
+import { EditText } from './pages/edit-text';
+import { Home } from './pages/home';
+import { Languages } from './pages/languages';
+import { Texts } from './pages/texts';
+
+const App = (): JSX.Element => {
 	return (
 		<BrowserRouter>
 			<Routes>
