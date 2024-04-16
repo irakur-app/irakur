@@ -100,8 +100,14 @@ const ReadText = (): JSX.Element => {
 				)
 			}
 			</div>
-			<button disabled={currentPage === 1} onClick={(): void => {loadPage(textId, 1)}}>Previous page</button>
-			<button disabled={currentPage === numberOfPages} onClick={(): void => {loadPage(textId, currentPage+1)}}>Next page</button>
+			<button
+				disabled={currentPage === 1}
+				onClick={(): void => {loadPage(textId, 1)}}
+			>Previous page</button>
+			<button
+				disabled={currentPage === numberOfPages}
+				onClick={(): void => {loadPage(textId, currentPage+1)}}
+			>Next page</button>
 			<Outlet />
 		</HelmetProvider>
 	);
