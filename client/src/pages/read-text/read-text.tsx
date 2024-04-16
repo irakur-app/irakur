@@ -12,6 +12,21 @@ import { ReducedWordData } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
+const statusStyles: Record<string, string> = {
+	'0': '#ADDFF4FF',
+	'1': '#F5B8A9FF',
+	'2': '#F5CCA9E5',
+	'3': '#F5E1A9BF',
+	'4': '#F5F3A99F',
+	'5': '#DDFFDD7F',
+	'99': '#FFFFFF00',
+	'98': '#FFFFFF00',
+}
+
+const getStyle = (status: number): string => {
+	return statusStyles[status.toString()] || '#FFFFFF00';
+}
+
 const ReadText = (): JSX.Element => {
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 
@@ -49,10 +64,22 @@ const ReadText = (): JSX.Element => {
 								<br key={index} />
 							)
 						}
-						else
+						else if (word.type === 'punctuation')
 						{
 							renderedElement = (
 								<span key={index}>{word.content}</span>
+							)
+						}
+						else
+						{
+							renderedElement = (
+								<span
+									key={index}
+									style={{
+										backgroundColor: getStyle(word.status??98),
+										borderRadius: ".25rem",
+									}}
+								>{word.content}</span>
 							)
 						}
 						return renderedElement;
