@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Language, Page, Text } from '@common/types';
+import { Language, Page, ReducedWordData, Text } from '@common/types';
 
 class BackendConnector
 {
@@ -247,6 +247,13 @@ class BackendConnector
 		const response: Response = await fetch('/api/texts/' + textId + '/pages');
 		const pages = (await response.json()).pages;
 		return pages;
+	}
+
+	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
+	{
+		const response: Response = await fetch('/api/texts/' + textId + '/pages/' + pageId + '/words');
+		const words = (await response.json()).words;
+		return words;
 	}
 }
 
