@@ -16,6 +16,7 @@ type Text = {
 	languageId: number;
 	title: string;
 	sourceUrl: string;
+	numberOfPages?: number;
 };
 
 type Page = {

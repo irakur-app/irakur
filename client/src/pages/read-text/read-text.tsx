@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'react-router-dom';
 
-import { ReducedWordData } from '@common/types';
+import { ReducedWordData, Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
@@ -28,22 +28,34 @@ const getStyle = (status: number): string => {
 }
 
 const ReadText = (): JSX.Element => {
+	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 
 	const textId = Number(document.location.pathname.split('/').pop());
+	const [numberOfPages, setNumberOfPages] = useState<number|null>(null);
+
+	const loadPage = (textId: number, pageId: number): void => {
+		backendConnector.getWords(textId, pageId).then(
+			(words: ReducedWordData[]): void => {
+				setWords(words);
+			}
+		);
+		setCurrentPage(pageId);
+	}
 
 	useEffect(
 		(): void => {
-			backendConnector.getWords(textId, 1).then(
-				(words: ReducedWordData[]): void => {
-					setWords(words);
+			backendConnector.getText(textId).then(
+				(text: Text): void => {
+					setNumberOfPages(text.numberOfPages??null);
 				}
-			);
+			)
+			loadPage(textId, currentPage);
 		},
 		[]
 	);
 
-	if (!words)
+	if (!words || !numberOfPages)
 	{
 		return <Loading />;
 	}
@@ -54,6 +66,7 @@ const ReadText = (): JSX.Element => {
 				<title>Irakur - Read</title>
 			</Helmet>
 
+			<div>
 			{
 				words.map(
 					(word: ReducedWordData, index: number) => {
@@ -86,6 +99,9 @@ const ReadText = (): JSX.Element => {
 					}
 				)
 			}
+			</div>
+			<button disabled={currentPage === 1} onClick={(): void => {loadPage(textId, 1)}}>Previous page</button>
+			<button disabled={currentPage === numberOfPages} onClick={(): void => {loadPage(textId, currentPage+1)}}>Next page</button>
 			<Outlet />
 		</HelmetProvider>
 	);
