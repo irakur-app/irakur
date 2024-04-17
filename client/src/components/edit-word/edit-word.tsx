@@ -58,6 +58,33 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 		[content]
 	);
 
+	const addEntry = (): void => {
+		const emptyEntry: Entry = {
+			meaning: '',
+			reading: '',
+		}
+
+		if (entries === null)
+		{
+			setEntries([emptyEntry]);
+		}
+		else
+		{
+			setEntries([...entries, emptyEntry]);
+		}
+	}
+
+	const deleteEntry = (index: number): void => {
+		if (entries !== null)
+		{
+			const newEntries = [...entries];
+			console.log(newEntries);
+			newEntries.splice(index, 1);
+			console.log(newEntries);
+			setEntries(newEntries);
+		}
+	}
+
 	if (isLoading)
 	{
 		return <Loading />;
@@ -72,18 +99,26 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 				value={
 					(content !== null) ? content : ''
 				}
+				readOnly
 			/>
+			<br />
 			{
 				(entries !== null) &&
 				entries.map(
-					(entry: Entry, index: number) => (
+					(entry: Entry, index: number) => {
+						console.log(entry.meaning);
+						return (
 						<EntryElement
 							key={index}
 							entry={entry}
+							deleteEntry={() => deleteEntry(index)}
 						/>
-					)
+					);
+					}
 				)
 			}
+			<button type="button" onClick={addEntry}>Add entry</button>
+			<br />
 			<input
 				type="text"
 				name="notes"
