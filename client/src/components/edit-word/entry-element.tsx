@@ -17,7 +17,6 @@ const EntryElement = ({ entry, deleteEntry }: { entry: Entry, deleteEntry: () =>
 				name="meaning"
 				placeholder="Meaning"
 				defaultValue={entry.meaning}
-				onChange={(e) => entry.meaning = e.target.value}
 			/>
 			<input
 				key={entry.reading}
@@ -25,7 +24,6 @@ const EntryElement = ({ entry, deleteEntry }: { entry: Entry, deleteEntry: () =>
 				name="reading"
 				placeholder="Reading"
 				defaultValue={entry.reading}
-				onChange={(e) => entry.reading = e.target.value}
 			/>
 			<button type="button" onClick={deleteEntry}>Delete entry</button>
 		</div>
