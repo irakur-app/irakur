@@ -4,17 +4,40 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'react-router-dom';
 
+import { Text } from '@common/types'
+import { backendConnector } from '../../backend-connector';
 import { EditWord } from '../../components/edit-word';
+import { Loading } from '../../components/loading';
 import { Reader } from '../../components/reader';
 
 const ReadText = (): JSX.Element => {
+	const [textData, setTextData] = useState<Text | null>(null);
+
+	useEffect(
+		(): void => {
+			const fetchTextData = async (): Promise<void> => {
+				const textId = Number(document.location.pathname.split('/').pop());
+				const text = await backendConnector.getText(textId);
+				setTextData(text);
+			}
+
+			fetchTextData();
+		},
+		[]
+	);
+	
+	if (!textData)
+	{
+		return <Loading />;
+	}
 	return (
 		<HelmetProvider>
 			<Helmet>
-				<title>Irakur - Read</title>
+				<title>Irakur - Read { textData.title }</title>
 			</Helmet>
 
 			<div style={{ display: 'flex', margin: '5%' }}>
