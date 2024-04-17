@@ -76,7 +76,7 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 				type="text"
 				name="notes"
 				placeholder="Notes"
-				value={
+				defaultValue={
 					(notes !== null) ? notes : ''
 				}
 			/>
