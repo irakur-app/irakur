@@ -41,12 +41,17 @@ class WordsController
 		return word;
 	}
 
-	async findWord(content: string, languageId: number): Promise<Word>
+	async findWord(content: string, languageId: number): Promise<Word | null>
 	{
-		const rawWord: RawWord = await databaseManager.getFirstRow(
+		const rawWord: RawWord | null = await databaseManager.getFirstRow(
 			queries.findWord,
 			[content, languageId]
 		);
+
+		if (!rawWord)
+		{
+			return null;
+		}
 
 		const word: Word = {
 			...rawWord,

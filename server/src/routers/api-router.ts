@@ -205,12 +205,19 @@ router.get(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			if (req.query.languageId !== undefined && req.query.content !== undefined)
 			{
-				res.json(
-					await wordsController.findWord(
-						req.query.content as string,
-						parseInt(req.query.languageId as string)
-					)
+				const word = await wordsController.findWord(
+					req.query.content as string,
+					parseInt(req.query.languageId as string)
 				);
+
+				if (word)
+				{
+					res.json(word);
+				}
+				else
+				{
+					res.sendStatus(404);
+				}
 			}
 			else
 			{
