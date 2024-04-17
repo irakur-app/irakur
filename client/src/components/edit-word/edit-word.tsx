@@ -4,8 +4,10 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 
+import { backendConnector } from '../../backend-connector';
+import { Loading } from '../loading';
 import { EntryElement } from './entry-element';
 
 const statusStyles: Record<string, string> = {
@@ -23,14 +25,61 @@ const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFF00';
 }
 
-const EditWord = (): JSX.Element => {
+const EditWord = ({ content, languageId }: { content: string | null, languageId: number }): JSX.Element => {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [notes, setNotes] = useState<string | null>(null);
+
+	useEffect(
+		(): void => {
+			const loadWord = async (): Promise<void> => {
+				setIsLoading(true);
+				if (content === null)
+				{
+					return;
+				}
+				const word = await backendConnector.findWord(content, languageId);
+				if (word)
+				{
+					setNotes(word.notes);
+				}
+				else
+				{
+					setNotes(null);
+				}
+				setIsLoading(false);
+			}
+
+			loadWord();
+		},
+		[content]
+	);
+
+	if (isLoading)
+	{
+		return <Loading />;
+	}
+
 	return (
 		<form>
-			<input type="text" name="content" placeholder="Word content" />
+			<input
+				type="text"
+				name="content"
+				placeholder="Word content"
+				value={
+					(content !== null) ? content : ''
+				}
+			/>
 			<br />
 			<EntryElement />
 			<br />
-			<input type="text" name="notes" placeholder="Notes" />
+			<input
+				type="text"
+				name="notes"
+				placeholder="Notes"
+				value={
+					(notes !== null) ? notes : ''
+				}
+			/>
 			<br />
 			<input type="submit" value="1" />
 			<input type="submit" value="2" />
@@ -44,3 +93,4 @@ const EditWord = (): JSX.Element => {
 };
 
 export { EditWord };
+

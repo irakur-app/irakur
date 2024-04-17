@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'react-router-dom';
 
-import { Text } from '@common/types'
+import { Text, Word } from '@common/types'
 import { backendConnector } from '../../backend-connector';
 import { EditWord } from '../../components/edit-word';
 import { Loading } from '../../components/loading';
@@ -16,6 +16,7 @@ import { Reader } from '../../components/reader';
 
 const ReadText = (): JSX.Element => {
 	const [textData, setTextData] = useState<Text | null>(null);
+	const [selectedWordContent, setSelectedWordContent] = useState<string | null>(null);
 
 	useEffect(
 		(): void => {
@@ -34,6 +35,11 @@ const ReadText = (): JSX.Element => {
 	{
 		return <Loading />;
 	}
+
+	const updateEditWord = (content: string): void => {
+		setSelectedWordContent(content);
+	};
+
 	return (
 		<HelmetProvider>
 			<Helmet>
@@ -51,7 +57,7 @@ const ReadText = (): JSX.Element => {
 					textAlign: 'justify',
 					paddingRight: '1%',
 				}}>
-					<Reader />
+					<Reader onWordClick={updateEditWord}/>
 				</div>
 				<div style={{
 					position: 'sticky',
@@ -60,7 +66,7 @@ const ReadText = (): JSX.Element => {
 					padding: '2%',
 					width: '20%',
 				}}>
-					<EditWord />
+					<EditWord content={selectedWordContent} languageId={textData.languageId}/>
 				</div>
 			</div>
 			<Outlet />

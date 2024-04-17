@@ -27,7 +27,7 @@ const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFF00';
 }
 
-const Reader = (): JSX.Element => {
+const Reader = ({ onWordClick }: { onWordClick: (content: string) => void }): JSX.Element => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 
@@ -87,7 +87,9 @@ const Reader = (): JSX.Element => {
 										style={{
 											backgroundColor: getStyle(word.status??98),
 											borderRadius: ".25rem",
+											cursor: "pointer",
 										}}
+										onClick={(): void => {onWordClick(word.content)}}
 									>{word.content}</span>
 								)
 							}
