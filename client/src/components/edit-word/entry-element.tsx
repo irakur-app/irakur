@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-const Entry = (): JSX.Element => {
+const EntryElement = (): JSX.Element => {
 	return (
 		<React.Fragment>
 			<input type="text" name="meaning" placeholder="Meaning" />
@@ -15,4 +15,4 @@ const Entry = (): JSX.Element => {
 	);
 };
 
-export { Entry };
+export { EntryElement };

@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import { Entry } from './entry';
+import { EntryElement } from './entry-element';
 
 const statusStyles: Record<string, string> = {
 	'0': '#ADDFF4FF',
@@ -28,7 +28,7 @@ const EditWord = (): JSX.Element => {
 		<form>
 			<input type="text" name="content" placeholder="Word content" />
 			<br />
-			<Entry />
+			<EntryElement />
 			<br />
 			<input type="text" name="notes" placeholder="Notes" />
 			<br />
