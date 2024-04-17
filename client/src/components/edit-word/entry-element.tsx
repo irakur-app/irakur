@@ -6,12 +6,24 @@
 
 import React from 'react';
 
-const EntryElement = (): JSX.Element => {
+import { Entry } from '@common/types';
+
+const EntryElement = ({ entry }: { entry: Entry }): JSX.Element => {
 	return (
-		<React.Fragment>
-			<input type="text" name="meaning" placeholder="Meaning" />
-			<input type="text" name="reading" placeholder="Reading" />
-		</React.Fragment>
+		<div style={{ marginTop: "0.5rem", marginBottom: "0.5rem" }}>
+			<input
+				type="text"
+				name="meaning"
+				placeholder="Meaning"
+				defaultValue={entry.meaning}
+			/>
+			<input
+				type="text"
+				name="reading"
+				placeholder="Reading"
+				defaultValue={entry.reading}
+			/>
+		</div>
 	);
 };
 

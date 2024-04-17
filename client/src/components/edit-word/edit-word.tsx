@@ -6,6 +6,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { Entry } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../loading';
 import { EntryElement } from './entry-element';
@@ -27,6 +28,7 @@ const getStyle = (status: number): string => {
 
 const EditWord = ({ content, languageId }: { content: string | null, languageId: number }): JSX.Element => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [entries, setEntries] = useState<Entry[] | null>(null);
 	const [notes, setNotes] = useState<string | null>(null);
 
 	useEffect(
@@ -41,10 +43,12 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 				if (word)
 				{
 					setNotes(word.notes);
+					setEntries(word.entries);
 				}
 				else
 				{
 					setNotes(null);
+					setEntries(null);
 				}
 				setIsLoading(false);
 			}
@@ -69,9 +73,17 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 					(content !== null) ? content : ''
 				}
 			/>
-			<br />
-			<EntryElement />
-			<br />
+			{
+				(entries !== null) &&
+				entries.map(
+					(entry: Entry, index: number) => (
+						<EntryElement
+							key={index}
+							entry={entry}
+						/>
+					)
+				)
+			}
 			<input
 				type="text"
 				name="notes"
