@@ -41,6 +41,21 @@ class WordsController
 		return word;
 	}
 
+	async findWord(content: string, languageId: number): Promise<Word>
+	{
+		const rawWord: RawWord = await databaseManager.getFirstRow(
+			queries.findWord,
+			[content, languageId]
+		);
+
+		const word: Word = {
+			...rawWord,
+			entries: JSON.parse(rawWord.entries)
+		};
+
+		return word;
+	}
+
 	async deleteWord(wordId: number): Promise<void>
 	{
 		await databaseManager.executeQuery(

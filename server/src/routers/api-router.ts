@@ -200,6 +200,26 @@ router.patch(
 
 //#region Words
 router.get(
+	'/words/',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			if (req.query.languageId !== undefined && req.query.content !== undefined)
+			{
+				res.json(
+					await wordsController.findWord(
+						req.query.content as string,
+						parseInt(req.query.languageId as string)
+					)
+				);
+			}
+			else
+			{
+				res.sendStatus(500);
+			}
+		}
+	)
+);
+router.get(
 	'/words/:wordId',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
