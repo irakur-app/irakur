@@ -70,7 +70,7 @@ const Reader = (): JSX.Element => {
 							if (word.content === '\n')
 							{
 								renderedElement = (
-									<br key={index} />
+									<br key={index} style={{ marginBottom: "1rem" }}/>
 								)
 							}
 							else if (word.type === 'punctuation')
