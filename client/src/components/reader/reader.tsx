@@ -102,7 +102,7 @@ const Reader = ({ onWordClick }: { onWordClick: (content: string) => void }): JS
 			<div>
 				<button
 					disabled={currentPage === 1}
-					onClick={(): void => {loadPage(textId, 1)}}
+					onClick={(): void => {loadPage(textId, currentPage-1)}}
 				>Previous page</button>
 				<button
 					disabled={currentPage === numberOfPages}
