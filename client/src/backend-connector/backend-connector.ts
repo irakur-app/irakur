@@ -292,6 +292,38 @@ class BackendConnector
 		return response.ok;
 	}
 
+	async addWordsInBatch(languageId: number, contents: string[], status: number, datetimeAdded: string): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/words/batch',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						languageId,
+						contents,
+						status,
+						datetimeAdded,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to add words');
+		}
+		else
+		{
+			console.log('Words added');
+		}
+
+		return response.ok;
+	}
+
 	async editWord(
 		id: number,
 		status: number,

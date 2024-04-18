@@ -57,7 +57,7 @@ const ReadText = (): JSX.Element => {
 					textAlign: 'justify',
 					paddingRight: '1%',
 				}}>
-					<Reader onWordClick={updateEditWord}/>
+					<Reader languageId={textData.languageId} onWordClick={updateEditWord}/>
 				</div>
 				<div style={{
 					position: 'sticky',

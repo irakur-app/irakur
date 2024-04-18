@@ -27,7 +27,7 @@ const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFF00';
 }
 
-const Reader = ({ onWordClick }: { onWordClick: (content: string) => void }): JSX.Element => {
+const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: (content: string) => void }): JSX.Element => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 
@@ -41,6 +41,44 @@ const Reader = ({ onWordClick }: { onWordClick: (content: string) => void }): JS
 			}
 		);
 		setCurrentPage(pageId);
+	}
+
+	const addWordsInBatch = async (state: number): Promise<void> => {
+		// make an array of words whose status is 0
+		let newWordContents: string[] = words!.filter(
+			(word: ReducedWordData): boolean => {
+				return word.status === 0;
+			}
+		).map(
+			(word: ReducedWordData): string => {
+				return word.content.toLowerCase();
+			}
+		);
+
+		if (newWordContents.length === 0)
+		{
+			return;
+		}
+
+		newWordContents = [...new Set(newWordContents)];
+
+		console.log(newWordContents);
+
+		await backendConnector.addWordsInBatch(languageId, newWordContents, state, new Date().toISOString()).then(
+			(): void => {
+				for (const content of newWordContents)
+				{
+					const wordElements = document.getElementsByClassName(
+						'word-' + content?.toLowerCase()
+					) as HTMLCollectionOf<HTMLElement>;
+					
+					for (let i = 0; i < wordElements.length; i++)
+					{
+						wordElements[i].style.backgroundColor = getStyle(state);
+					}
+				}
+			}
+		);
 	}
 
 	useEffect(
@@ -106,7 +144,12 @@ const Reader = ({ onWordClick }: { onWordClick: (content: string) => void }): JS
 				>Previous page</button>
 				<button
 					disabled={currentPage === numberOfPages}
-					onClick={(): void => {loadPage(textId, currentPage+1)}}
+					onClick={
+						async (): Promise<void> => {
+							await addWordsInBatch(99);
+							loadPage(textId, currentPage+1);
+						}
+					}
 				>Next page</button>
 			</div>
 		</div>
