@@ -251,6 +251,20 @@ router.post(
 		}
 	)
 );
+router.post(
+	'/words/batch',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			await wordsController.addWordsInBatch(
+				req.body.languageId,
+				req.body.contents,
+				req.body.status,
+				req.body.datetimeAdded
+			);
+			res.sendStatus(200);
+		}
+	)
+)
 router.delete(
 	'/words/:wordId',
 	errorWrapper(

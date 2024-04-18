@@ -87,6 +87,17 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:5000/api/words/batch
+Content-Type: application/json
+
+{
+	"languageId": 26,
+	"contents": ["y", "la", "que", "en"],
+	"status": 99,
+	"datetimeAdded": "2024-04-18T21:46:39"
+}
+
+###
 PATCH http://localhost:5000/api/words/1
 Content-Type: application/json
 

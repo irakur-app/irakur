@@ -26,6 +26,19 @@ class WordsController
 		);
 	}
 
+	async addWordsInBatch(
+		languageId: number,
+		contents: string[],
+		status: number,
+		datetimeAdded: string
+	): Promise<void>
+	{
+		for (const content of contents)
+		{
+			await this.addWord(languageId, content, status, [], "", datetimeAdded, datetimeAdded);
+		}
+	}
+
 	async getWord(wordId: number): Promise<Word>
 	{
 		const rawWord: RawWord = await databaseManager.getFirstRow(
