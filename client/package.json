@@ -42,5 +42,8 @@
 			"last 1 safari version"
 		]
 	},
-	"type": "module"
+	"type": "module",
+	"devDependencies": {
+		"@types/uuid": "^9.0.8"
+	}
 }
