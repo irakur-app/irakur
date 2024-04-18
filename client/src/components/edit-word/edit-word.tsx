@@ -120,9 +120,10 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 				type="text"
 				name="notes"
 				placeholder="Notes"
-				defaultValue={
+				value={
 					(notes !== null) ? notes : ''
 				}
+				onChange={e => setNotes(e.target.value)}
 			/>
 			<br />
 			<input type="submit" value="1" />
