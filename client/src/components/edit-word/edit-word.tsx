@@ -27,7 +27,7 @@ const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFF00';
 }
 
-const EditWord = ({ content, languageId }: { content: string | null, languageId: number }): JSX.Element => {
+const EditWord = ({ content, languageId, onWordUpdate }: { content: string | null, languageId: number, onWordUpdate: (content: string, status: number) => void }): JSX.Element => {
 	const [isNewWord, setIsNewWord] = useState<boolean>(content === null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [notification, setNotification] = useState<string | null>(null);
@@ -97,14 +97,14 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>): Promise<void> => {
 		e.preventDefault();
 		
-		const state: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
+		const status: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
 		
 		if (isNewWord)
 		{
 			await backendConnector.addWord(
 				languageId,
 				content as string,
-				state,
+				status,
 				entries ?? [],
 				notes ?? '',
 				new Date().toISOString(),
@@ -115,7 +115,7 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 		{
 			await backendConnector.editWord(
 				id as number,
-				state,
+				status,
 				entries ?? [],
 				notes ?? '',
 				new Date().toISOString()
@@ -124,14 +124,7 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 
 		setNotification('Word ' + (isNewWord ? 'added' : 'updated'));
 
-		const wordElements = document.getElementsByClassName(
-			'word-' + content?.toLowerCase()
-		) as HTMLCollectionOf<HTMLElement>;
-		
-		for (let i = 0; i < wordElements.length; i++)
-		{
-			wordElements[i].style.backgroundColor = getStyle(state);
-		}
+		onWordUpdate(content!, status);
 	};
 
 	if (isLoading)

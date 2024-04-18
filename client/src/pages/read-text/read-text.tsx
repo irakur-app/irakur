@@ -17,6 +17,10 @@ import { Reader } from '../../components/reader';
 const ReadText = (): JSX.Element => {
 	const [textData, setTextData] = useState<Text | null>(null);
 	const [selectedWordContent, setSelectedWordContent] = useState<string | null>(null);
+	const [
+		selectedWordUpdateCallback,
+		setSelectedWordUpdateCallback
+	] = useState<(() => (content: string, status: number) => void) | null>(null);
 
 	useEffect(
 		(): void => {
@@ -36,8 +40,9 @@ const ReadText = (): JSX.Element => {
 		return <Loading />;
 	}
 
-	const updateEditWord = (content: string): void => {
+	const updateEditWord = (content: string, onWordUpdate: () => (content: string, status: number) => void): void => {
 		setSelectedWordContent(content);
+		setSelectedWordUpdateCallback(onWordUpdate);
 	};
 
 	return (
@@ -66,7 +71,11 @@ const ReadText = (): JSX.Element => {
 					padding: '2%',
 					width: '20%',
 				}}>
-					<EditWord content={selectedWordContent} languageId={textData.languageId}/>
+					<EditWord
+						content={selectedWordContent}
+						onWordUpdate={selectedWordUpdateCallback || (() => {console.log('no callback');})}
+						languageId={textData.languageId}
+					/>
 				</div>
 			</div>
 			<Outlet />

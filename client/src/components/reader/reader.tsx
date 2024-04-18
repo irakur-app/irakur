@@ -27,7 +27,15 @@ const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFF00';
 }
 
-const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: (content: string) => void }): JSX.Element => {
+const Reader = (
+	{
+		languageId,
+		onWordClick
+	}: {
+		languageId: number,
+		onWordClick: (content: string, onWordUpdate: () => (content: string, status: number) => void) => void
+	}
+): JSX.Element => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 
@@ -43,11 +51,20 @@ const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: 
 		setCurrentPage(pageId);
 	}
 
-	const addWordsInBatch = async (state: number): Promise<void> => {
-		// make an array of words whose status is 0
-		let newWordContents: string[] = words!.filter(
+	const addWordsInBatch = async (
+		status: number,
+		lastIndex: number | null,
+		contentException: string | null
+	): Promise<void> => {
+		if (lastIndex === null)
+		{
+			lastIndex = words!.length;
+		}
+		const wordBank = words?.slice(0, lastIndex);
+
+		let newWordContents: string[] = wordBank!.filter(
 			(word: ReducedWordData): boolean => {
-				return word.status === 0;
+				return word.status === 0 && word.content !== contentException;
 			}
 		).map(
 			(word: ReducedWordData): string => {
@@ -62,9 +79,18 @@ const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: 
 
 		newWordContents = [...new Set(newWordContents)];
 
-		console.log(newWordContents);
+		const updatedWords = words;
+		for (const word of updatedWords!)
+		{
+			if (newWordContents.includes(word.content.toLowerCase()) && word.type === "word")
+			{
+				console.log(word.content);
+				word.status = status;
+			}
+		}
+		setWords(updatedWords);
 
-		await backendConnector.addWordsInBatch(languageId, newWordContents, state, new Date().toISOString()).then(
+		await backendConnector.addWordsInBatch(languageId, newWordContents, status, new Date().toISOString()).then(
 			(): void => {
 				for (const content of newWordContents)
 				{
@@ -74,12 +100,38 @@ const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: 
 					
 					for (let i = 0; i < wordElements.length; i++)
 					{
-						wordElements[i].style.backgroundColor = getStyle(state);
+						wordElements[i].style.backgroundColor = getStyle(status);
 					}
 				}
 			}
 		);
 	}
+
+	const onWordUpdate = (index: number, content: string, status: number): void => {
+		//console.log(words);
+
+		const updatedWords = words;
+		for (const word of updatedWords!)
+		{
+			if (word.content.toLowerCase() === content.toLowerCase())
+			{
+				word.status = status;
+			}
+		}
+
+		setWords(updatedWords);
+
+		const wordElements = document.getElementsByClassName(
+			'word-' + content?.toLowerCase()
+		) as HTMLCollectionOf<HTMLElement>;
+		
+		for (let i = 0; i < wordElements.length; i++)
+		{
+			wordElements[i].style.backgroundColor = getStyle(status);
+		}
+
+		addWordsInBatch(99, index, content);
+	};
 
 	useEffect(
 		(): void => {
@@ -128,7 +180,16 @@ const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: 
 											borderRadius: ".25rem",
 											cursor: "pointer",
 										}}
-										onClick={(): void => {onWordClick(word.content)}}
+										onClick={
+											(): void => {
+												onWordClick(
+													word.content,
+													() => (content: string, status: number) => {
+														onWordUpdate(index, content, status);
+													}
+												);
+											}
+										}
 									>{word.content}</span>
 								)
 							}
@@ -146,7 +207,7 @@ const Reader = ({ languageId, onWordClick }: { languageId: number, onWordClick: 
 					disabled={currentPage === numberOfPages}
 					onClick={
 						async (): Promise<void> => {
-							await addWordsInBatch(99);
+							await addWordsInBatch(99, null, null);
 							loadPage(textId, currentPage+1);
 						}
 					}
