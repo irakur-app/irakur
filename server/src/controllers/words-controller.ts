@@ -33,10 +33,22 @@ class WordsController
 		datetimeAdded: string
 	): Promise<void>
 	{
+		const valueList: string[] = [];
 		for (const content of contents)
 		{
-			await this.addWord(languageId, content, status, [], "", datetimeAdded, datetimeAdded);
+			valueList.push(
+				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}')`
+			)
 		}
+
+		const dynamicQuery: string = queries.addWordsInBatch.replace(
+			/\%DYNAMIC\%/,
+			(): string => {
+				return valueList.join(', ');
+			}
+		);
+
+		await databaseManager.executeQuery(dynamicQuery);
 	}
 
 	async getWord(wordId: number): Promise<Word>

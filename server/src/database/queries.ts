@@ -153,6 +153,16 @@ const queries: { [key: string]: string } = {
 			datetime_updated
 		)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`,
+	addWordsInBatch: `INSERT INTO word (
+			language_id,
+			content,
+			status,
+			entries,
+			notes,
+			datetime_added,
+			datetime_updated
+		)
+		VALUES %DYNAMIC%`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,
 	editWord: `UPDATE word SET %DYNAMIC% WHERE id = ?`,
 	//#endregion
