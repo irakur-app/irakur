@@ -100,6 +100,7 @@ const Reader = (
 					
 					for (let i = 0; i < wordElements.length; i++)
 					{
+						wordElements[i].style.transition = "background-color 2s ease-out";
 						wordElements[i].style.backgroundColor = getStyle(status);
 					}
 				}
@@ -127,6 +128,7 @@ const Reader = (
 		
 		for (let i = 0; i < wordElements.length; i++)
 		{
+			wordElements[i].style.transition = "background-color 0.3s ease-out";
 			wordElements[i].style.backgroundColor = getStyle(status);
 		}
 
@@ -141,6 +143,15 @@ const Reader = (
 				}
 			)
 			loadPage(textId, currentPage);
+
+			// For some reason, the first animation glitches.
+			// We force this invisible animation so the subsequent ones work.
+			const animationFixers = (document.getElementsByClassName('animation-fixer') as HTMLCollectionOf<HTMLElement>);
+			if(animationFixers.length > 0)
+			{
+				animationFixers[0].style.transition = "background-color 0.5s ease-out";
+				animationFixers[0].style.backgroundColor = getStyle(99);
+			}
 		},
 		[]
 	);
@@ -152,6 +163,7 @@ const Reader = (
 
 	return (
 		<div>
+			<span className="animation-fixer" style={{ backgroundColor: getStyle(98) }}></span>
 			<div>
 				{
 					words.map(
