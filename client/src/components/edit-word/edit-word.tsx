@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { Entry } from '@common/types';
@@ -105,11 +105,13 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 				(entries !== null) &&
 				entries.map(
 					(entry: Entry, index: number) => (
-						<EntryElement
-							key={uuid()}
-							entry={entry}
-							deleteEntry={() => deleteEntry(index)}
-						/>
+						<React.Fragment>
+							<EntryElement
+								key={uuid()}
+								entry={entry}
+							/>
+							<button type="button" onClick={() => deleteEntry(index)}>Delete entry</button>
+						</React.Fragment>
 					)
 				)
 			}

@@ -8,7 +8,7 @@ import React from 'react';
 
 import { Entry } from '@common/types';
 
-const EntryElement = ({ entry, deleteEntry }: { entry: Entry, deleteEntry: () => void }): JSX.Element => {
+const EntryElement = ({ entry }: { entry: Entry }): JSX.Element => {
 	return (
 		<div style={{ marginTop: "0.5rem", marginBottom: "0.5rem" }}>
 			<input
@@ -25,7 +25,6 @@ const EntryElement = ({ entry, deleteEntry }: { entry: Entry, deleteEntry: () =>
 				defaultValue={entry.reading}
 				onChange={(e) => entry.reading = e.target.value}
 			/>
-			<button type="button" onClick={deleteEntry}>Delete entry</button>
 		</div>
 	);
 };
