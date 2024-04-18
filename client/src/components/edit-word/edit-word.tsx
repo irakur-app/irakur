@@ -28,7 +28,11 @@ const getStyle = (status: number): string => {
 }
 
 const EditWord = ({ content, languageId }: { content: string | null, languageId: number }): JSX.Element => {
+	const [isNewWord, setIsNewWord] = useState<boolean>(content === null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [notification, setNotification] = useState<string | null>(null);
+
+	const [id, setId] = useState<number | null>(null);
 	const [entries, setEntries] = useState<Entry[] | null>(null);
 	const [notes, setNotes] = useState<string | null>(null);
 
@@ -36,6 +40,7 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 		(): void => {
 			const loadWord = async (): Promise<void> => {
 				setIsLoading(true);
+				setNotification(null);
 				if (content === null)
 				{
 					return;
@@ -43,11 +48,15 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 				const word = await backendConnector.findWord(content, languageId);
 				if (word)
 				{
+					setIsNewWord(false);
+					setId(word.id);
 					setNotes(word.notes);
 					setEntries(word.entries);
 				}
 				else
 				{
+					setIsNewWord(true);
+					setId(null);
 					setNotes(null);
 					setEntries(null);
 				}
@@ -85,13 +94,44 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 		}
 	};
 
+	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>): Promise<void> => {
+		e.preventDefault();
+		
+		const state: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
+		
+		if (isNewWord)
+		{
+			await backendConnector.addWord(
+				languageId,
+				content as string,
+				state,
+				entries ?? [],
+				notes ?? '',
+				new Date().toISOString(),
+				new Date().toISOString()
+			);
+		}
+		else
+		{
+			await backendConnector.editWord(
+				id as number,
+				state,
+				entries ?? [],
+				notes ?? '',
+				new Date().toISOString()
+			);
+		}
+
+		setNotification('Word ' + (isNewWord ? 'added' : 'updated'));
+	};
+
 	if (isLoading)
 	{
 		return <Loading />;
 	}
 
 	return (
-		<form>
+		<form onSubmit={handleSubmit}>
 			<input
 				type="text"
 				name="content"
@@ -135,6 +175,7 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 			<input type="submit" value="5" />
 			<input type="submit" value="99" />
 			<input type="submit" value="98" />
+			{notification && <p>{notification}</p>}
 		</form>
 	);
 };

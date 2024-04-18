@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Language, Page, ReducedWordData, Text, Word } from '@common/types';
+import { Entry, Language, Page, ReducedWordData, Text, Word } from '@common/types';
 
 class BackendConnector
 {
@@ -247,6 +247,87 @@ class BackendConnector
 		const response: Response = await fetch('/api/texts/' + textId + '/pages');
 		const pages = (await response.json()).pages;
 		return pages;
+	}
+
+	async addWord(
+		languageId: number,
+		content: string,
+		status: number,
+		entries: Entry[],
+		notes: string,
+		datetimeAdded: string,
+		datetimeUpdated: string
+	): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/words',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						languageId,
+						content,
+						status,
+						entries,
+						notes,
+						datetimeAdded,
+						datetimeUpdated,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to add word');
+		}
+		else
+		{
+			console.log('Word added');
+		}
+
+		return response.ok;
+	}
+
+	async editWord(
+		id: number,
+		status: number,
+		entries: Entry[],
+		notes: string,
+		datetimeUpdated: string
+	): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/words/' + id,
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						status,
+						entries,
+						notes,
+						datetimeUpdated,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to edit word');
+		}
+		else
+		{
+			console.log('Word edited');
+		}
+
+		return response.ok;
 	}
 
 	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
