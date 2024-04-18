@@ -84,6 +84,7 @@ const Reader = ({ onWordClick }: { onWordClick: (content: string) => void }): JS
 								renderedElement = (
 									<span
 										key={index}
+										className={"word-" + word.content.toLowerCase()}
 										style={{
 											backgroundColor: getStyle(word.status??98),
 											borderRadius: ".25rem",

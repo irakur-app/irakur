@@ -123,6 +123,15 @@ const EditWord = ({ content, languageId }: { content: string | null, languageId:
 		}
 
 		setNotification('Word ' + (isNewWord ? 'added' : 'updated'));
+
+		const wordElements = document.getElementsByClassName(
+			'word-' + content?.toLowerCase()
+		) as HTMLCollectionOf<HTMLElement>;
+		
+		for (let i = 0; i < wordElements.length; i++)
+		{
+			wordElements[i].style.backgroundColor = getStyle(state);
+		}
 	};
 
 	if (isLoading)
