@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'react-router-dom';
 
-import { Text, Word } from '@common/types'
+import { Language, Text, Word } from '@common/types'
 import { backendConnector } from '../../backend-connector';
 import { EditWord } from '../../components/edit-word';
 import { Loading } from '../../components/loading';
@@ -16,6 +16,7 @@ import { Reader } from '../../components/reader';
 
 const ReadText = (): JSX.Element => {
 	const [textData, setTextData] = useState<Text | null>(null);
+	const [languageData, setLanguageData] = useState<Language | null>(null);
 	const [selectedWordContent, setSelectedWordContent] = useState<string | null>(null);
 	const [
 		selectedWordUpdateCallback,
@@ -34,8 +35,23 @@ const ReadText = (): JSX.Element => {
 		},
 		[]
 	);
+
+	useEffect(
+		(): void => {
+			const fetchLanguageData = async (languageId: number): Promise<void> => {
+				const language = await backendConnector.getLanguage(languageId);
+				setLanguageData(language);
+			}
+
+			if (textData)
+			{
+				fetchLanguageData(textData.languageId);
+			}
+		},
+		[textData]
+	);
 	
-	if (!textData)
+	if (!textData || !languageData)
 	{
 		return <Loading />;
 	}
@@ -62,7 +78,11 @@ const ReadText = (): JSX.Element => {
 					textAlign: 'justify',
 					paddingRight: '1%',
 				}}>
-					<Reader languageId={textData.languageId} onWordClick={updateEditWord}/>
+					<Reader
+						languageId={textData.languageId}
+						shouldShowSpaces={languageData.shouldShowSpaces}
+						onWordClick={updateEditWord}
+					/>
 				</div>
 				<div style={{
 					position: 'sticky',

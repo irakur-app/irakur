@@ -30,9 +30,11 @@ const getStyle = (status: number): string => {
 const Reader = (
 	{
 		languageId,
+		shouldShowSpaces,
 		onWordClick
 	}: {
 		languageId: number,
+		shouldShowSpaces: boolean,
 		onWordClick: (content: string, onWordUpdate: () => (content: string, status: number) => void) => void
 	}
 ): JSX.Element => {
@@ -156,6 +158,17 @@ const Reader = (
 		[]
 	);
 
+	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
+	const spaceRender: JSX.Element = (shouldShowSpaces) ? <span>&nbsp;</span> : (
+		<span
+			style={{
+				fontSize: 0,
+			}}
+		>
+			{' '}
+		</span>
+	);
+
 	if (!words || !numberOfPages)
 	{
 		return <Loading />;
@@ -169,7 +182,11 @@ const Reader = (
 					words.map(
 						(word: ReducedWordData, index: number) => {
 							let renderedElement;
-							if (word.content === '\n')
+							if (word.content === ' ')
+							{
+								renderedElement = spaceRender;
+							}
+							else if (word.content === '\n')
 							{
 								renderedElement = (
 									<br key={index} style={{ marginBottom: "1rem" }}/>
