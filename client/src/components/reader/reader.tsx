@@ -148,7 +148,7 @@ const Reader = (
 
 			// For some reason, the first animation glitches.
 			// We force this invisible animation so the subsequent ones work.
-			const animationFixers = (document.getElementsByClassName('animation-fixer') as HTMLCollectionOf<HTMLElement>);
+			const animationFixers = document.getElementsByClassName('animation-fixer') as HTMLCollectionOf<HTMLElement>;
 			if(animationFixers.length > 0)
 			{
 				animationFixers[0].style.transition = "background-color 0.5s ease-out";
