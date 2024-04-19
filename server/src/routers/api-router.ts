@@ -26,6 +26,7 @@ const errorWrapper = (handler: express.RequestHandler): express.RequestHandler =
 		}
 		catch (error)
 		{
+			console.error(error);
 			res.sendStatus(500);
 		}
 	};
