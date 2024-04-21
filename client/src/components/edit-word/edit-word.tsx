@@ -191,6 +191,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 							>
 								<div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", width: "90%" }}>
 									<EntryElement
+										key={uuid()}
 										entry={entry}
 									/>
 								</div>
@@ -250,6 +251,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 				[1, 2, 3, 4, 5, 99, 98].map(
 					(buttonStatus: number) => (
 						<button
+							key={uuid()}
 							type="submit"
 							value={buttonStatus.toString()}
 							style={{

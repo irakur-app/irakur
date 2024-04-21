@@ -159,21 +159,32 @@ const Reader = (
 	);
 
 	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
-	const spaceRender: JSX.Element = (shouldShowSpaces) ? <span>{' '}</span> : (
-		<span
-			style={{
-				fontSize: 0,
-			}}
-		>
-			{' '}
-		</span>
-	);
+	const spaceRender = (index: number): JSX.Element  =>
+	{
+		if (shouldShowSpaces)
+		{
+			return <span key={index}>{' '}</span>;
+		}
+		else
+		{
+			return (
+				<span
+					key={index}
+					style={{
+						fontSize: 0,
+					}}
+				>
+					{' '}
+				</span>
+			);
+		}
+	};
 
 	const renderWord = (word: ReducedWordData, index: number): JSX.Element => {
 		let renderedElement;
 		if (word.content === ' ')
 		{
-			renderedElement = spaceRender;
+			renderedElement = spaceRender(index);
 		}
 		else if (word.content === '\n')
 		{
