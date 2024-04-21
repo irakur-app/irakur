@@ -158,6 +158,15 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 				value={
 					(content !== null) ? content : ''
 				}
+				style={{
+					backgroundColor: "transparent",
+					border: "none",
+					borderBottom: "1px solid black",
+					fontSize: "1.5rem",
+					width: "100%",
+					textAlign: "center",
+					marginBottom: "1rem",
+				}}
 				readOnly
 			/>
 			{
