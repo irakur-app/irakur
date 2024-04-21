@@ -124,6 +124,8 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 
 		setNotification('Word ' + (isNewWord ? 'added' : 'updated'));
 
+		setIsNewWord(false);
+
 		onWordUpdate(content!, status);
 	};
 
