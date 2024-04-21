@@ -169,6 +169,45 @@ const Reader = (
 		</span>
 	);
 
+	const renderWord = (word: ReducedWordData, index: number): JSX.Element => {
+		let renderedElement;
+		if (word.content === ' ')
+		{
+			renderedElement = spaceRender;
+		}
+		else if (word.content === '\n')
+		{
+			renderedElement = <br key={index} style={{ marginBottom: "1rem" }}/>;
+		}
+		else if (word.type === 'punctuation')
+		{
+			renderedElement = <span key={index}>{word.content}</span>;
+		}
+		else
+		{
+			const onWordUpdateCallback = () => (content: string, status: number) => {
+				onWordUpdate(index, content, status);
+			}
+			renderedElement = (
+				<span
+					key={index}
+					className={"word-" + word.content.toLowerCase()}
+					style={{
+						backgroundColor: getStyle(word.status??98),
+						borderRadius: ".25rem",
+						cursor: "pointer",
+					}}
+					onClick={
+						(): void => {
+							onWordClick(word.content, onWordUpdateCallback);
+						}
+					}
+				>{word.content}</span>
+			);
+		}
+		return renderedElement;
+	}
+
 	if (!words || !numberOfPages)
 	{
 		return <Loading />;
@@ -179,52 +218,7 @@ const Reader = (
 			<span className="animation-fixer" style={{ backgroundColor: getStyle(98) }}></span>
 			<div>
 				{
-					words.map(
-						(word: ReducedWordData, index: number) => {
-							let renderedElement;
-							if (word.content === ' ')
-							{
-								renderedElement = spaceRender;
-							}
-							else if (word.content === '\n')
-							{
-								renderedElement = (
-									<br key={index} style={{ marginBottom: "1rem" }}/>
-								)
-							}
-							else if (word.type === 'punctuation')
-							{
-								renderedElement = (
-									<span key={index}>{word.content}</span>
-								)
-							}
-							else
-							{
-								renderedElement = (
-									<span
-										key={index}
-										className={"word-" + word.content.toLowerCase()}
-										style={{
-											backgroundColor: getStyle(word.status??98),
-											borderRadius: ".25rem",
-											cursor: "pointer",
-										}}
-										onClick={
-											(): void => {
-												onWordClick(
-													word.content,
-													() => (content: string, status: number) => {
-														onWordUpdate(index, content, status);
-													}
-												);
-											}
-										}
-									>{word.content}</span>
-								)
-							}
-							return renderedElement;
-						}
-					)
+					words.map(renderWord)
 				}
 			</div>
 			<div>
