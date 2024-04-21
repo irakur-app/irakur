@@ -159,7 +159,7 @@ const Reader = (
 	);
 
 	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
-	const spaceRender: JSX.Element = (shouldShowSpaces) ? <span>&nbsp;</span> : (
+	const spaceRender: JSX.Element = (shouldShowSpaces) ? <span>{' '}</span> : (
 		<span
 			style={{
 				fontSize: 0,
