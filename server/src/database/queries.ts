@@ -143,6 +143,20 @@ const queries: { [key: string]: string } = {
 			datetime_updated AS datetimeUpdated
 		FROM word
 		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
+	findWordsInBatch: `WITH input_words(content) AS (VALUES %DYNAMIC%)
+		SELECT
+			input_words.content AS content,
+			status,
+			CASE 
+				WHEN
+					NOT input_words.content GLOB '*[ :;,.¿?¡!(){}''"\-=。、！？：；「」『』（）　…＝・’“”—0123456789]*'
+					AND NOT input_words.content LIKE '%[%'
+					AND NOT input_words.content LIKE '%]%'
+				THEN 'word'
+				ELSE 'punctuation'
+			END AS type
+		FROM input_words
+		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = ?`,
 	addWord: `INSERT INTO word (
 			language_id,
 			content,

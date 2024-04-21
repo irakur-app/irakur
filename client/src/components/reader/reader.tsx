@@ -66,7 +66,7 @@ const Reader = (
 
 		let newWordContents: string[] = wordBank!.filter(
 			(word: ReducedWordData): boolean => {
-				return word.status === 0 && word.content !== contentException;
+				return (word.status === 0 || word.status === null) && word.content !== contentException && word.type === "word";
 			}
 		).map(
 			(word: ReducedWordData): string => {
@@ -193,7 +193,7 @@ const Reader = (
 					key={index}
 					className={"word-" + word.content.toLowerCase()}
 					style={{
-						backgroundColor: getStyle(word.status??98),
+						backgroundColor: getStyle(word.status ?? 0),
 						borderRadius: ".25rem",
 						cursor: "pointer",
 					}}

@@ -27,7 +27,7 @@ type Page = {
 
 type ReducedWordData = {
 	content: string;
-	status?: number;
+	status: number | null;
 	type: string;
 };
 

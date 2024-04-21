@@ -71,27 +71,20 @@ class PagesController
 
 		const items: string[] = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
 			.filter((sentence: string) => sentence !== '');
-		const wordData: ReducedWordData[] = [];
-		for (const word of items)
-		{
-			if (!this.isWord(word))
-			{
-				wordData.push({ content: word, type: 'punctuation' });
-				continue;
+		
+		const dynamicQuery: string = queries.findWordsInBatch.replace(
+			/\%DYNAMIC\%/,
+			(): string => {
+				return items.map((item: string): string => {
+					return `('${item.replace(/'/g, "''")}')`;
+				}).join(', ');
 			}
-			const wordRow: Word = await databaseManager.getFirstRow(
-				queries.findWord,
-				[word, languageId]
-			);
-			if (!wordRow)
-			{
-				wordData.push({ content: word, status: 0, type: 'word' });
-			}
-			else
-			{
-				wordData.push({ content: word, status: wordRow.status, type: 'word' });
-			}
-		}
+		);
+		
+		const wordData: ReducedWordData[] = await databaseManager.executeQuery(
+			dynamicQuery,
+			[languageId]
+		);
 
 		return wordData;
 	}
