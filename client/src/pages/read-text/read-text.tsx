@@ -10,6 +10,7 @@ import { Outlet } from 'react-router-dom';
 
 import { Language, Text, Word } from '@common/types'
 import { backendConnector } from '../../backend-connector';
+import { Dictionary } from '../../components/dictionary';
 import { EditWord } from '../../components/edit-word';
 import { Loading } from '../../components/loading';
 import { Reader } from '../../components/reader';
@@ -96,6 +97,9 @@ const ReadText = (): JSX.Element => {
 						onWordUpdate={selectedWordUpdateCallback || (() => {console.log('no callback');})}
 						languageId={textData.languageId}
 					/>
+					<div style={{ width: '100%', height: '100%' }}>
+						<Dictionary url={languageData.dictionaryUrl.replace('%s', selectedWordContent || '')}/>
+					</div>
 				</div>
 			</div>
 			<Outlet />
