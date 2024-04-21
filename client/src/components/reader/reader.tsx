@@ -4,9 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useEffect, useState } from 'react';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { Outlet } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import { ReducedWordData, Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
@@ -40,9 +39,25 @@ const Reader = (
 ): JSX.Element => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
+	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
 
 	const textId = Number(document.location.pathname.split('/').pop());
 	const [numberOfPages, setNumberOfPages] = useState<number|null>(null);
+
+	const ref = useRef<HTMLDivElement>(null);
+
+	console.log("Rendered JSX:", ref.current); // Check if ref.current is null even before the useEffect
+	
+	ref.current?.addEventListener(
+		'mousedown',
+		(): void => {
+			console.log("mousedown");
+			if (selectedWord !== null) {
+				selectedWord.style.boxShadow = "none";
+			}
+			setSelectedWord(null);
+		}
+	);
 
 	const loadPage = (textId: number, pageId: number): void => {
 		backendConnector.getWords(textId, pageId).then(
@@ -199,9 +214,11 @@ const Reader = (
 			const onWordUpdateCallback = () => (content: string, status: number) => {
 				onWordUpdate(index, content, status);
 			}
+			const id = uuid();
 			renderedElement = (
 				<span
 					key={index}
+					id={id}
 					className={"word-" + word.content.toLowerCase()}
 					style={{
 						backgroundColor: getStyle(word.status ?? 0),
@@ -210,6 +227,10 @@ const Reader = (
 					}}
 					onClick={
 						(): void => {
+							const element = document.getElementById(id) as HTMLElement;
+							element.style.boxShadow = "0 0 0 2px #00000066";
+							setSelectedWord(element);
+							
 							onWordClick(word.content, onWordUpdateCallback);
 						}
 					}
@@ -225,7 +246,7 @@ const Reader = (
 	}
 
 	return (
-		<div>
+		<div ref={ref}>
 			<span className="animation-fixer" style={{ backgroundColor: getStyle(98) }}></span>
 			<div>
 				{
