@@ -10,22 +10,39 @@ import { Entry } from '@common/types';
 
 const EntryElement = ({ entry }: { entry: Entry }): JSX.Element => {
 	return (
-		<div style={{ marginTop: "0.5rem", marginBottom: "0.5rem" }}>
-			<input
-				type="text"
-				name="meaning"
-				placeholder="Meaning"
-				defaultValue={entry.meaning}
-				onChange={(e) => entry.meaning = e.target.value}
-			/>
+		<React.Fragment>
 			<input
 				type="text"
 				name="reading"
 				placeholder="Reading"
 				defaultValue={entry.reading}
 				onChange={(e) => entry.reading = e.target.value}
+				style={{
+					width: "60%",
+					backgroundColor: "#FFFFFFCC",
+					border: "none",
+					borderRadius: "0.5rem",
+					borderBottom: "1px solid #00000066",
+					padding: "0.33rem",
+				}}
 			/>
-		</div>
+			<textarea
+				name="meaning"
+				placeholder="Meaning"
+				defaultValue={entry.meaning}
+				onChange={(e) => entry.meaning = e.target.value}
+				style={{
+					width: "100%",
+					backgroundColor: "#FFFFFFCC",
+					border: "none",
+					borderRadius: "0.5rem",
+					borderBottom: "1px solid #00000066",
+					padding: "0.33rem",
+					height: "5rem",
+					fontSize: "0.82rem",
+				}}
+			/>
+		</React.Fragment>
 	);
 };
 

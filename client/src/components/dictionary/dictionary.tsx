@@ -12,10 +12,10 @@ const Dictionary = ({ url }: { url: string }): JSX.Element => {
 			src={url}
 			style={{
 				width: `${100/scale}%`,
-				height: `${50/scale}%`,
+				height: `${40/scale}%`,
 				position: "absolute",
 				left: "0",
-				top: "50%",
+				top: "60%",
 				transformOrigin: "0 0",
 				scale: `${scale}`,
 				border: "1px solid #00000066",

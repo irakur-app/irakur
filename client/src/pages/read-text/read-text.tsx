@@ -91,13 +91,17 @@ const ReadText = (): JSX.Element => {
 					borderRadius: '25px',
 					padding: '2%',
 					width: '20%',
+					display: 'flex',
+					flexDirection: 'column',
 				}}>
-					<EditWord
-						content={selectedWordContent}
-						onWordUpdate={selectedWordUpdateCallback || (() => {console.log('no callback');})}
-						languageId={textData.languageId}
-					/>
-					<div style={{ width: '100%', height: '100%' }}>
+					<div style={{ paddingBottom: '3%' }}>
+						<EditWord
+							content={selectedWordContent}
+							onWordUpdate={selectedWordUpdateCallback || (() => {console.log('no callback');})}
+							languageId={textData.languageId}
+						/>
+					</div>
+					<div style={{ width: '100%', height: '100%', maxHeight: '40%' }}>
 						<Dictionary url={languageData.dictionaryUrl.replace('%s', selectedWordContent || '')}/>
 					</div>
 				</div>

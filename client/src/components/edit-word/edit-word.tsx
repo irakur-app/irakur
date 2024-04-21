@@ -26,10 +26,10 @@ const statusNames: Record<string, string> = {
 const statusStyles: Record<string, string> = {
 	'0': '#ADDFF4FF',
 	'1': '#F5B8A9FF',
-	'2': '#F5CCA9E5',
-	'3': '#F5E1A9BF',
-	'4': '#F5F3A99F',
-	'5': '#DDFFDD7F',
+	'2': '#F5CCA9FF',
+	'3': '#F5E1A9FF',
+	'4': '#F5F3A9FF',
+	'5': '#DDFFDDFF',
 	'99': '#FFFFFFFF',
 	'98': '#FFFFFFFF',
 }
@@ -159,44 +159,93 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 					(content !== null) ? content : ''
 				}
 				style={{
-					backgroundColor: "transparent",
+					backgroundColor: "#FFFFFFCC",
 					border: "none",
+					borderRadius: "0.5rem",
 					borderBottom: "1px solid black",
 					fontSize: "1.5rem",
-					width: "100%",
+					width: "98.5%",
 					textAlign: "center",
 					marginBottom: "1rem",
 				}}
 				readOnly
 			/>
-			{
-				(entries !== null) &&
-				entries.map(
-					(entry: Entry, index: number) => (
-						<React.Fragment>
-							<EntryElement
+			<div style={{
+				overflowY: 'scroll',
+				maxHeight: '25vh',
+				paddingRight: '2.5%',
+				marginBottom: "0.5rem",
+				width: "100%",
+			}}>
+				{
+					(entries !== null) &&
+					entries.map(
+						(entry: Entry, index: number) => (
+							<div
 								key={uuid()}
-								entry={entry}
-							/>
-							<button type="button" onClick={() => deleteEntry(index)}>Delete entry</button>
-						</React.Fragment>
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+								}}
+							>
+								<div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", width: "90%" }}>
+									<EntryElement
+										entry={entry}
+									/>
+								</div>
+								<button
+									type="button"
+									onClick={() => deleteEntry(index)}
+									style={{
+										backgroundColor: "#DD6666CC",
+										border: "none",
+										borderRadius: "0.25rem",
+										width: "5%",
+										height: "1.5rem",
+										cursor: "pointer",
+									}}
+								>X</button>
+							</div>
+						)
 					)
-				)
-			}
-			<button type="button" onClick={addEntry}>
-				Add entry
-			</button>
-			<input
-				type="text"
+				}
+				<button
+					type="button"
+					onClick={addEntry}
+					style={{
+						width: "100%",
+						height: "1.5rem",
+						cursor: "pointer",
+						backgroundColor: "#BBDD88CC",
+						border: "none",
+						borderRadius: "0.25rem",
+						marginTop: "0.1rem",
+					}}
+				>
+					Add entry
+				</button>
+			</div>
+			<textarea
 				name="notes"
 				placeholder="Notes"
 				value={
 					(notes !== null) ? notes : ''
 				}
 				onChange={e => setNotes(e.target.value)}
+				style={{
+					width: "97%",
+					backgroundColor: "#FFFFFFCC",
+					border: "none",
+					borderRadius: "0.5rem",
+					borderBottom: "1px solid #00000066",
+					padding: "0.33rem",
+					height: "3rem",
+					fontSize: "0.82rem",
+				}}
 			/>
 			<br />
-			<div style={{ display: "flex", gap: "1%", height: "3vh", marginTop: "1rem", flexWrap: "wrap" }}>
+			<div style={{ display: "flex", gap: "1%", height: "3vh", marginTop: "0.5rem", flexWrap: "wrap" }}>
 			{
 				[1, 2, 3, 4, 5, 99, 98].map(
 					(buttonStatus: number) => (
