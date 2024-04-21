@@ -12,6 +12,17 @@ import { backendConnector } from '../../backend-connector';
 import { Loading } from '../loading';
 import { EntryElement } from './entry-element';
 
+const statusNames: Record<string, string> = {
+	'0': 'New',
+	'1': '1',
+	'2': '2',
+	'3': '3',
+	'4': '4',
+	'5': '5',
+	'99': 'Known',
+	'98': 'Ignore',
+}
+
 const statusStyles: Record<string, string> = {
 	'0': '#ADDFF4FF',
 	'1': '#F5B8A9FF',
@@ -19,12 +30,12 @@ const statusStyles: Record<string, string> = {
 	'3': '#F5E1A9BF',
 	'4': '#F5F3A99F',
 	'5': '#DDFFDD7F',
-	'99': '#FFFFFF00',
-	'98': '#FFFFFF00',
+	'99': '#FFFFFFFF',
+	'98': '#FFFFFFFF',
 }
 
 const getStyle = (status: number): string => {
-	return statusStyles[status.toString()] || '#FFFFFF00';
+	return statusStyles[status.toString()] || '#FFFFFFFF';
 }
 
 const EditWord = ({ content, languageId, onWordUpdate }: { content: string | null, languageId: number, onWordUpdate: (content: string, status: number) => void }): JSX.Element => {
@@ -35,6 +46,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 	const [id, setId] = useState<number | null>(null);
 	const [entries, setEntries] = useState<Entry[] | null>(null);
 	const [notes, setNotes] = useState<string | null>(null);
+	const [status, setStatus] = useState<number>(0);
 
 	useEffect(
 		(): void => {
@@ -52,6 +64,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 					setId(word.id);
 					setNotes(word.notes);
 					setEntries(word.entries);
+					setStatus(word.status);
 				}
 				else
 				{
@@ -59,6 +72,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 					setId(null);
 					setNotes(null);
 					setEntries(null);
+					setStatus(0);
 				}
 				setIsLoading(false);
 			}
@@ -97,14 +111,14 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>): Promise<void> => {
 		e.preventDefault();
 		
-		const status: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
+		const newStatus: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
 		
 		if (isNewWord)
 		{
 			await backendConnector.addWord(
 				languageId,
 				content as string,
-				status,
+				newStatus,
 				entries ?? [],
 				notes ?? '',
 				new Date().toISOString(),
@@ -115,7 +129,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 		{
 			await backendConnector.editWord(
 				id as number,
-				status,
+				newStatus,
 				entries ?? [],
 				notes ?? '',
 				new Date().toISOString()
@@ -125,8 +139,9 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 		setNotification('Word ' + (isNewWord ? 'added' : 'updated'));
 
 		setIsNewWord(false);
+		setStatus(newStatus);
 
-		onWordUpdate(content!, status);
+		onWordUpdate(content!, newStatus);
 	};
 
 	if (isLoading)
@@ -172,13 +187,25 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 				onChange={e => setNotes(e.target.value)}
 			/>
 			<br />
-			<input type="submit" value="1" />
-			<input type="submit" value="2" />
-			<input type="submit" value="3" />
-			<input type="submit" value="4" />
-			<input type="submit" value="5" />
-			<input type="submit" value="99" />
-			<input type="submit" value="98" />
+			<div style={{ display: "flex", gap: "1%", height: "3vh", marginTop: "1rem", flexWrap: "wrap" }}>
+			{
+				[1, 2, 3, 4, 5, 99, 98].map(
+					(buttonStatus: number) => (
+						<button
+							type="submit"
+							value={buttonStatus.toString()}
+							style={{
+								border: (buttonStatus === status) ? "1px solid #00000066" : "1px solid transparent",
+								borderRadius: "0.25rem",
+								flex: 1,
+								backgroundColor: getStyle(buttonStatus),
+								cursor: "pointer",
+							}}
+						>{statusNames[buttonStatus]}</button>
+					)
+				)
+			}
+			</div>
 			{notification && <p>{notification}</p>}
 		</form>
 	);
