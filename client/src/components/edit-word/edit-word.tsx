@@ -34,6 +34,11 @@ const statusStyles: Record<string, string> = {
 	'98': '#FFFFFFFF',
 }
 
+const emptyEntry: Entry = {
+	meaning: '',
+	reading: '',
+};
+
 const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFFFF';
 }
@@ -44,7 +49,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 	const [notification, setNotification] = useState<string | null>(null);
 
 	const [id, setId] = useState<number | null>(null);
-	const [entries, setEntries] = useState<Entry[] | null>(null);
+	const [entries, setEntries] = useState<Entry[]>([emptyEntry]);
 	const [notes, setNotes] = useState<string | null>(null);
 	const [status, setStatus] = useState<number>(0);
 
@@ -63,7 +68,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 					setIsNewWord(false);
 					setId(word.id);
 					setNotes(word.notes);
-					setEntries(word.entries);
+					setEntries((word.entries.length === 0) ? [{...emptyEntry}] : word.entries);
 					setStatus(word.status);
 				}
 				else
@@ -71,7 +76,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 					setIsNewWord(true);
 					setId(null);
 					setNotes(null);
-					setEntries(null);
+					setEntries([{...emptyEntry}]);
 					setStatus(0);
 				}
 				setIsLoading(false);
@@ -83,18 +88,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 	);
 
 	const addEntry = (): void => {
-		const emptyEntry = {
-			meaning: '',
-			reading: '',
-		};
-		if (entries === null)
-		{
-			setEntries([emptyEntry]);
-		}
-		else
-		{
-			setEntries([...entries, emptyEntry]);
-		}
+		setEntries([...entries, {...emptyEntry}]);
 	};
 
 	const deleteEntry = (index: number): void => {
@@ -112,14 +106,25 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 		e.preventDefault();
 		
 		const newStatus: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
-		
+
+		const entriesToAdd: Entry[] = (entries ?? []).filter(
+			(entry: Entry): boolean => entry.meaning !== '' || entry.reading !== ''
+		);
+
+		entriesToAdd.forEach(
+			(entry: Entry): void => {
+				entry.meaning = entry.meaning.trim();
+				entry.reading = entry.reading.trim();
+			}
+		);
+
 		if (isNewWord)
 		{
 			await backendConnector.addWord(
 				languageId,
 				content as string,
 				newStatus,
-				entries ?? [],
+				entriesToAdd,
 				notes ?? '',
 				new Date().toISOString(),
 				new Date().toISOString()
@@ -130,7 +135,7 @@ const EditWord = ({ content, languageId, onWordUpdate }: { content: string | nul
 			await backendConnector.editWord(
 				id as number,
 				newStatus,
-				entries ?? [],
+				entriesToAdd,
 				notes ?? '',
 				new Date().toISOString()
 			);
