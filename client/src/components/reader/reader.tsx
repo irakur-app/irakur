@@ -59,13 +59,16 @@ const Reader = (
 		}
 	);
 
-	const loadPage = (textId: number, pageId: number): void => {
-		backendConnector.getWords(textId, pageId).then(
-			(words: ReducedWordData[]): void => {
-				setWords(words);
+	const loadPage = async (textId: number, pageId: number): Promise<void> => {
+		setWords(await backendConnector.getWords(textId, pageId));
+
+		setCurrentPage(pageId);
+
+		document.querySelectorAll<HTMLElement>('.word-span').forEach(
+			(element: HTMLElement): void => {
+				element.style.transition = "none";
 			}
 		);
-		setCurrentPage(pageId);
 	}
 
 	const addWordsInBatch = async (
@@ -73,11 +76,7 @@ const Reader = (
 		lastIndex: number | null,
 		contentException: string | null
 	): Promise<void> => {
-		if (lastIndex === null)
-		{
-			lastIndex = words!.length;
-		}
-		const wordBank = words?.slice(0, lastIndex);
+		const wordBank = words?.slice(0, lastIndex ?? words!.length);
 
 		let newWordContents: string[] = wordBank!.filter(
 			(word: ReducedWordData): boolean => {
@@ -219,7 +218,7 @@ const Reader = (
 				<span
 					key={index}
 					id={id}
-					className={"word-" + word.content.toLowerCase()}
+					className={"word-span word-" + word.content.toLowerCase()}
 					style={{
 						backgroundColor: getStyle(word.status ?? 0),
 						borderRadius: ".25rem",
@@ -248,7 +247,7 @@ const Reader = (
 	return (
 		<div ref={ref}>
 			<span className="animation-fixer" style={{ backgroundColor: getStyle(98) }}></span>
-			<div>
+			<div className="word-container">
 				{
 					words.map(renderWord)
 				}
