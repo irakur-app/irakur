@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { ReducedWordData, Text } from '@common/types';
+import { Language, ReducedWordData, Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
@@ -28,21 +28,18 @@ const getStyle = (status: number): string => {
 
 const Reader = (
 	{
-		languageId,
-		shouldShowSpaces,
+		textData,
+		languageData,
 		onWordClick
 	}: {
-		languageId: number,
-		shouldShowSpaces: boolean,
+		textData: Text,
+		languageData: Language,
 		onWordClick: (content: string, onWordUpdate: () => (content: string, status: number) => void) => void
 	}
 ): JSX.Element => {
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
-
-	const textId = Number(document.location.pathname.split('/').pop());
-	const [numberOfPages, setNumberOfPages] = useState<number|null>(null);
 
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -59,8 +56,53 @@ const Reader = (
 		}
 	);
 
+	const updateTextStatistics = async (): Promise<void> => {
+		const newProgress = currentPage/textData.numberOfPages!;
+		const newDatetime = new Date().toISOString();
+
+		const shouldUpdateDatetimeFinished: boolean = (
+			currentPage === textData.numberOfPages! && textData.datetimeFinished === null
+		);
+
+		console.log("shouldUpdateDatetimeFinished:", shouldUpdateDatetimeFinished);
+		console.log("newProgress:", newProgress);
+
+		await backendConnector.editText(
+			textData.id,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			(shouldUpdateDatetimeFinished) ? newDatetime : undefined,
+			(newProgress > textData.progress) ? newProgress : undefined
+		);
+
+		if (shouldUpdateDatetimeFinished)
+		{
+			textData.datetimeFinished = newDatetime;
+		}
+		if (newProgress > textData.progress)
+		{
+			textData.progress = newProgress;
+		}
+	}
+
 	const loadPage = async (textId: number, pageId: number): Promise<void> => {
 		setWords(await backendConnector.getWords(textId, pageId));
+
+		await backendConnector.editText(
+			textData.id,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			undefined,
+			new Date().toISOString(),
+			undefined,
+			undefined
+		);
 
 		setCurrentPage(pageId);
 
@@ -100,13 +142,12 @@ const Reader = (
 		{
 			if (newWordContents.includes(word.content.toLowerCase()) && word.type === "word")
 			{
-				console.log(word.content);
 				word.status = status;
 			}
 		}
 		setWords(updatedWords);
 
-		await backendConnector.addWordsInBatch(languageId, newWordContents, status, new Date().toISOString()).then(
+		await backendConnector.addWordsInBatch(languageData.id, newWordContents, status, new Date().toISOString()).then(
 			(): void => {
 				for (const content of newWordContents)
 				{
@@ -153,12 +194,7 @@ const Reader = (
 
 	useEffect(
 		(): void => {
-			backendConnector.getText(textId).then(
-				(text: Text): void => {
-					setNumberOfPages(text.numberOfPages??null);
-				}
-			)
-			loadPage(textId, currentPage);
+			loadPage(textData.id, currentPage);
 
 			// For some reason, the first animation glitches.
 			// We force this invisible animation so the subsequent ones work.
@@ -175,7 +211,7 @@ const Reader = (
 	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
 	const spaceRender = (index: number): JSX.Element  =>
 	{
-		if (shouldShowSpaces)
+		if (languageData.shouldShowSpaces)
 		{
 			return <span key={index}>{' '}</span>;
 		}
@@ -239,7 +275,7 @@ const Reader = (
 		return renderedElement;
 	}
 
-	if (!words || !numberOfPages)
+	if (!words)
 	{
 		return <Loading />;
 	}
@@ -255,17 +291,20 @@ const Reader = (
 			<div>
 				<button
 					disabled={currentPage === 1}
-					onClick={(): void => {loadPage(textId, currentPage-1)}}
+					onClick={(): void => {loadPage(textData.id, currentPage-1)}}
 				>Previous page</button>
 				<button
-					disabled={currentPage === numberOfPages}
 					onClick={
 						async (): Promise<void> => {
 							await addWordsInBatch(99, null, null);
-							loadPage(textId, currentPage+1);
+							updateTextStatistics();
+							if (currentPage < textData.numberOfPages!)
+							{
+								loadPage(textData.id, currentPage+1);
+							}
 						}
 					}
-				>Next page</button>
+				>{(currentPage === textData.numberOfPages) ? 'Mark as finished' : 'Next page'}</button>
 			</div>
 		</div>
 	);

@@ -91,7 +91,10 @@ class TextsController
 		sourceUrl: string,
 		numberOfPages: number,
 		content: string,
-		textId: number
+		textId: number,
+		datetimeOpened: string,
+		datetimeFinished: string,
+		progress: number
 	): Promise<void>
 	{
 		const queryParams: any[] = [];
@@ -120,6 +123,21 @@ class TextsController
 		{
 			updates.push('source_url = ?');
 			queryParams.push(sourceUrl);
+		}
+		if (datetimeOpened !== undefined)
+		{
+			updates.push('datetime_opened = ?');
+			queryParams.push(datetimeOpened);
+		}
+		if (datetimeFinished !== undefined)
+		{
+			updates.push('datetime_finished = ?');
+			queryParams.push(datetimeFinished);
+		}
+		if (progress !== undefined)
+		{
+			updates.push('progress = ?');
+			queryParams.push(progress);
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{

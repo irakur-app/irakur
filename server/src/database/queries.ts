@@ -21,6 +21,9 @@ const queries: { [key: string]: string } = {
 		language_id INTEGER NOT NULL,
 		title TEXT NOT NULL,
 		source_url TEXT,
+		datetime_opened TEXT,
+		datetime_finished TEXT,
+		progress REAL NOT NULL DEFAULT 0,
 		FOREIGN KEY(language_id) REFERENCES language(id)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
@@ -71,20 +74,29 @@ const queries: { [key: string]: string } = {
 			id,
 			language_id AS languageId,
 			title,
-			source_url AS sourceUrl
+			source_url AS sourceUrl,
+			datetime_opened AS datetimeOpened,
+			datetime_finished AS datetimeFinished,
+			progress
 		FROM text`,
 	getTextsByLanguage: `SELECT
 			id,
 			language_id AS languageId,
 			title,
-			source_url AS sourceUrl
+			source_url AS sourceUrl,
+			datetime_opened AS datetimeOpened,
+			datetime_finished AS datetimeFinished,
+			progress
 		FROM text
 		WHERE language_id = ?`,
 	getText: `SELECT
 			id,
 			language_id AS languageId,
 			title,
-			source_url AS sourceUrl
+			source_url AS sourceUrl,
+			datetime_opened AS datetimeOpened,
+			datetime_finished AS datetimeFinished,
+			progress
 		FROM text
 		WHERE id = ?`,
 	addText: `INSERT INTO text (

@@ -80,8 +80,8 @@ const ReadText = (): JSX.Element => {
 					paddingRight: '1%',
 				}}>
 					<Reader
-						languageId={textData.languageId}
-						shouldShowSpaces={languageData.shouldShowSpaces}
+						textData={textData}
+						languageData={languageData}
 						onWordClick={updateEditWord}
 					/>
 				</div>

@@ -17,6 +17,9 @@ type Text = {
 	title: string;
 	sourceUrl: string;
 	numberOfPages?: number;
+	datetimeOpened: string | null;
+	datetimeFinished: string | null;
+	progress: number;
 };
 
 type Page = {

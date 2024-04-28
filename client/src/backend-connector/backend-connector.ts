@@ -182,11 +182,14 @@ class BackendConnector
 
 	async editText(
 		id: number,
-		title: string,
-		languageId: number,
-		content: string,
-		numberOfPages: number,
-		sourceUrl: string
+		title: string | undefined,
+		languageId: number | undefined,
+		content: string | undefined,
+		numberOfPages: number | undefined,
+		sourceUrl: string | undefined,
+		datetimeOpened: string | undefined,
+		datetimeFinished: string | undefined,
+		progress: number | undefined
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -203,6 +206,9 @@ class BackendConnector
 						content,
 						numberOfPages,
 						sourceUrl,
+						datetimeOpened,
+						datetimeFinished,
+						progress,
 					}
 				),
 			}

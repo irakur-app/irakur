@@ -146,7 +146,10 @@ router.patch(
 				req.body.sourceUrl,
 				req.body.numberOfPages,
 				req.body.content,
-				parseInt(req.params.textId)
+				parseInt(req.params.textId),
+				req.body.datetimeOpened,
+				req.body.datetimeFinished,
+				req.body.progress
 			);
 			res.sendStatus(200);
 		}
