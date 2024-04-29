@@ -38,7 +38,7 @@ class WordsController
 		{
 			valueList.push(
 				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}')`
-			)
+			);
 		}
 
 		const dynamicQuery: string = queries.addWordsInBatch.replace(

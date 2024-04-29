@@ -43,7 +43,17 @@ const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFFFF';
 }
 
-const EditWord = ({ content, languageId, onWordUpdate }: { content: string | null, languageId: number, onWordUpdate: (content: string, status: number) => void }): JSX.Element => {
+const EditWord = (
+	{
+		content,
+		languageId,
+		onWordUpdate
+	}: {
+		content: string | null,
+		languageId: number,
+		onWordUpdate: (content: string, status: number) => void
+	}
+): JSX.Element => {
 	const [isNewWord, setIsNewWord] = useState<boolean>(content === null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [notification, setNotification] = useState<string | null>(null);

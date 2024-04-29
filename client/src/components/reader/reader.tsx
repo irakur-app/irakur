@@ -37,7 +37,11 @@ const Reader = (
 		onWordClick: (content: string, onWordUpdate: () => (content: string, status: number) => void) => void
 	}
 ): JSX.Element => {
-	const [currentPage, setCurrentPage] = useState<number>((textData.progress < 1) ? (Math.floor(textData.progress * textData.numberOfPages!) + 1) : 1);
+	const [currentPage, setCurrentPage] = useState<number>(
+		(textData.progress < 1)
+			? (Math.floor(textData.progress * textData.numberOfPages!) + 1)
+			: 1
+	);
 	const [pageToJump, setPageToJump] = useState<number>(currentPage);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
@@ -123,7 +127,11 @@ const Reader = (
 
 		let newWordContents: string[] = wordBank!.filter(
 			(word: ReducedWordData): boolean => {
-				return (word.status === 0 || word.status === null) && word.content !== contentException && word.type === "word";
+				return (
+					(word.status === 0 || word.status === null)
+						&& word.content !== contentException
+						&& word.type === "word"
+				);
 			}
 		).map(
 			(word: ReducedWordData): string => {

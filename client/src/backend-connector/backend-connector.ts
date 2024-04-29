@@ -298,7 +298,12 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async addWordsInBatch(languageId: number, contents: string[], status: number, datetimeAdded: string): Promise<boolean>
+	async addWordsInBatch(
+		languageId: number,
+		contents: string[],
+		status: number,
+		datetimeAdded: string
+	): Promise<boolean>
 	{
 		const response: Response = await fetch(
 			'/api/words/batch',
