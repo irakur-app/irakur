@@ -37,7 +37,8 @@ const Reader = (
 		onWordClick: (content: string, onWordUpdate: () => (content: string, status: number) => void) => void
 	}
 ): JSX.Element => {
-	const [currentPage, setCurrentPage] = useState<number>(1);
+	const [currentPage, setCurrentPage] = useState<number>((textData.progress < 1) ? (Math.floor(textData.progress * textData.numberOfPages!) + 1) : 1);
+	console.log(Math.floor(textData.progress * textData.numberOfPages!) + 1);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
 
@@ -283,6 +284,8 @@ const Reader = (
 	return (
 		<div ref={ref}>
 			<span className="animation-fixer" style={{ backgroundColor: getStyle(98) }}></span>
+			<h1>{textData.title}</h1>
+			<h4>Page: {currentPage}</h4>
 			<div className="word-container">
 				{
 					words.map(renderWord)
