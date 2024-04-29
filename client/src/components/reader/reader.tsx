@@ -38,7 +38,7 @@ const Reader = (
 	}
 ): JSX.Element => {
 	const [currentPage, setCurrentPage] = useState<number>((textData.progress < 1) ? (Math.floor(textData.progress * textData.numberOfPages!) + 1) : 1);
-	console.log(Math.floor(textData.progress * textData.numberOfPages!) + 1);
+	const [pageToJump, setPageToJump] = useState<number>(currentPage);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
 
@@ -308,6 +308,26 @@ const Reader = (
 						}
 					}
 				>{(currentPage === textData.numberOfPages) ? 'Mark as finished' : 'Next page'}</button>
+				{/*number input*/}
+				<input
+					type="number"
+					min={1}
+					max={textData.numberOfPages!}
+					value={pageToJump}
+					onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+						setPageToJump(Number(e.target.value));
+					}}
+				/>
+				<button
+					onClick={
+						(): void => {
+							if (pageToJump >= 1 && pageToJump <= textData.numberOfPages!)
+							{
+								loadPage(textData.id, pageToJump);
+							}
+						}
+					}
+				>Jump to page</button>
 			</div>
 		</div>
 	);
