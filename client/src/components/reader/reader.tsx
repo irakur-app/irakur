@@ -48,19 +48,6 @@ const Reader = (
 
 	const ref = useRef<HTMLDivElement>(null);
 
-	console.log("Rendered JSX:", ref.current); // Check if ref.current is null even before the useEffect
-	
-	ref.current?.addEventListener(
-		'mousedown',
-		(): void => {
-			console.log("mousedown");
-			if (selectedWord !== null) {
-				selectedWord.style.boxShadow = "none";
-			}
-			setSelectedWord(null);
-		}
-	);
-
 	const updateTextStatistics = async (): Promise<void> => {
 		const newProgress = currentPage/textData.numberOfPages!;
 		const newDatetime = new Date().toISOString();
@@ -215,6 +202,26 @@ const Reader = (
 			}
 		},
 		[]
+	);
+
+	useEffect(
+		(): (() => void) => {
+			console.log(ref.current);
+
+			ref.current?.addEventListener(
+				'mousedown',
+				(event: MouseEvent): void => {
+					if (selectedWord !== null) {
+						selectedWord.style.boxShadow = "none";
+					}
+					setSelectedWord(null);
+				}
+			);
+
+			return (): void => {
+				ref.current?.removeEventListener('mousedown', () => {});
+			};
+		}
 	);
 
 	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
