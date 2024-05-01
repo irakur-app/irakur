@@ -7,7 +7,7 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { Entry } from '@common/types';
+import { Entry, Language } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../loading';
 import { EntryElement } from './entry-element';
@@ -46,11 +46,11 @@ const getStyle = (status: number): string => {
 const EditWord = (
 	{
 		content,
-		languageId,
+		languageData,
 		onWordUpdate
 	}: {
 		content: string | null,
-		languageId: number,
+		languageData: Language,
 		onWordUpdate: (content: string, status: number) => void
 	}
 ): JSX.Element => {
@@ -72,7 +72,7 @@ const EditWord = (
 				{
 					return;
 				}
-				const word = await backendConnector.findWord(content, languageId);
+				const word = await backendConnector.findWord(content, languageData.id);
 				if (word)
 				{
 					setIsNewWord(false);
@@ -131,7 +131,7 @@ const EditWord = (
 		if (isNewWord)
 		{
 			await backendConnector.addWord(
-				languageId,
+				languageData.id,
 				content as string,
 				newStatus,
 				entriesToAdd,
@@ -168,10 +168,12 @@ const EditWord = (
 		<form onSubmit={handleSubmit}>
 			<input
 				type="text"
-				name="content"
+				name="form-content"
 				placeholder="Word content"
 				value={
-					(content !== null) ? content : ''
+					(content !== null)
+						? ((languageData.shouldShowSpaces ? content : content.replace(/\s/g, '')))
+						: ''
 				}
 				style={{
 					backgroundColor: "#FFFFFFCC",

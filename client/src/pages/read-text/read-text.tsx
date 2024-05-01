@@ -98,11 +98,11 @@ const ReadText = (): JSX.Element => {
 						<EditWord
 							content={selectedWordContent}
 							onWordUpdate={selectedWordUpdateCallback || (() => {console.log('no callback');})}
-							languageId={textData.languageId}
+							languageData={languageData}
 						/>
 					</div>
 					<div style={{ width: '100%', height: '100%', maxHeight: '40%' }}>
-						<Dictionary url={languageData.dictionaryUrl.replace('%s', selectedWordContent || '')}/>
+						<Dictionary languageData={languageData} content={selectedWordContent || ''}/>
 					</div>
 				</div>
 			</div>

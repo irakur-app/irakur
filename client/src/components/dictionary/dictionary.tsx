@@ -4,12 +4,19 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const Dictionary = ({ url }: { url: string }): JSX.Element => {
+import { Language } from '@common/types';
+
+const Dictionary = ({ languageData, content }: { languageData: Language, content: string }): JSX.Element => {
 	const scale = 0.95;
 
 	return (
 		<iframe
-			src={url}
+			src={
+				languageData.dictionaryUrl.replace(
+					'%s',
+					(languageData.shouldShowSpaces ? content : content.replace(/\s/g, '')) || ''
+				)
+			}
 			style={{
 				width: `${100/scale}%`,
 				height: `${40/scale}%`,
