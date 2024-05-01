@@ -11,6 +11,20 @@ import { Language, ReducedWordData, Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
+const getFollowingElements = (element: HTMLElement, numberOfElements: number): HTMLElement[] => {
+	let currentElement: HTMLElement | null = element;
+
+	const elements: HTMLElement[] = [];
+
+	for (let i = 0; i < numberOfElements && currentElement !== null; i++)
+	{
+		elements.push(currentElement);
+		currentElement = currentElement.nextElementSibling as HTMLElement | null;
+	}
+
+	return elements;
+}
+
 const getElementsContent = (elements: HTMLElement[]): string => {
 	return elements.map((element: HTMLElement) => element.textContent).join('');
 }
@@ -44,7 +58,62 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 		elements.push(currentElement!);
 	}
 
+	if (elements[0].classList.contains('whitespace'))
+	{
+		elements.shift();
+	}
+	if (elements[elements.length - 1].classList.contains('whitespace'))
+	{
+		elements.pop();
+	}
+
 	return elements;
+}
+
+const clearNewMultiword = (): void => {
+	const newMultiwordElements = document.getElementsByClassName('new-multiword') as HTMLCollectionOf<HTMLElement>;
+	if(newMultiwordElements.length > 0)
+	{
+		const parentElement = newMultiwordElements[0].parentElement;
+		if(parentElement !== null)
+		{
+			while(newMultiwordElements[0].firstChild)
+			{
+				parentElement.insertBefore(newMultiwordElements[0].firstChild, newMultiwordElements[0]);
+			}
+			parentElement.removeChild(newMultiwordElements[0]);
+		}
+	}
+};
+
+const convertSpanToNewMultiword = (span: HTMLElement): void => {
+	span.className = "new-multiword";
+	span.style.borderRadius = ".25rem",
+	span.style.cursor = "pointer",
+	span.style.boxShadow = "0 0 0 2px #00000066";
+};
+
+const convertSpanToSavedMultiword = (span: HTMLElement, status: number): void => {
+	span.className = "multiword";
+	span.style.borderRadius = ".25rem",
+	span.style.cursor = "pointer",
+	span.style.backgroundColor = getStyle(status);
+	span.style.boxShadow = "0 0 0 2px " + getStyle(status);
+};
+
+const insertMultiword = (
+	parentElement: HTMLElement,
+	firstElement: HTMLElement,
+	elementList: HTMLElement[],
+	newParent: HTMLElement
+) => {
+	const tempSpan = document.createElement('span');
+	parentElement.insertBefore(tempSpan, firstElement);
+	for (let i = 0; i < elementList.length; i++) {
+		newParent.appendChild(elementList[i]);
+	}
+	parentElement.insertBefore(newParent, tempSpan);
+	parentElement.removeChild(tempSpan);
 }
 
 const statusStyles: Record<string, string> = {
@@ -56,11 +125,11 @@ const statusStyles: Record<string, string> = {
 	'5': '#DDFFDD7F',
 	'99': '#FFFFFF00',
 	'98': '#FFFFFF00',
-}
+};
 
 const getStyle = (status: number): string => {
 	return statusStyles[status.toString()] || '#FFFFFF00';
-}
+};
 
 const Reader = (
 	{
@@ -248,19 +317,7 @@ const Reader = (
 		}
 		setSelectedWord(null);
 
-		const newMultiwordElements = document.getElementsByClassName('new-multiword') as HTMLCollectionOf<HTMLElement>;
-		if(newMultiwordElements.length > 0)
-		{
-			const parentElement = newMultiwordElements[0].parentElement;
-			if(parentElement !== null)
-			{
-				while(newMultiwordElements[0].firstChild)
-				{
-					parentElement.insertBefore(newMultiwordElements[0].firstChild, newMultiwordElements[0]);
-				}
-				parentElement.removeChild(newMultiwordElements[0]);
-			}
-		}
+		clearNewMultiword();
 
 		setFirstSelectedWord(() => event.target as HTMLElement);
 	};
@@ -271,27 +328,38 @@ const Reader = (
 		console.log("mouseup");
 		
 		if (selectedText.length > 0 && firstSelectedWord !== null) {
-			const selectedElements = getSelectionElements(firstSelectedWord, selectedText);
+			const selectedElements = getSelectionElements(firstSelectedWord, selectedText.trim());
 			const parentElement = firstSelectedWord.parentElement;
 
 			if (selectedElements.length > 0 && parentElement !== null) {
 				const newSpan = document.createElement('span');
-				newSpan.className = "new-multiword";
-				newSpan.style.borderRadius = ".25rem",
-				newSpan.style.cursor = "pointer",
-				newSpan.style.boxShadow = "0 0 0 2px #00000066";
+				convertSpanToNewMultiword(newSpan);
 				setSelectedWord(newSpan);
-				const tempSpan = document.createElement('span');
-				parentElement.insertBefore(tempSpan, firstSelectedWord);
-				for (let i = 0; i < selectedElements.length; i++) {
-					newSpan.appendChild(selectedElements[i]);
+				insertMultiword(parentElement, firstSelectedWord, selectedElements, newSpan);
+
+				const onWordUpdateCallback = () => (content: string, status: number) => {
+					const firstElements = document.getElementsByClassName(
+						'word-' + selectedElements[0].textContent!.toLowerCase()
+					) as HTMLCollectionOf<HTMLElement>;
+
+					clearNewMultiword();
+
+					for (let i = 0; i < firstElements.length; i++)
+					{
+						const followingElements = getFollowingElements(firstElements[i], selectedElements.length);
+						if (getElementsContent(followingElements) === content)
+						{
+							const newSpan = document.createElement('span');
+							convertSpanToSavedMultiword(newSpan, status);
+							setSelectedWord(newSpan);
+							insertMultiword(parentElement, firstElements[i], followingElements, newSpan);
+						}
+					}
+
+					setSelectedWord(null);
 				}
-				parentElement.insertBefore(newSpan, tempSpan);
-				parentElement.removeChild(tempSpan);
-
-				setSelectedWord(newSpan);
-
-				console.log("newSpan:", newSpan);
+				const elementsContent = getElementsContent(selectedElements);
+				onWordClick(elementsContent, onWordUpdateCallback);
 			}
 		}
 	};
@@ -313,12 +381,13 @@ const Reader = (
 	{
 		if (languageData.shouldShowSpaces)
 		{
-			return <span key={index}>{' '}</span>;
+			return <span className="whitespace" key={index}>{' '}</span>;
 		}
 		else
 		{
 			return (
 				<span
+					className="whitespace"
 					key={index}
 					style={{
 						fontSize: 0,
