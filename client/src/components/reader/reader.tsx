@@ -45,7 +45,6 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 		cumulativeSelection += currentElement?.textContent!;
 	}
 
-	//concatenate elements' textContent using join
 	const elementContents = getElementsContent(elements);
 
 	if (elementContents !== selection)
@@ -325,23 +324,31 @@ const Reader = (
 		const selectedText = window.getSelection()!.toString();
 
 		console.log("mouseup");
+
+		const lastSelectedWord = event.target as HTMLElement;
+
+		const rightToLeft = (
+			parseInt(lastSelectedWord.getAttribute('data-index')!)
+				> parseInt(firstSelectedWord?.getAttribute('data-index')!)
+		);
+		const firstWordInSelection = (rightToLeft ? firstSelectedWord : lastSelectedWord);
 		
 		if (
 			selectedText.length > 0
-				&& firstSelectedWord !== null
-				&& !firstSelectedWord.textContent!.includes(selectedText)
+				&& firstWordInSelection !== null
+				&& !firstWordInSelection.textContent!.includes(selectedText)
 		) {
-			const selectedElements = getSelectionElements(firstSelectedWord, selectedText.trim());
-			const parentElement = firstSelectedWord.parentElement;
+			const selectedElements = getSelectionElements(firstWordInSelection, selectedText.trim());
+			const parentElement = firstWordInSelection.parentElement;
 
 			if (selectedElements.length > 0 && parentElement !== null) {
 				const newSpan = document.createElement('span');
 				convertSpanToNewMultiword(newSpan);
 				setSelectedWord(newSpan);
-				insertMultiword(parentElement, firstSelectedWord, selectedElements, newSpan);
+				insertMultiword(parentElement, firstWordInSelection, selectedElements, newSpan);
 
 				const onWordUpdateCallback = () => (content: string, status: number) => {
-					const index = parseInt(firstSelectedWord.getAttribute('data-index')!);
+					const index = parseInt(firstWordInSelection.getAttribute('data-index')!);
 
 					const firstElements = document.querySelectorAll(
 						`[data-content="${selectedElements[0].textContent!.toLowerCase()}"]`
@@ -388,13 +395,14 @@ const Reader = (
 	{
 		if (languageData.shouldShowSpaces)
 		{
-			return <span className="whitespace" key={index}>{' '}</span>;
+			return <span className="whitespace" data-index={index} key={index}>{' '}</span>;
 		}
 		else
 		{
 			return (
 				<span
 					className="whitespace"
+					data-index={index}
 					key={index}
 					style={{
 						fontSize: 0,
@@ -414,11 +422,11 @@ const Reader = (
 		}
 		else if (word.content === '\n')
 		{
-			renderedElement = <br key={index} style={{ marginBottom: "1rem" }}/>;
+			renderedElement = <br key={index} data-index={index} style={{ marginBottom: "1rem" }}/>;
 		}
 		else if (word.type === 'punctuation')
 		{
-			renderedElement = <span key={index}>{word.content}</span>;
+			renderedElement = <span key={index} data-index={index}>{word.content}</span>;
 		}
 		else
 		{
