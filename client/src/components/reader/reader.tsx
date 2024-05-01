@@ -35,15 +35,10 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 	let cumulativeSelection = element.textContent!;
 	const elements: HTMLElement[] = [];
 
-	const selectionSlices: string[] = [];
-	for (let i = 0; i < selection.length; i++)
-	{
-		selectionSlices.push(selection.slice(0, i + 1));
-	}
+	const selectionOnFollowingWords = selection.split(' ').slice(1).join(' ');
+	const multiwordBeginning: string = element.textContent! + ' ' + selectionOnFollowingWords;
 
-	const regex = new RegExp('.*(' + selectionSlices.join('|') + ')$');
-
-	while (currentElement !== null && regex.test(cumulativeSelection))
+	while (currentElement !== null && multiwordBeginning.startsWith(cumulativeSelection))
 	{
 		elements.push(currentElement);
 		currentElement = currentElement.nextElementSibling as HTMLElement | null;
@@ -331,7 +326,11 @@ const Reader = (
 
 		console.log("mouseup");
 		
-		if (selectedText.length > 0 && firstSelectedWord !== null) {
+		if (
+			selectedText.length > 0
+				&& firstSelectedWord !== null
+				&& !firstSelectedWord.textContent!.includes(selectedText)
+		) {
 			const selectedElements = getSelectionElements(firstSelectedWord, selectedText.trim());
 			const parentElement = firstSelectedWord.parentElement;
 
