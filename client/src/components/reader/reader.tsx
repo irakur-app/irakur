@@ -204,7 +204,7 @@ const Reader = (
 
 		setCurrentPage(pageId);
 
-		document.querySelectorAll<HTMLElement>('.word-span').forEach(
+		document.querySelectorAll<HTMLElement>('.word').forEach(
 			(element: HTMLElement): void => {
 				element.style.transition = "none";
 			}
@@ -253,9 +253,13 @@ const Reader = (
 			(): void => {
 				for (const content of newWordContents)
 				{
-					const wordElements = document.getElementsByClassName(
-						'word-' + content?.toLowerCase()
-					) as HTMLCollectionOf<HTMLElement>;
+					if (content === '\n')
+					{
+						continue;
+					}
+					const wordElements = document.querySelectorAll(
+						`[data-content="${content?.toLowerCase()}"]`
+					) as NodeListOf<HTMLElement>;
 					
 					for (let i = 0; i < wordElements.length; i++)
 					{
@@ -281,9 +285,9 @@ const Reader = (
 
 		setWords(updatedWords);
 
-		const wordElements = document.getElementsByClassName(
-			'word-' + content?.toLowerCase()
-		) as HTMLCollectionOf<HTMLElement>;
+		const wordElements = document.querySelectorAll(
+			`[data-content="${content?.toLowerCase()}"]`
+		) as NodeListOf<HTMLElement>;
 		
 		for (let i = 0; i < wordElements.length; i++)
 		{
@@ -338,9 +342,11 @@ const Reader = (
 				insertMultiword(parentElement, firstSelectedWord, selectedElements, newSpan);
 
 				const onWordUpdateCallback = () => (content: string, status: number) => {
-					const firstElements = document.getElementsByClassName(
-						'word-' + selectedElements[0].textContent!.toLowerCase()
-					) as HTMLCollectionOf<HTMLElement>;
+					const index = parseInt(firstSelectedWord.getAttribute('data-index')!);
+
+					const firstElements = document.querySelectorAll(
+						`[data-content="${selectedElements[0].textContent!.toLowerCase()}"]`
+					) as NodeListOf<HTMLElement>;
 
 					clearNewMultiword();
 
@@ -357,6 +363,8 @@ const Reader = (
 					}
 
 					setSelectedWord(null);
+
+					addWordsInBatch(99, index, content);
 				}
 				const elementsContent = getElementsContent(selectedElements);
 				onWordClick(elementsContent, onWordUpdateCallback);
@@ -423,7 +431,9 @@ const Reader = (
 				<span
 					key={index}
 					id={id}
-					className={"word-span word-" + word.content.toLowerCase()}
+					className="word"
+					data-content={word.content.toLowerCase()}
+					data-index={index}
 					style={{
 						backgroundColor: getStyle(word.status ?? 0),
 						borderRadius: ".25rem",
