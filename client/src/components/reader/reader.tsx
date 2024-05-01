@@ -11,6 +11,42 @@ import { Language, ReducedWordData, Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
+const getElementsContent = (elements: HTMLElement[]): string => {
+	return elements.map((element: HTMLElement) => element.textContent).join('');
+}
+
+const getSelectionElements = (element: HTMLElement, selection: string): HTMLElement[] => {
+	let currentElement: HTMLElement | null = element;
+
+	let cumulativeSelection = element.textContent!;
+	const elements: HTMLElement[] = [];
+
+	const selectionSlices: string[] = [];
+	for (let i = 0; i < selection.length; i++)
+	{
+		selectionSlices.push(selection.slice(0, i + 1));
+	}
+
+	const regex = new RegExp('.*(' + selectionSlices.join('|') + ')$');
+
+	while (currentElement !== null && regex.test(cumulativeSelection))
+	{
+		elements.push(currentElement);
+		currentElement = currentElement.nextElementSibling as HTMLElement | null;
+		cumulativeSelection += currentElement?.textContent!;
+	}
+
+	//concatenate elements' textContent using join
+	const elementContents = getElementsContent(elements);
+
+	if (elementContents !== selection)
+	{
+		elements.push(currentElement!);
+	}
+
+	return elements;
+}
+
 const statusStyles: Record<string, string> = {
 	'0': '#ADDFF4FF',
 	'1': '#F5B8A9FF',
@@ -45,6 +81,7 @@ const Reader = (
 	const [pageToJump, setPageToJump] = useState<number>(currentPage);
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
+	const [firstSelectedWord, setFirstSelectedWord] = useState<HTMLElement | null>(null);
 
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -204,22 +241,69 @@ const Reader = (
 		[]
 	);
 
+	const handleMouseDown = (event: MouseEvent): void => {
+		console.log(".");
+		if (selectedWord !== null) {
+			selectedWord.style.boxShadow = "none";
+		}
+		setSelectedWord(null);
+
+		const newMultiwordElements = document.getElementsByClassName('new-multiword') as HTMLCollectionOf<HTMLElement>;
+		if(newMultiwordElements.length > 0)
+		{
+			const parentElement = newMultiwordElements[0].parentElement;
+			if(parentElement !== null)
+			{
+				while(newMultiwordElements[0].firstChild)
+				{
+					parentElement.insertBefore(newMultiwordElements[0].firstChild, newMultiwordElements[0]);
+				}
+				parentElement.removeChild(newMultiwordElements[0]);
+			}
+		}
+
+		setFirstSelectedWord(() => event.target as HTMLElement);
+	};
+
+	const handleMouseUp = (event: MouseEvent): void => {
+		const selectedText = window.getSelection()!.toString();
+
+		console.log("mouseup");
+		
+		if (selectedText.length > 0 && firstSelectedWord !== null) {
+			const selectedElements = getSelectionElements(firstSelectedWord, selectedText);
+			const parentElement = firstSelectedWord.parentElement;
+
+			if (selectedElements.length > 0 && parentElement !== null) {
+				const newSpan = document.createElement('span');
+				newSpan.className = "new-multiword";
+				newSpan.style.borderRadius = ".25rem",
+				newSpan.style.cursor = "pointer",
+				newSpan.style.boxShadow = "0 0 0 2px #00000066";
+				setSelectedWord(newSpan);
+				const tempSpan = document.createElement('span');
+				parentElement.insertBefore(tempSpan, firstSelectedWord);
+				for (let i = 0; i < selectedElements.length; i++) {
+					newSpan.appendChild(selectedElements[i]);
+				}
+				parentElement.insertBefore(newSpan, tempSpan);
+				parentElement.removeChild(tempSpan);
+
+				setSelectedWord(newSpan);
+
+				console.log("newSpan:", newSpan);
+			}
+		}
+	};
+
 	useEffect(
 		(): (() => void) => {
-			console.log(ref.current);
+			ref.current?.addEventListener('mousedown', handleMouseDown);
+			ref.current?.addEventListener('mouseup', handleMouseUp);
 
-			ref.current?.addEventListener(
-				'mousedown',
-				(event: MouseEvent): void => {
-					if (selectedWord !== null) {
-						selectedWord.style.boxShadow = "none";
-					}
-					setSelectedWord(null);
-				}
-			);
-
-			return (): void => {
-				ref.current?.removeEventListener('mousedown', () => {});
+			return (): void => {				
+				ref.current?.removeEventListener('mousedown', handleMouseDown);
+				ref.current?.removeEventListener('mouseup', handleMouseUp);
 			};
 		}
 	);
@@ -277,7 +361,7 @@ const Reader = (
 						cursor: "pointer",
 					}}
 					onClick={
-						(): void => {
+						(event: React.MouseEvent<HTMLElement>): void => {
 							const element = document.getElementById(id) as HTMLElement;
 							element.style.boxShadow = "0 0 0 2px #00000066";
 							setSelectedWord(element);
