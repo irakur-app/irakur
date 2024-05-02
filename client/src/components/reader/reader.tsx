@@ -339,16 +339,16 @@ const Reader = (
 				&& !firstWordInSelection.textContent!.includes(selectedText)
 		) {
 			const selectedElements = getSelectionElements(firstWordInSelection, selectedText.trim());
-			const parentElement = firstWordInSelection.parentElement;
+			const parentElement = selectedElements[0].parentElement;
 
 			if (selectedElements.length > 0 && parentElement !== null) {
 				const newSpan = document.createElement('span');
 				convertSpanToNewMultiword(newSpan);
 				setSelectedWord(newSpan);
-				insertMultiword(parentElement, firstWordInSelection, selectedElements, newSpan);
+				insertMultiword(parentElement, selectedElements[0], selectedElements, newSpan);
 
 				const onWordUpdateCallback = () => (content: string, status: number) => {
-					const index = parseInt(firstWordInSelection.getAttribute('data-index')!);
+					const index = parseInt(selectedElements[0].getAttribute('data-index')!);
 
 					const firstElements = document.querySelectorAll(
 						`[data-content="${selectedElements[0].textContent!.toLowerCase()}"]`
