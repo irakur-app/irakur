@@ -93,6 +93,8 @@ const convertSpanToSavedMultiword = (span: HTMLElement, status: number): void =>
 	span.style.cursor = "pointer",
 	span.style.backgroundColor = getStyle(status);
 	span.style.boxShadow = "0 0 0 2px " + getStyle(status);
+
+	span.setAttribute("data-status", status.toString());
 };
 
 const insertMultiword = (
@@ -210,19 +212,31 @@ const Reader = (
 		lastIndex: number | null,
 		contentException: string | null
 	): Promise<void> => {
-		const wordBank = words?.slice(0, lastIndex ?? words!.length);
+		const wordElements = Array.from(document.querySelectorAll<HTMLElement>(`.word[data-index]`));
+		
+		const wordBank = (lastIndex === null)
+			? wordElements
+			: wordElements.filter(
+				(element: HTMLElement): boolean => {
+					return (
+						(parseInt(element.dataset.index!)) <= lastIndex
+					);
+				}
+		);
 
 		let newWordContents: string[] = wordBank!.filter(
-			(word: ReducedWordData): boolean => {
+			(word: HTMLElement): boolean => {
+				console.log(word.dataset);
 				return (
-					(word.status === 0 || word.status === null)
-						&& word.content !== contentException
-						&& word.type === "word"
+					(word.dataset.status === null || word.dataset.status === undefined || parseInt(word.dataset.status!) === 0)
+						&& word.dataset.content !== contentException
+						&& word.dataset.type === "word"
 				);
 			}
 		).map(
-			(word: ReducedWordData): string => {
-				return word.content.toLowerCase();
+			(word: HTMLElement): string => {
+				word.dataset.status = status.toString();
+				return word.dataset.content!.toLowerCase();
 			}
 		);
 
@@ -232,16 +246,6 @@ const Reader = (
 		}
 
 		newWordContents = [...new Set(newWordContents)];
-
-		const updatedWords = words;
-		for (const word of updatedWords!)
-		{
-			if (newWordContents.includes(word.content.toLowerCase()) && word.type === "word")
-			{
-				word.status = status;
-			}
-		}
-		setWords(updatedWords);
 
 		await backendConnector.addWordsInBatch(languageData.id, newWordContents, status, new Date().toISOString()).then(
 			(): void => {
@@ -266,19 +270,6 @@ const Reader = (
 	}
 
 	const onWordUpdate = (index: number, content: string, status: number): void => {
-		//console.log(words);
-
-		const updatedWords = words;
-		for (const word of updatedWords!)
-		{
-			if (word.content.toLowerCase() === content.toLowerCase())
-			{
-				word.status = status;
-			}
-		}
-
-		setWords(updatedWords);
-
 		const wordElements = document.querySelectorAll(
 			`[data-content="${content?.toLowerCase()}"]`
 		) as NodeListOf<HTMLElement>;
@@ -287,6 +278,7 @@ const Reader = (
 		{
 			wordElements[i].style.transition = "background-color 0.3s ease-out";
 			wordElements[i].style.backgroundColor = getStyle(status);
+			wordElements[i].dataset.status = status.toString();
 		}
 
 		addWordsInBatch(99, index, content);
@@ -370,7 +362,7 @@ const Reader = (
 
 					setSelectedWord(null);
 
-					addWordsInBatch(99, index, content);
+					addWordsInBatch(99, index-1, content);
 				}
 				const elementsContent = getElementsContent(selectedElements);
 				onWordClick(elementsContent, onWordUpdateCallback);
@@ -438,6 +430,8 @@ const Reader = (
 					id={id}
 					className="multiword"
 					data-index={word.index}
+					data-status={word.status}
+					data-type={word.type}
 					style={{
 						backgroundColor: getStyle(word.status ?? 0),
 						borderRadius: ".25rem",
@@ -460,6 +454,8 @@ const Reader = (
 					className="word"
 					data-content={word.content.toLowerCase()}
 					data-index={word.index}
+					data-status={word.status}
+					data-type={word.type}
 					style={{
 						backgroundColor: getStyle(word.status ?? 0),
 						borderRadius: ".25rem",
