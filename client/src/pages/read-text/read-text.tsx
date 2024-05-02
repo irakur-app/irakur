@@ -68,16 +68,17 @@ const ReadText = (): JSX.Element => {
 				<title>Irakur - Read { textData.title }</title>
 			</Helmet>
 
-			<div style={{ display: 'flex', margin: '5%' }}>
+			<div style={{ display: 'flex', margin: '2%' }}>
 				<div style={{
 					flex: 1,
-					width: '80%',
-					marginRight: '5%',
+					width: '75%',
+					marginRight: '2%',
 					fontSize: '1.5em',
 					overflowY: 'scroll',
-					height: '80vh',
+					height: '85vh',
 					textAlign: 'justify',
-					paddingRight: '1%',
+					padding: '1%',
+					marginTop: '1%',
 				}}>
 					<Reader
 						textData={textData}
@@ -90,7 +91,7 @@ const ReadText = (): JSX.Element => {
 					backgroundColor: '#00000011',
 					borderRadius: '25px',
 					padding: '2%',
-					width: '20%',
+					width: '25%',
 					display: 'flex',
 					flexDirection: 'column',
 				}}>

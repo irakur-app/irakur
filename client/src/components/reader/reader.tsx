@@ -115,10 +115,10 @@ const insertMultiword = (
 const statusStyles: Record<string, string> = {
 	'0': '#ADDFF4FF',
 	'1': '#F5B8A9FF',
-	'2': '#F5CCA9E5',
-	'3': '#F5E1A9BF',
-	'4': '#F5F3A99F',
-	'5': '#DDFFDD7F',
+	'2': '#F5CCA9FF',
+	'3': '#F5E1A9FF',
+	'4': '#F5F3A9FF',
+	'5': '#DDFFDDFF',
 	'99': '#FFFFFF00',
 	'98': '#FFFFFF00',
 };
@@ -228,7 +228,10 @@ const Reader = (
 			(word: HTMLElement): boolean => {
 				console.log(word.dataset);
 				return (
-					(word.dataset.status === null || word.dataset.status === undefined || parseInt(word.dataset.status!) === 0)
+					(word.dataset.status === null
+						|| word.dataset.status === undefined
+						|| parseInt(word.dataset.status!) === 0
+					)
 						&& word.dataset.content !== contentException
 						&& word.dataset.type === "word"
 				);
