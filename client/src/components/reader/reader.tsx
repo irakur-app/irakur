@@ -238,7 +238,6 @@ const Reader = (
 			}
 		).map(
 			(word: HTMLElement): string => {
-				word.dataset.status = status.toString();
 				return word.dataset.content!.toLowerCase();
 			}
 		);
@@ -264,6 +263,7 @@ const Reader = (
 					
 					for (let i = 0; i < wordElements.length; i++)
 					{
+						wordElements[i].dataset.status = status.toString();
 						wordElements[i].style.transition = "background-color 2s ease-out";
 						wordElements[i].style.backgroundColor = getStyle(status);
 					}
