@@ -201,9 +201,8 @@ const EditWord = (
 					(entries !== null) &&
 					entries.map(
 						(entry: Entry, index: number) => (
-							<React.Fragment>
+							<React.Fragment key={uuid()}>
 								<div
-									key={uuid()}
 									style={{
 										display: "flex",
 										justifyContent: "space-between",
