@@ -42,6 +42,7 @@ const queries: { [key: string]: string } = {
 		notes TEXT,
 		datetime_added TEXT NOT NULL,
 		datetime_updated TEXT NOT NULL,
+		item_count INTEGER NOT NULL DEFAULT 1,
 		FOREIGN KEY(language_id) REFERENCES language(id)
 	)`,
 	//#endregion
@@ -141,7 +142,8 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated
+			datetime_updated AS datetimeUpdated,
+			item_count AS itemCount
 		FROM word
 		WHERE id = ?`,
 	findWord: `SELECT
@@ -152,7 +154,8 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated
+			datetime_updated AS datetimeUpdated,
+			item_count AS itemCount
 		FROM word
 		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
 	findWordsInBatch: `WITH input_words(content) AS (VALUES %DYNAMIC%)
@@ -176,9 +179,10 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added,
-			datetime_updated
+			datetime_updated,
+			item_count
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
 	addWordsInBatch: `INSERT INTO word (
 			language_id,
 			content,
@@ -186,7 +190,8 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added,
-			datetime_updated
+			datetime_updated,
+			item_count
 		)
 		VALUES %DYNAMIC%`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,

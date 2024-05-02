@@ -48,6 +48,7 @@ type Word = {
 	notes: string;
 	datetimeAdded: string;
 	datetimeUpdated: string;
+	itemCount: number;
 };
 
 type RawWord = {
@@ -59,6 +60,7 @@ type RawWord = {
 	notes: string;
 	datetimeAdded: string;
 	datetimeUpdated: string;
+	itemCount: number;
 };
 
 export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };

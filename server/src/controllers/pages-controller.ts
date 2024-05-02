@@ -7,6 +7,7 @@
 import { Page, ReducedWordData, Word } from "@common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
+import { itemizeString } from "../utils";
 
 class PagesController
 {
@@ -69,8 +70,7 @@ class PagesController
 			[page.textId]
 		)).languageId;
 
-		const items: string[] = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
-			.filter((sentence: string) => sentence !== '');
+		const items: string[] = itemizeString(page.content);
 		
 		const dynamicQuery: string = queries.findWordsInBatch.replace(
 			/\%DYNAMIC\%/,

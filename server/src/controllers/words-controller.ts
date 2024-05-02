@@ -7,6 +7,7 @@
 import { Entry, RawWord, Word } from "@common/types";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
+import { itemizeString } from "../utils";
 
 class WordsController
 {
@@ -20,9 +21,11 @@ class WordsController
 		datetimeUpdated: string
 	): Promise<void>
 	{
+		const itemizedContent: string[] = itemizeString(content);
+
 		await databaseManager.executeQuery(
 			queries.addWord,
-			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated]
+			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated, itemizedContent.length]
 		);
 	}
 
@@ -36,8 +39,10 @@ class WordsController
 		const valueList: string[] = [];
 		for (const content of contents)
 		{
+			const itemizedContent: string[] = itemizeString(content);
+
 			valueList.push(
-				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}')`
+				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}', ${itemizedContent.length})`
 			);
 		}
 
@@ -126,6 +131,11 @@ class WordsController
 		{
 			updates.push('content = ?');
 			queryParams.push(content);
+
+			const itemizedContent: string[] = itemizeString(content);
+
+			updates.push('item_count = ?');
+			queryParams.push(itemizedContent.length);
 		}
 		if (status !== undefined)
 		{
