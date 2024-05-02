@@ -147,6 +147,8 @@ const Reader = (
 	const [words, setWords] = useState<ReducedWordData[]|null>(null);
 	const [selectedWord, setSelectedWord] = useState<HTMLElement | null>(null);
 	const [firstSelectedWord, setFirstSelectedWord] = useState<HTMLElement | null>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [areButtonsDisabled, setAreButtonsDisabled] = useState<boolean>(false);
 
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -184,6 +186,8 @@ const Reader = (
 	}
 
 	const loadPage = async (textId: number, pageId: number): Promise<void> => {
+		setIsLoading(true);
+		setWords(null);
 		setWords(await backendConnector.getWords(textId, pageId));
 
 		await backendConnector.editText(
@@ -205,6 +209,9 @@ const Reader = (
 				element.style.transition = "none";
 			}
 		);
+
+		setIsLoading(false);
+		setAreButtonsDisabled(false);
 	}
 
 	const addWordsInBatch = async (
@@ -212,6 +219,7 @@ const Reader = (
 		lastIndex: number | null,
 		contentException: string | null
 	): Promise<void> => {
+		setAreButtonsDisabled(true);
 		const wordElements = Array.from(document.querySelectorAll<HTMLElement>(`.word[data-index]`));
 		
 		const wordBank = (lastIndex === null)
@@ -244,6 +252,7 @@ const Reader = (
 
 		if (newWordContents.length === 0)
 		{
+			setAreButtonsDisabled(false);
 			return;
 		}
 
@@ -268,6 +277,8 @@ const Reader = (
 						wordElements[i].style.backgroundColor = getStyle(status);
 					}
 				}
+
+				setAreButtonsDisabled(false);
 			}
 		);
 	}
@@ -479,7 +490,7 @@ const Reader = (
 		return renderedElement;
 	}
 
-	if (!words)
+	if (!words || isLoading)
 	{
 		return <Loading />;
 	}
@@ -496,10 +507,11 @@ const Reader = (
 			</div>
 			<div>
 				<button
-					disabled={currentPage === 1}
+					disabled={currentPage === 1 || areButtonsDisabled}
 					onClick={(): void => {loadPage(textData.id, currentPage-1)}}
 				>Previous page</button>
 				<button
+					disabled={areButtonsDisabled}
 					onClick={
 						async (): Promise<void> => {
 							await addWordsInBatch(99, null, null);
@@ -522,6 +534,7 @@ const Reader = (
 					}}
 				/>
 				<button
+					disabled={areButtonsDisabled}
 					onClick={
 						(): void => {
 							if (pageToJump >= 1 && pageToJump <= textData.numberOfPages!)

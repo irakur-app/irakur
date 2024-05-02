@@ -62,6 +62,7 @@ const EditWord = (
 	const [entries, setEntries] = useState<Entry[]>([emptyEntry]);
 	const [notes, setNotes] = useState<string | null>(null);
 	const [status, setStatus] = useState<number>(0);
+	const [areButtonsDisabled, setAreButtonsDisabled] = useState<boolean>(false);
 
 	useEffect(
 		(): void => {
@@ -113,6 +114,7 @@ const EditWord = (
 	};
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>): Promise<void> => {
+		setAreButtonsDisabled(true);
 		e.preventDefault();
 		
 		const newStatus: number = parseInt((e.nativeEvent.submitter as HTMLButtonElement).value);
@@ -151,6 +153,7 @@ const EditWord = (
 			);
 		}
 
+		setAreButtonsDisabled(false);
 		setNotification('Word ' + (isNewWord ? 'added' : 'updated'));
 
 		setIsNewWord(false);
@@ -292,6 +295,7 @@ const EditWord = (
 					(buttonStatus: number) => (
 						<button
 							key={uuid()}
+							disabled={areButtonsDisabled}
 							type="submit"
 							value={buttonStatus.toString()}
 							style={{
