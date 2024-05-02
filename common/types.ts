@@ -32,6 +32,8 @@ type ReducedWordData = {
 	content: string;
 	status: number | null;
 	type: string;
+	potentialMultiword: boolean | undefined;
+	items: ReducedWordData[] | undefined;
 };
 
 type Entry = {

@@ -83,8 +83,54 @@ class PagesController
 		
 		const wordData: ReducedWordData[] = await databaseManager.executeQuery(
 			dynamicQuery,
-			[languageId]
+			[languageId, languageId]
 		);
+
+		for (let i = 0; i < wordData.length; i++)
+		{
+			if (wordData[i].potentialMultiword)
+			{
+				const potentialMultiwords: Word[] = await databaseManager.executeQuery(
+					queries.getPotentialMultiwords,
+					[wordData[i].content, languageId]
+				);
+
+				let multiword: Word | null = null;
+				let itemCount: number | null = null;
+				let items: ReducedWordData[] | null = null;
+
+				for (const potentialMultiword of potentialMultiwords)
+				{
+					itemCount = potentialMultiword.itemCount;
+
+					items = wordData.slice(i, i + itemCount);
+					const itemsContent: string = items.map((item: ReducedWordData): string => {
+						return item.content;
+					}).join('');
+
+					if (itemsContent === potentialMultiword.content)
+					{
+						multiword = potentialMultiword;
+						break;
+					}
+				}
+
+				if(multiword)
+				{
+					wordData.splice(i, multiword.itemCount, {
+						content: multiword.content,
+						status: multiword.status,
+						type: "multiword",
+						items: items!,
+						potentialMultiword: undefined,
+					});
+
+					i += multiword.itemCount - 1;
+				}
+			}
+
+			wordData[i].potentialMultiword = undefined;
+		}
 
 		return wordData;
 	}

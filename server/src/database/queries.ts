@@ -169,7 +169,12 @@ const queries: { [key: string]: string } = {
 					AND NOT input_words.content LIKE '%]%'
 				THEN 'word'
 				ELSE 'punctuation'
-			END AS type
+			END AS type,
+			EXISTS (
+				SELECT item_count
+				FROM word
+				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.item_count > 1
+			) AS potentialMultiword
 		FROM input_words
 		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = ?`,
 	addWord: `INSERT INTO word (
@@ -196,6 +201,20 @@ const queries: { [key: string]: string } = {
 		VALUES %DYNAMIC%`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,
 	editWord: `UPDATE word SET %DYNAMIC% WHERE id = ?`,
+	getPotentialMultiwords: `SELECT
+			id,
+			language_id AS languageId,
+			content,
+			status,
+			entries,
+			notes,
+			datetime_added AS datetimeAdded,
+			datetime_updated AS datetimeUpdated,
+			item_count AS itemCount
+		FROM word
+		WHERE content LIKE (? || '%')
+			AND language_id = ?
+			AND item_count > 1`,
 	//#endregion
 
 	//#region Utils
