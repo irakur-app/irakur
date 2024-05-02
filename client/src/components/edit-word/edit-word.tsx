@@ -187,10 +187,13 @@ const EditWord = (
 				}}
 				readOnly
 			/>
+			<span style={{ color: "#444444FF" }}>Dictionary entries:</span>
 			<div style={{
 				overflowY: 'scroll',
 				maxHeight: '25vh',
-				paddingRight: '2.5%',
+				padding: '3%',
+				border: "1px solid #DDDDEEFF",
+				borderRadius: "0.5rem",
 				marginBottom: "0.5rem",
 				width: "100%",
 			}}>
@@ -198,51 +201,72 @@ const EditWord = (
 					(entries !== null) &&
 					entries.map(
 						(entry: Entry, index: number) => (
-							<div
-								key={uuid()}
-								style={{
-									display: "flex",
-									justifyContent: "space-between",
-									alignItems: "center",
-								}}
-							>
-								<div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", width: "90%" }}>
-									<EntryElement
-										key={uuid()}
-										entry={entry}
-									/>
-								</div>
-								<button
-									type="button"
-									onClick={() => deleteEntry(index)}
+							<React.Fragment>
+								<div
+									key={uuid()}
 									style={{
-										backgroundColor: "#DD6666CC",
-										border: "none",
-										borderRadius: "0.25rem",
-										width: "5%",
-										height: "1.5rem",
-										cursor: "pointer",
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
 									}}
-								>X</button>
-							</div>
+								>
+									<div style={{ marginTop: "0.2rem", marginBottom: "0.2rem", width: "85%" }}>
+										<EntryElement
+											key={uuid()}
+											entry={entry}
+										/>
+									</div>
+									<div style={{
+										display: "flex",
+										flexDirection: "column",
+										justifyContent: "space-between",
+										gap: "0.5rem",
+									}}>
+										<button
+											type="button"
+											onClick={() => deleteEntry(index)}
+											style={{
+												backgroundColor: "#DD7777FF",
+												border: "none",
+												borderRadius: "0.25rem",
+												height: "1.5rem",
+												cursor: "pointer",
+											}}
+										>X</button>
+										{
+											(index === (entries.length - 1))
+											? (
+												<button
+													type="button"
+													onClick={addEntry}
+													style={{
+														backgroundColor: "#AADDAAFF",
+														border: "none",
+														borderRadius: "0.25rem",
+														height: "1.5rem",
+														cursor: "pointer",
+													}}
+												>+</button>
+											)
+											: (
+												<button
+													type="button"
+													style={{
+														backgroundColor: "transparent",
+														border: "none",
+														borderRadius: "0.25rem",
+														height: "1.5rem",
+													}}
+												></button>
+											)
+										}
+									</div>
+								</div>
+								<br />
+							</React.Fragment>
 						)
 					)
 				}
-				<button
-					type="button"
-					onClick={addEntry}
-					style={{
-						width: "100%",
-						height: "1.5rem",
-						cursor: "pointer",
-						backgroundColor: "#BBDD88CC",
-						border: "none",
-						borderRadius: "0.25rem",
-						marginTop: "0.1rem",
-					}}
-				>
-					Add entry
-				</button>
 			</div>
 			<textarea
 				name="notes"
@@ -259,7 +283,7 @@ const EditWord = (
 					borderBottom: "1px solid #00000066",
 					padding: "0.33rem",
 					height: "3rem",
-					fontSize: "0.82rem",
+					fontSize: "0.9rem",
 				}}
 			/>
 			<br />
@@ -272,7 +296,12 @@ const EditWord = (
 							type="submit"
 							value={buttonStatus.toString()}
 							style={{
-								border: (buttonStatus === status) ? "1px solid #00000066" : "1px solid transparent",
+								border: ((buttonStatus === status)
+									? "2px solid #AAAABBFF"
+									: (buttonStatus === 99 || buttonStatus === 98)
+										? "1px solid #DDDDEEFF"
+										: "1px solid transparent"
+								),
 								borderRadius: "0.25rem",
 								flex: 1,
 								backgroundColor: getStyle(buttonStatus),

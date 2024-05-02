@@ -38,8 +38,8 @@ const EntryElement = ({ entry }: { entry: Entry }): JSX.Element => {
 					borderRadius: "0.5rem",
 					borderBottom: "1px solid #00000066",
 					padding: "0.33rem",
-					height: "5rem",
-					fontSize: "0.82rem",
+					height: "3rem",
+					fontSize: "1rem",
 				}}
 			/>
 		</React.Fragment>

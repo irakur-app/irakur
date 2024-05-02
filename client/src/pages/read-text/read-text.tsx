@@ -88,7 +88,8 @@ const ReadText = (): JSX.Element => {
 				</div>
 				<div style={{
 					position: 'sticky',
-					backgroundColor: '#00000011',
+					backgroundColor: '#FFFFFFFF',
+					border: '2px solid #DDDDDDFF',
 					borderRadius: '25px',
 					padding: '2%',
 					width: '25%',

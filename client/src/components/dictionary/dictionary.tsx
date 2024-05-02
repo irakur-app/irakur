@@ -25,8 +25,10 @@ const Dictionary = ({ languageData, content }: { languageData: Language, content
 				top: "60%",
 				transformOrigin: "0 0",
 				scale: `${scale}`,
-				border: "1px solid #00000066",
+				border: "none",
+				boxShadow: "0 0 0 2px #DDDDDDFF",
 				borderRadius: "0.5rem",
+				marginTop: "0.5rem",
 			}}
 		/>
 	);
