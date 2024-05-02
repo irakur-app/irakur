@@ -414,33 +414,52 @@ const Reader = (
 		}
 	};
 
-	const renderWord = (word: ReducedWordData, index: number): JSX.Element => {
+	const renderWord = (word: ReducedWordData): JSX.Element => {
 		let renderedElement;
 		if (word.content === ' ')
 		{
-			renderedElement = spaceRender(index);
+			renderedElement = spaceRender(word.index);
 		}
 		else if (word.content === '\n')
 		{
-			renderedElement = <br key={index} data-index={index} style={{ marginBottom: "1rem" }}/>;
+			renderedElement = <br key={word.index} data-index={word.index} style={{ marginBottom: "1rem" }}/>;
 		}
 		else if (word.type === 'punctuation')
 		{
-			renderedElement = <span key={index} data-index={index}>{word.content}</span>;
+			renderedElement = <span key={word.index} data-index={word.index}>{word.content}</span>;
+		}
+		else if (word.type === 'multiword')
+		{
+			const itemsInside: JSX.Element[] = word.items!.map(renderWord);
+			const id = uuid();
+			renderedElement = (
+				<span
+					key={word.index}
+					id={id}
+					className="multiword"
+					data-index={word.index}
+					style={{
+						backgroundColor: getStyle(word.status ?? 0),
+						borderRadius: ".25rem",
+						cursor: "pointer",
+						boxShadow: "0 0 0 2px " + getStyle(word.status ?? 0),
+					}}
+				>{itemsInside}</span>
+			);
 		}
 		else
 		{
 			const onWordUpdateCallback = () => (content: string, status: number) => {
-				onWordUpdate(index, content, status);
+				onWordUpdate(word.index, content, status);
 			}
 			const id = uuid();
 			renderedElement = (
 				<span
-					key={index}
+					key={word.index}
 					id={id}
 					className="word"
 					data-content={word.content.toLowerCase()}
-					data-index={index}
+					data-index={word.index}
 					style={{
 						backgroundColor: getStyle(word.status ?? 0),
 						borderRadius: ".25rem",

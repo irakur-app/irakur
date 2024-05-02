@@ -123,6 +123,7 @@ class PagesController
 						type: "multiword",
 						items: items!,
 						potentialMultiword: undefined,
+						index: -1
 					});
 
 					i += multiword.itemCount - 1;
@@ -132,7 +133,22 @@ class PagesController
 			wordData[i].potentialMultiword = undefined;
 		}
 
+		this.addIndexesToWordData(wordData, 0);
+
 		return wordData;
+	}
+
+	addIndexesToWordData(wordData: ReducedWordData[], startIndex: number): void
+	{
+		for (let i = 0; i < wordData.length; i++)
+		{
+			wordData[i].index = i+startIndex;
+			if(wordData[i].type === "multiword")
+			{
+				this.addIndexesToWordData(wordData[i].items!, wordData[i].index+1);
+				startIndex += wordData[i].items!.length;
+			}
+		}
 	}
 	
 	isWord(item: string): boolean

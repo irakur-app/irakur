@@ -34,6 +34,7 @@ type ReducedWordData = {
 	type: string;
 	potentialMultiword: boolean | undefined;
 	items: ReducedWordData[] | undefined;
+	index: number;
 };
 
 type Entry = {
