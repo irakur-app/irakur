@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { Language, ReducedWordData, Text } from '@common/types';
+import { itemizeString } from '../../../../common/utils';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
@@ -30,13 +31,15 @@ const getElementsContent = (elements: HTMLElement[]): string => {
 }
 
 const getSelectionElements = (element: HTMLElement, selection: string): HTMLElement[] => {
-	let currentElement: HTMLElement | null = element;
-
-	let cumulativeSelection = element.textContent!;
+	let currentElement: HTMLElement | null = (element.dataset.type === "whitespace")
+		? element.nextElementSibling as HTMLElement
+		: element;
+	
+	let cumulativeSelection = currentElement.textContent!;
 	const elements: HTMLElement[] = [];
 
-	const selectionOnFollowingWords = selection.split(' ').slice(1).join(' ');
-	const multiwordBeginning: string = element.textContent! + ' ' + selectionOnFollowingWords;
+	const selectionOnFollowingWords = itemizeString(selection).slice(1).join('');
+	const multiwordBeginning: string = currentElement.textContent! + selectionOnFollowingWords;
 
 	while (currentElement !== null && multiwordBeginning.startsWith(cumulativeSelection))
 	{
@@ -47,7 +50,7 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 
 	const elementContents = getElementsContent(elements);
 
-	if (elementContents !== selection)
+	if (!elementContents.endsWith(selection))
 	{
 		elements.push(currentElement!);
 	}
@@ -401,7 +404,14 @@ const Reader = (
 	{
 		if (languageData.shouldShowSpaces)
 		{
-			return <span className="whitespace" data-index={index} key={index}>{' '}</span>;
+			return (
+				<span
+					className="whitespace"
+					data-index={index}
+					data-type="whitespace"
+					key={index}
+				>{' '}</span>
+			);
 		}
 		else
 		{
@@ -409,6 +419,8 @@ const Reader = (
 				<span
 					className="whitespace"
 					data-index={index}
+					data-content=" "
+					data-type="whitespace"
 					key={index}
 					style={{
 						fontSize: 0,
@@ -432,7 +444,13 @@ const Reader = (
 		}
 		else if (word.type === 'punctuation')
 		{
-			renderedElement = <span key={word.index} data-index={word.index}>{word.content}</span>;
+			renderedElement = (
+				<span
+					key={word.index} 
+					data-content={word.content.toLowerCase()}
+					data-index={word.index}
+				>{word.content}</span>
+			);
 		}
 		else if (word.type === 'multiword')
 		{
@@ -550,3 +568,4 @@ const Reader = (
 };
 
 export { Reader };
+

@@ -5,9 +5,9 @@
  */
 
 import { Entry, RawWord, Word } from "@common/types";
+import { itemizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
-import { itemizeString } from "../utils";
 
 class WordsController
 {
@@ -180,3 +180,4 @@ class WordsController
 }
 
 export { WordsController };
+
