@@ -12,6 +12,19 @@ import { itemizeString } from '../../../../common/utils';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
+// https://stackoverflow.com/a/3169849
+const clearSelection = (): void => {
+	const selection = window.getSelection();
+	if (!selection)
+	{
+		return;
+	}
+	selection.empty();
+	selection.removeAllRanges();
+
+	document.getSelection()?.empty();
+}
+
 const getFollowingElements = (element: HTMLElement, numberOfElements: number): HTMLElement[] => {
 	let currentElement: HTMLElement | null = element;
 
@@ -348,15 +361,15 @@ const Reader = (
 				&& !firstWordInSelection.textContent!.includes(selectedText)
 		) {
 			const selectedElements = getSelectionElements(firstWordInSelection, selectedText.trim());
-			const parentElement = selectedElements[0].parentElement;
+			const parentElement = selectedElements[0].parentElement!;
 
-			if (selectedElements.length > 0 && parentElement !== null) {
+			if (selectedElements.length > 0 && parentElement?.dataset.type !== "multiword") {
 				const newSpan = document.createElement('span');
 				convertSpanToNewMultiword(newSpan);
 				setSelectedWord(newSpan);
 				insertMultiword(parentElement, selectedElements[0], selectedElements, newSpan);
 
-				const onWordUpdateCallback = () => (content: string, status: number) => {
+				const onMultiwordSaved = () => (content: string, status: number) => {
 					const index = parseInt(selectedElements[0].getAttribute('data-index')!);
 
 					const firstElements = document.querySelectorAll(
@@ -382,7 +395,44 @@ const Reader = (
 					addWordsInBatch(99, index-1, content);
 				}
 				const elementsContent = getElementsContent(selectedElements);
-				onWordClick(elementsContent, onWordUpdateCallback);
+				onWordClick(elementsContent, onMultiwordSaved);
+			}
+			else if (selectedElements.length > 0) {
+				clearSelection();
+
+				parentElement.style.borderRadius = ".25rem",
+				parentElement.style.cursor = "pointer",
+				parentElement.style.boxShadow = "0 0 0 2px #00000066";
+				setSelectedWord(parentElement);
+
+				const onMultiwordUpdated = () => (content: string, status: number) => {
+					const index = parseInt(selectedElements[0].getAttribute('data-index')!);
+
+					const firstElements = document.querySelectorAll(
+						`[data-content="${selectedElements[0].textContent!.toLowerCase()}"]`
+					) as NodeListOf<HTMLElement>;
+
+					clearNewMultiword();
+
+					for (let i = 0; i < firstElements.length; i++)
+					{
+						const followingElements = getFollowingElements(firstElements[i], selectedElements.length);
+						if (getElementsContent(followingElements) === content)
+						{
+							const multiword = firstElements[i].parentElement as HTMLElement;
+							multiword.style.transition = "background-color 0.3s ease-out";
+							multiword.style.backgroundColor = getStyle(status);
+							multiword.style.boxShadow = "0 0 0 2px " + getStyle(status);
+							multiword.dataset.status = status.toString();
+						}
+					}
+
+					setSelectedWord(null);
+
+					addWordsInBatch(99, index-1, content);
+				}
+				const elementsContent = getElementsContent(selectedElements);
+				onWordClick(elementsContent, onMultiwordUpdated);
 			}
 		}
 	};
