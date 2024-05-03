@@ -192,13 +192,13 @@ const EditWord = (
 			/>
 			<span style={{ color: "#444444FF" }}>Dictionary entries:</span>
 			<div style={{
-				overflowY: 'scroll',
+				overflowY: 'auto',
 				maxHeight: '25vh',
 				padding: '3%',
-				border: "1px solid #DDDDEEFF",
-				borderRadius: "0.5rem",
+				borderLeft: "1px solid #DDDDEEFF",
+				marginLeft: "0.5rem",
 				marginBottom: "0.5rem",
-				width: "100%",
+				width: "90%",
 			}}>
 				{
 					(entries !== null) &&

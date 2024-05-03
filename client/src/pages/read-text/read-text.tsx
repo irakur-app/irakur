@@ -74,7 +74,6 @@ const ReadText = (): JSX.Element => {
 					width: '75%',
 					marginRight: '2%',
 					fontSize: '1.5em',
-					overflowY: 'scroll',
 					height: '85vh',
 					textAlign: 'justify',
 					padding: '1%',

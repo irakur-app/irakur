@@ -568,12 +568,18 @@ const Reader = (
 			<span className="animation-fixer" style={{ backgroundColor: getStyle(98) }}></span>
 			<h1>{textData.title}</h1>
 			<h4>Page: {currentPage}</h4>
-			<div className="word-container">
+			<div className="word-container" style={{ height: '60vh', overflowY: 'auto' }}>
 				{
 					words.map(renderWord)
 				}
 			</div>
-			<div>
+			<div
+				className="buttons-container"
+				style={{
+					position: "sticky",
+					bottom: "0",
+				}}
+			>
 				<button
 					disabled={currentPage === 1 || areButtonsDisabled}
 					onClick={(): void => {loadPage(textData.id, currentPage-1)}}
