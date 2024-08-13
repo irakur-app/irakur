@@ -59,18 +59,24 @@ class DatabaseManager
 			}
 		);
 
-		this.createTables();
+		this.initializeDatabase();
 
 		DatabaseManager.instance = this;
 	}
 
-	createTables(): void
+	async initializeDatabase(): Promise<void>
 	{
-		this.database.run(queries.createConfigurationTable);
-		this.database.run(queries.createLanguageTable);
-		this.database.run(queries.createTextTable);
-		this.database.run(queries.createPageTable);
-		this.database.run(queries.createWordTable);
+		// Create tables
+		await this.executeQuery(queries.createConfigurationTable);
+		await this.executeQuery(queries.createLanguageTable);
+		await this.executeQuery(queries.createTextTable);
+		await this.executeQuery(queries.createPageTable);
+		await this.executeQuery(queries.createWordTable);
+
+		// Create indexes
+		await this.executeQuery(queries.createTextLanguageIdTitleIndex);
+		await this.executeQuery(queries.createWordLowerContentLanguageIdIndex);
+		await this.executeQuery(queries.createWordLanguageIdItemCountContentIndex);
 	}
 
 	executeQuery(query: string, parameters: any[] = []): Promise<any>

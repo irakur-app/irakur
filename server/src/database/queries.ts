@@ -32,8 +32,8 @@ const queries: { [key: string]: string } = {
 		CONSTRAINT uq__text__language_id__title UNIQUE (language_id, title)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
-		text_id INTEGER NOT NULL,
-		number INTEGER NOT NULL,
+		text_id INTEGER,
+		number INTEGER,
 		content TEXT NOT NULL,
 		CONSTRAINT pk__page__text_id__number PRIMARY KEY (text_id, number),
 		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id)
@@ -52,6 +52,21 @@ const queries: { [key: string]: string } = {
 		CONSTRAINT fk__word__language_id FOREIGN KEY (language_id) REFERENCES language (id),
 		CONSTRAINT uq__word__language_id__content UNIQUE (language_id, content)
 	)`,
+	//#endregion
+
+	//#region Create indexes
+	createTextLanguageIdTitleIndex: `CREATE INDEX IF NOT EXISTS
+		ix__text__language_id__title ON text (
+			language_id, title
+		)`,
+	createWordLowerContentLanguageIdIndex: `CREATE INDEX IF NOT EXISTS
+		ix__word__lower_content__language_id ON word (
+			LOWER(content), language_id
+		)`,
+	createWordLanguageIdItemCountContentIndex: `CREATE INDEX IF NOT EXISTS
+		ix__word__language_id__item_count__content ON word (
+			language_id, item_count, content
+		)`,
 	//#endregion
 
 	//#region Language
