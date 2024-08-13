@@ -11,13 +11,13 @@ const queries: { [key: string]: string } = {
 		value TEXT
 	)`,
 	createLanguageTable: `CREATE TABLE IF NOT EXISTS language (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id INTEGER PRIMARY KEY,
 		name TEXT NOT NULL UNIQUE,
 		dictionary_url TEXT,
 		should_show_spaces INTEGER NOT NULL DEFAULT 1
 	)`,
 	createTextTable: `CREATE TABLE IF NOT EXISTS text (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id INTEGER PRIMARY KEY,
 		language_id INTEGER NOT NULL,
 		title TEXT NOT NULL,
 		source_url TEXT,
@@ -34,7 +34,7 @@ const queries: { [key: string]: string } = {
 		UNIQUE(text_id, number)
 	)`,
 	createWordTable: `CREATE TABLE IF NOT EXISTS word (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id INTEGER PRIMARY KEY,
 		language_id INTEGER NOT NULL,
 		content TEXT NOT NULL,
 		status INTEGER NOT NULL DEFAULT 0,
