@@ -24,7 +24,8 @@ const queries: { [key: string]: string } = {
 		datetime_opened TEXT,
 		datetime_finished TEXT,
 		progress REAL NOT NULL DEFAULT 0,
-		FOREIGN KEY(language_id) REFERENCES language(id)
+		FOREIGN KEY(language_id) REFERENCES language(id),
+		UNIQUE(language_id, title)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
 		text_id INTEGER NOT NULL,
@@ -43,7 +44,8 @@ const queries: { [key: string]: string } = {
 		datetime_added TEXT NOT NULL,
 		datetime_updated TEXT NOT NULL,
 		item_count INTEGER NOT NULL DEFAULT 1,
-		FOREIGN KEY(language_id) REFERENCES language(id)
+		FOREIGN KEY(language_id) REFERENCES language(id),
+		UNIQUE(language_id, content)
 	)`,
 	//#endregion
 
