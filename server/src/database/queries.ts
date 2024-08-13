@@ -32,11 +32,13 @@ const queries: { [key: string]: string } = {
 		CONSTRAINT uq__text__language_id__title UNIQUE (language_id, title)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
+		id INTEGER,
 		text_id INTEGER,
 		number INTEGER,
 		content TEXT NOT NULL,
-		CONSTRAINT pk__page__text_id__number PRIMARY KEY (text_id, number),
+		CONSTRAINT pk__page__id PRIMARY KEY (id),
 		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT uq__page__text_id__number UNIQUE (text_id, number)
 	)`,
 	createWordTable: `CREATE TABLE IF NOT EXISTS word (
 		id INTEGER,
