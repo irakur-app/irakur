@@ -7,35 +7,39 @@
 const queries: { [key: string]: string } = {
 	//#region Create tables
 	createConfigurationTable: `CREATE TABLE IF NOT EXISTS configuration (
-		key TEXT NOT NULL PRIMARY KEY,
-		value TEXT
+		key TEXT NOT NULL,
+		value TEXT,
+		CONSTRAINT pk__configuration__key PRIMARY KEY (key)
 	)`,
 	createLanguageTable: `CREATE TABLE IF NOT EXISTS language (
-		id INTEGER PRIMARY KEY,
-		name TEXT NOT NULL UNIQUE,
+		id INTEGER,
+		name TEXT NOT NULL,
 		dictionary_url TEXT,
-		should_show_spaces INTEGER NOT NULL DEFAULT 1
+		should_show_spaces INTEGER NOT NULL DEFAULT 1,
+		CONSTRAINT pk__language__id PRIMARY KEY (id),
+		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
 	createTextTable: `CREATE TABLE IF NOT EXISTS text (
-		id INTEGER PRIMARY KEY,
+		id INTEGER,
 		language_id INTEGER NOT NULL,
 		title TEXT NOT NULL,
 		source_url TEXT,
 		datetime_opened TEXT,
 		datetime_finished TEXT,
 		progress REAL NOT NULL DEFAULT 0,
-		FOREIGN KEY(language_id) REFERENCES language(id),
-		UNIQUE(language_id, title)
+		CONSTRAINT pk__text__id PRIMARY KEY (id),
+		CONSTRAINT fk__text__language_id FOREIGN KEY (language_id) REFERENCES language (id),
+		CONSTRAINT uq__text__language_id__title UNIQUE (language_id, title)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
 		text_id INTEGER NOT NULL,
 		number INTEGER NOT NULL,
 		content TEXT NOT NULL,
-		FOREIGN KEY(text_id) REFERENCES text(id),
-		UNIQUE(text_id, number)
+		CONSTRAINT pk__page__text_id__number PRIMARY KEY (text_id, number),
+		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id)
 	)`,
 	createWordTable: `CREATE TABLE IF NOT EXISTS word (
-		id INTEGER PRIMARY KEY,
+		id INTEGER,
 		language_id INTEGER NOT NULL,
 		content TEXT NOT NULL,
 		status INTEGER NOT NULL DEFAULT 0,
@@ -44,8 +48,9 @@ const queries: { [key: string]: string } = {
 		datetime_added TEXT NOT NULL,
 		datetime_updated TEXT NOT NULL,
 		item_count INTEGER NOT NULL DEFAULT 1,
-		FOREIGN KEY(language_id) REFERENCES language(id),
-		UNIQUE(language_id, content)
+		CONSTRAINT pk__word__id PRIMARY KEY (id),
+		CONSTRAINT fk__word__language_id FOREIGN KEY (language_id) REFERENCES language (id),
+		CONSTRAINT uq__word__language_id__content UNIQUE (language_id, content)
 	)`,
 	//#endregion
 
