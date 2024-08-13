@@ -5,6 +5,7 @@
  */
 
 import { Entry, RawWord, Word } from "@common/types";
+import { itemizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -20,10 +21,39 @@ class WordsController
 		datetimeUpdated: string
 	): Promise<void>
 	{
+		const itemizedContent: string[] = itemizeString(content);
+
 		await databaseManager.executeQuery(
 			queries.addWord,
-			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated]
+			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated, itemizedContent.length]
 		);
+	}
+
+	async addWordsInBatch(
+		languageId: number,
+		contents: string[],
+		status: number,
+		datetimeAdded: string
+	): Promise<void>
+	{
+		const valueList: string[] = [];
+		for (const content of contents)
+		{
+			const itemizedContent: string[] = itemizeString(content);
+
+			valueList.push(
+				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}', ${itemizedContent.length})`
+			);
+		}
+
+		const dynamicQuery: string = queries.addWordsInBatch.replace(
+			/\%DYNAMIC\%/,
+			(): string => {
+				return valueList.join(', ');
+			}
+		);
+
+		await databaseManager.executeQuery(dynamicQuery);
 	}
 
 	async getWord(wordId: number): Promise<Word>
@@ -32,6 +62,26 @@ class WordsController
 			queries.getWord,
 			[wordId]
 		);
+
+		const word: Word = {
+			...rawWord,
+			entries: JSON.parse(rawWord.entries)
+		};
+
+		return word;
+	}
+
+	async findWord(content: string, languageId: number): Promise<Word | null>
+	{
+		const rawWord: RawWord | null = await databaseManager.getFirstRow(
+			queries.findWord,
+			[content, languageId]
+		);
+
+		if (!rawWord)
+		{
+			return null;
+		}
 
 		const word: Word = {
 			...rawWord,
@@ -81,6 +131,11 @@ class WordsController
 		{
 			updates.push('content = ?');
 			queryParams.push(content);
+
+			const itemizedContent: string[] = itemizeString(content);
+
+			updates.push('item_count = ?');
+			queryParams.push(itemizedContent.length);
 		}
 		if (status !== undefined)
 		{
@@ -125,3 +180,4 @@ class WordsController
 }
 
 export { WordsController };
+

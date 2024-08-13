@@ -5,6 +5,7 @@
  */
 
 import { Page, ReducedWordData, Word } from "@common/types";
+import { itemizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -69,31 +70,85 @@ class PagesController
 			[page.textId]
 		)).languageId;
 
-		const items: string[] = page.content.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
-			.filter((sentence: string) => sentence !== '');
-		const wordData: ReducedWordData[] = [];
-		for (const word of items)
+		const items: string[] = itemizeString(page.content);
+		
+		const dynamicQuery: string = queries.findWordsInBatch.replace(
+			/\%DYNAMIC\%/,
+			(): string => {
+				return items.map((item: string): string => {
+					return `('${item.replace(/'/g, "''")}')`;
+				}).join(', ');
+			}
+		);
+		
+		const wordData: ReducedWordData[] = await databaseManager.executeQuery(
+			dynamicQuery,
+			[languageId, languageId]
+		);
+
+		for (let i = 0; i < wordData.length; i++)
 		{
-			if (!this.isWord(word))
+			if (wordData[i].potentialMultiword)
 			{
-				wordData.push({ content: word, type: 'punctuation' });
-				continue;
+				const potentialMultiwords: Word[] = await databaseManager.executeQuery(
+					queries.getPotentialMultiwords,
+					[wordData[i].content, languageId]
+				);
+
+				let multiword: Word | null = null;
+				let itemCount: number | null = null;
+				let items: ReducedWordData[] | null = null;
+
+				for (const potentialMultiword of potentialMultiwords)
+				{
+					itemCount = potentialMultiword.itemCount;
+
+					items = wordData.slice(i, i + itemCount);
+					const itemsContent: string = items.map((item: ReducedWordData): string => {
+						return item.content;
+					}).join('');
+
+					if (itemsContent === potentialMultiword.content)
+					{
+						multiword = potentialMultiword;
+						break;
+					}
+				}
+
+				if(multiword)
+				{
+					wordData.splice(i, multiword.itemCount, {
+						content: multiword.content,
+						status: multiword.status,
+						type: "multiword",
+						items: items!,
+						potentialMultiword: undefined,
+						index: -1
+					});
+
+					i += multiword.itemCount - 1;
+				}
 			}
-			const wordRow: Word = await databaseManager.getFirstRow(
-				queries.findWord,
-				[word, languageId]
-			);
-			if (!wordRow)
-			{
-				wordData.push({ content: word, status: 0, type: 'word' });
-			}
-			else
-			{
-				wordData.push({ content: word, status: wordRow.status, type: 'word' });
-			}
+
+			wordData[i].potentialMultiword = undefined;
 		}
 
+		this.addIndexesToWordData(wordData, 0);
+
 		return wordData;
+	}
+
+	addIndexesToWordData(wordData: ReducedWordData[], startIndex: number): void
+	{
+		for (let i = 0; i < wordData.length; i++)
+		{
+			wordData[i].index = i+startIndex;
+			if(wordData[i].type === "multiword")
+			{
+				this.addIndexesToWordData(wordData[i].items!, wordData[i].index+1);
+				startIndex += wordData[i].items!.length;
+			}
+		}
 	}
 	
 	isWord(item: string): boolean
@@ -103,3 +158,4 @@ class PagesController
 }
 
 export { PagesController };
+

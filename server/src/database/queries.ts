@@ -21,6 +21,9 @@ const queries: { [key: string]: string } = {
 		language_id INTEGER NOT NULL,
 		title TEXT NOT NULL,
 		source_url TEXT,
+		datetime_opened TEXT,
+		datetime_finished TEXT,
+		progress REAL NOT NULL DEFAULT 0,
 		FOREIGN KEY(language_id) REFERENCES language(id)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
@@ -39,6 +42,7 @@ const queries: { [key: string]: string } = {
 		notes TEXT,
 		datetime_added TEXT NOT NULL,
 		datetime_updated TEXT NOT NULL,
+		item_count INTEGER NOT NULL DEFAULT 1,
 		FOREIGN KEY(language_id) REFERENCES language(id)
 	)`,
 	//#endregion
@@ -71,20 +75,29 @@ const queries: { [key: string]: string } = {
 			id,
 			language_id AS languageId,
 			title,
-			source_url AS sourceUrl
+			source_url AS sourceUrl,
+			datetime_opened AS datetimeOpened,
+			datetime_finished AS datetimeFinished,
+			progress
 		FROM text`,
 	getTextsByLanguage: `SELECT
 			id,
 			language_id AS languageId,
 			title,
-			source_url AS sourceUrl
+			source_url AS sourceUrl,
+			datetime_opened AS datetimeOpened,
+			datetime_finished AS datetimeFinished,
+			progress
 		FROM text
 		WHERE language_id = ?`,
 	getText: `SELECT
 			id,
 			language_id AS languageId,
 			title,
-			source_url AS sourceUrl
+			source_url AS sourceUrl,
+			datetime_opened AS datetimeOpened,
+			datetime_finished AS datetimeFinished,
+			progress
 		FROM text
 		WHERE id = ?`,
 	addText: `INSERT INTO text (
@@ -129,7 +142,8 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated
+			datetime_updated AS datetimeUpdated,
+			item_count AS itemCount
 		FROM word
 		WHERE id = ?`,
 	findWord: `SELECT
@@ -140,9 +154,29 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated
+			datetime_updated AS datetimeUpdated,
+			item_count AS itemCount
 		FROM word
 		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
+	findWordsInBatch: `WITH input_words(content) AS (VALUES %DYNAMIC%)
+		SELECT
+			input_words.content AS content,
+			status,
+			CASE 
+				WHEN
+					NOT input_words.content GLOB '*[ :;,.¿?¡!(){}''"\-=。、！？：；「」『』（）　…＝・’“”—0123456789]*'
+					AND NOT input_words.content LIKE '%[%'
+					AND NOT input_words.content LIKE '%]%'
+				THEN 'word'
+				ELSE 'punctuation'
+			END AS type,
+			EXISTS (
+				SELECT item_count
+				FROM word
+				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.item_count > 1
+			) AS potentialMultiword
+		FROM input_words
+		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = ?`,
 	addWord: `INSERT INTO word (
 			language_id,
 			content,
@@ -150,11 +184,37 @@ const queries: { [key: string]: string } = {
 			entries,
 			notes,
 			datetime_added,
-			datetime_updated
+			datetime_updated,
+			item_count
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+	addWordsInBatch: `INSERT INTO word (
+			language_id,
+			content,
+			status,
+			entries,
+			notes,
+			datetime_added,
+			datetime_updated,
+			item_count
+		)
+		VALUES %DYNAMIC%`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,
 	editWord: `UPDATE word SET %DYNAMIC% WHERE id = ?`,
+	getPotentialMultiwords: `SELECT
+			id,
+			language_id AS languageId,
+			content,
+			status,
+			entries,
+			notes,
+			datetime_added AS datetimeAdded,
+			datetime_updated AS datetimeUpdated,
+			item_count AS itemCount
+		FROM word
+		WHERE content LIKE (? || '%')
+			AND language_id = ?
+			AND item_count > 1`,
 	//#endregion
 
 	//#region Utils

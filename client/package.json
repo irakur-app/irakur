@@ -14,6 +14,7 @@
 		"react-helmet-async": "^2.0.4",
 		"react-router-dom": "^6.21.3",
 		"typescript": "^5.3.3",
+		"uuid": "^9.0.1",
 		"vite": "^5.1.5",
 		"vite-plugin-svgr": "^4.2.0",
 		"vite-tsconfig-paths": "^4.3.1"
@@ -41,5 +42,8 @@
 			"last 1 safari version"
 		]
 	},
-	"type": "module"
+	"type": "module",
+	"devDependencies": {
+		"@types/uuid": "^9.0.8"
+	}
 }

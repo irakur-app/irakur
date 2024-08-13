@@ -146,7 +146,10 @@ router.patch(
 				req.body.sourceUrl,
 				req.body.numberOfPages,
 				req.body.content,
-				parseInt(req.params.textId)
+				parseInt(req.params.textId),
+				req.body.datetimeOpened,
+				req.body.datetimeFinished,
+				req.body.progress
 			);
 			res.sendStatus(200);
 		}
@@ -201,6 +204,33 @@ router.patch(
 
 //#region Words
 router.get(
+	'/words/',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			if (req.query.languageId !== undefined && req.query.content !== undefined)
+			{
+				const word = await wordsController.findWord(
+					req.query.content as string,
+					parseInt(req.query.languageId as string)
+				);
+
+				if (word)
+				{
+					res.json(word);
+				}
+				else
+				{
+					res.sendStatus(404);
+				}
+			}
+			else
+			{
+				res.sendStatus(500);
+			}
+		}
+	)
+);
+router.get(
 	'/words/:wordId',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
@@ -225,6 +255,20 @@ router.post(
 		}
 	)
 );
+router.post(
+	'/words/batch',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			await wordsController.addWordsInBatch(
+				req.body.languageId,
+				req.body.contents,
+				req.body.status,
+				req.body.datetimeAdded
+			);
+			res.sendStatus(200);
+		}
+	)
+)
 router.delete(
 	'/words/:wordId',
 	errorWrapper(

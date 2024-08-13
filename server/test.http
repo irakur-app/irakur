@@ -60,6 +60,9 @@ GET http://localhost:5000/api/texts/40/pages/1/words
 GET http://localhost:5000/api/words/12
 
 ###
+GET http://localhost:5000/api/words?content=tiempo&languageId=26
+
+###
 POST http://localhost:5000/api/words
 Content-Type: application/json
 
@@ -81,6 +84,17 @@ Content-Type: application/json
 	"notes": "Test notes",
 	"datetimeAdded": "2021-01-01T00:00:00",
 	"datetimeUpdated": "2021-01-01T00:00:00"
+}
+
+###
+POST http://localhost:5000/api/words/batch
+Content-Type: application/json
+
+{
+	"languageId": 26,
+	"contents": ["y", "la", "que", "en"],
+	"status": 99,
+	"datetimeAdded": "2024-04-18T21:46:39"
 }
 
 ###

@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Language, Page, Text } from '@common/types';
+import { Entry, Language, Page, ReducedWordData, Text, Word } from '@common/types';
 
 class BackendConnector
 {
@@ -182,11 +182,14 @@ class BackendConnector
 
 	async editText(
 		id: number,
-		title: string,
-		languageId: number,
-		content: string,
-		numberOfPages: number,
-		sourceUrl: string
+		title: string | undefined,
+		languageId: number | undefined,
+		content: string | undefined,
+		numberOfPages: number | undefined,
+		sourceUrl: string | undefined,
+		datetimeOpened: string | undefined,
+		datetimeFinished: string | undefined,
+		progress: number | undefined
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -203,6 +206,9 @@ class BackendConnector
 						content,
 						numberOfPages,
 						sourceUrl,
+						datetimeOpened,
+						datetimeFinished,
+						progress,
 					}
 				),
 			}
@@ -247,6 +253,142 @@ class BackendConnector
 		const response: Response = await fetch('/api/texts/' + textId + '/pages');
 		const pages = (await response.json()).pages;
 		return pages;
+	}
+
+	async addWord(
+		languageId: number,
+		content: string,
+		status: number,
+		entries: Entry[],
+		notes: string,
+		datetimeAdded: string,
+		datetimeUpdated: string
+	): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/words',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						languageId,
+						content,
+						status,
+						entries,
+						notes,
+						datetimeAdded,
+						datetimeUpdated,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to add word');
+		}
+		else
+		{
+			console.log('Word added');
+		}
+
+		return response.ok;
+	}
+
+	async addWordsInBatch(
+		languageId: number,
+		contents: string[],
+		status: number,
+		datetimeAdded: string
+	): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/words/batch',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						languageId,
+						contents,
+						status,
+						datetimeAdded,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to add words');
+		}
+		else
+		{
+			console.log('Words added');
+		}
+
+		return response.ok;
+	}
+
+	async editWord(
+		id: number,
+		status: number,
+		entries: Entry[],
+		notes: string,
+		datetimeUpdated: string
+	): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/words/' + id,
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						status,
+						entries,
+						notes,
+						datetimeUpdated,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to edit word');
+		}
+		else
+		{
+			console.log('Word edited');
+		}
+
+		return response.ok;
+	}
+
+	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
+	{
+		const response: Response = await fetch('/api/texts/' + textId + '/pages/' + pageId + '/words');
+		const words = (await response.json()).words;
+		return words;
+	}
+
+	async findWord(content: string, languageId: number): Promise<Word | null>
+	{
+		const response: Response = await fetch('/api/words' + '?content=' + content + '&languageId=' + languageId);
+		if (!response.ok)
+		{
+			return null;
+		}
+		const word = await response.json();
+		return word;
 	}
 }
 
