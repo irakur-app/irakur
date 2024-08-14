@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"author": "Ander \"Laquin\" Aginaga San Sebastián",
-	"license": "AGPL-3.0",
+	"license": "SEE LICENSE IN LICENSE",
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.17.0",
 		"@testing-library/react": "^13.4.0",

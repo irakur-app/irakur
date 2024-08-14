@@ -3,10 +3,15 @@
 
 ## License
 
-Copyright (C) 2023-2024 Ander "Laquin" Aginaga San Sebastián
+Copyright (C) 2023-2024 Ander Aginaga San Sebastián (a.k.a. Laquin or Laquinh) <anderaginaga2@gmail.com>
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify it under the terms of version 3 of the GNU Affero General Public License as published by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+In accordance with the provisions of Article 14 of the GNU Affero General Public License, Ander Aginaga San Sebastián is designated as the proxy for determining which future versions of the GNU Affero General Public License may be applied to this program.
 
-You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
+You may choose to follow the terms and conditions of version 3 of the GNU Affero General Public License, or, at your option, any later version accepted by the designated proxy.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program in the file named 'agpl-3.0-license'. If not, see <https://www.gnu.org/licenses/>.
+
