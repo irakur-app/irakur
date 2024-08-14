@@ -73,6 +73,7 @@ class DatabaseManager
 		await this.executeQuery(queries.createPageTable);
 		await this.executeQuery(queries.createWordTable);
 		await this.executeQuery(queries.createEntryTable);
+		await this.executeQuery(queries.createStatusLogTable);
 
 		// Create indexes
 		await this.executeQuery(queries.createTextLanguageIdTitleIndex);

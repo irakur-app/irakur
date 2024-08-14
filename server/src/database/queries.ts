@@ -63,6 +63,15 @@ const queries: { [key: string]: string } = {
 		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
 		CONSTRAINT uq__entry__word_id__position UNIQUE (word_id, position)
 	)`,
+	createStatusLogTable: `CREATE TABLE IF NOT EXISTS status_log (
+		id INTEGER,
+		word_id INTEGER NOT NULL,
+		status INTEGER NOT NULL,
+		time_updated INTEGER NOT NULL,
+		CONSTRAINT pk__status_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
+		CONSTRAINT uq__status_log__word_id__time_updated UNIQUE (word_id, time_updated)
+	)`,
 	//#endregion
 
 	//#region Create indexes
