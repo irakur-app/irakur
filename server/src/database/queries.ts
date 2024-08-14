@@ -89,6 +89,47 @@ const queries: { [key: string]: string } = {
 		)`,
 	//#endregion
 
+	//#region Create triggers
+	createInsertStatusLogAfterInsertWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__status_log__after__insert__word
+		AFTER INSERT ON word
+		BEGIN
+			INSERT INTO status_log (
+				word_id,
+				status,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.status,
+				NEW.time_updated
+			);
+		END`,
+	createInsertStatusLogAfterUpdateWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__status_log__after__update__word
+		AFTER UPDATE ON word
+		WHEN OLD.status != NEW.status
+		BEGIN
+			INSERT INTO status_log (
+				word_id,
+				status,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.status,
+				NEW.time_updated
+			);
+		END`,
+	createDeleteStatusLogAfterDeleteWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__status_log__after__delete__word
+		AFTER DELETE ON word
+		BEGIN
+			DELETE FROM status_log
+			WHERE word_id = OLD.id;
+		END`,
+	//#endregion
+
 	//#region Language
 	getAllLanguages: `SELECT
 			id,
