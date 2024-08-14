@@ -390,6 +390,13 @@ class BackendConnector
 		const word = await response.json();
 		return word;
 	}
+
+	async getWordsImprovedCount(languageId: number): Promise<number>
+	{
+		const response: Response = await fetch('/api/statistics/words-improved-count/' + languageId);
+		const wordsImprovedCount = (await response.json()).wordsImprovedCount;
+		return wordsImprovedCount;
+	}
 }
 
 const backendConnector: BackendConnector = new BackendConnector();

@@ -117,3 +117,6 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:5000/api/words/1
+
+###
+GET http://localhost:5000/api/statistics/words-improved-count/1

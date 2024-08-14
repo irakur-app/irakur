@@ -327,6 +327,36 @@ const queries: { [key: string]: string } = {
 	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = ?`,
 	//#endregion
 
+	//#region Status Log
+	getWordsImprovedCount: `WITH first_status_of_day AS (
+			SELECT
+				word_id,
+				status AS first_status,
+				MIN(time_updated) AS first_time_updated
+			FROM status_log
+			WHERE time_updated >= strftime('%s', 'now') - 86400
+			GROUP BY word_id
+		),
+		last_status_of_day AS (
+			SELECT
+				word_id,
+				status AS last_status,
+				MAX(time_updated) AS last_time_updated
+			FROM status_log
+			WHERE time_updated >= strftime('%s', 'now') - 86400
+			GROUP BY word_id
+		)
+		SELECT
+			COUNT(*) AS wordsImprovedCount
+		FROM first_status_of_day fs
+		JOIN last_status_of_day ls
+		ON fs.word_id = ls.word_id
+		JOIN word
+		ON word.id = ls.word_id
+		WHERE last_status > first_status
+			AND word.language_id = ?`,
+	//#endregion
+
 	//#region Utils
 	getLastInsertId: `SELECT last_insert_rowid() AS id`,
 	//#endregion
