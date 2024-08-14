@@ -75,9 +75,11 @@ class PagesController
 		const dynamicQuery: string = queries.findWordsInBatch.replace(
 			/\%DYNAMIC\%/,
 			(): string => {
-				return tokens.map((token: string): string => {
-					return `('${token.replace(/'/g, "''")}')`;
-				}).join(', ');
+				return tokens.map(
+					(token: string): string => {
+						return `('${token.replace(/'/g, "''")}')`;
+					}
+				).join(', ');
 			}
 		);
 		
@@ -115,7 +117,7 @@ class PagesController
 					}
 				}
 
-				if(multiword)
+				if (multiword)
 				{
 					wordData.splice(i, multiword.tokenCount, {
 						content: multiword.content,
@@ -143,7 +145,7 @@ class PagesController
 		for (let i = 0; i < wordData.length; i++)
 		{
 			wordData[i].index = i+startIndex;
-			if(wordData[i].type === "multiword")
+			if (wordData[i].type === "multiword")
 			{
 				this.addIndexesToWordData(wordData[i].tokens!, wordData[i].index+1);
 				startIndex += wordData[i].tokens!.length;

@@ -82,12 +82,12 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 
 const clearNewMultiword = (): void => {
 	const newMultiwordElements = document.getElementsByClassName('new-multiword') as HTMLCollectionOf<HTMLElement>;
-	if(newMultiwordElements.length > 0)
+	if (newMultiwordElements.length > 0)
 	{
 		const parentElement = newMultiwordElements[0].parentElement;
-		if(parentElement !== null)
+		if (parentElement !== null)
 		{
-			while(newMultiwordElements[0].firstChild)
+			while (newMultiwordElements[0].firstChild)
 			{
 				parentElement.insertBefore(newMultiwordElements[0].firstChild, newMultiwordElements[0]);
 			}
@@ -321,7 +321,7 @@ const Reader = (
 			// For some reason, the first animation glitches.
 			// We force this invisible animation so the subsequent ones work.
 			const animationFixers = document.getElementsByClassName('animation-fixer') as HTMLCollectionOf<HTMLElement>;
-			if(animationFixers.length > 0)
+			if (animationFixers.length > 0)
 			{
 				animationFixers[0].style.transition = "background-color 0.5s ease-out";
 				animationFixers[0].style.backgroundColor = getStyle(99);
