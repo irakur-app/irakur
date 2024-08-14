@@ -135,7 +135,7 @@ const queries: { [key: string]: string } = {
 	//#endregion
 
 	//#region Page
-	getAllPages: `SELECT
+	getPagesByText: `SELECT
 			text_id AS textId,
 			number,
 			content

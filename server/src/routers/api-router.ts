@@ -162,7 +162,7 @@ router.get(
 	'/texts/:textId/pages/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({ pages: await pagesController.getAllPages(parseInt(req.params.textId)) });
+			res.json({ pages: await pagesController.getPagesByText(parseInt(req.params.textId)) });
 		}
 	)
 );

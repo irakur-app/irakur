@@ -58,7 +58,7 @@ class TextsController
 	async getNumberOfPages(textId: number): Promise<number>
 	{
 		const numberOfPages: number = (await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		)).length;
 
@@ -68,7 +68,7 @@ class TextsController
 	async deleteText(textId: number): Promise<void>
 	{
 		const pages: Page[] = await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		);
 		for (const page of pages)
@@ -162,7 +162,7 @@ class TextsController
 	private async updatePage(textId: number, numberOfPages: number, content: string)
 	{
 		const pages: Page[] = await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		);
 

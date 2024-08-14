@@ -11,10 +11,10 @@ import { queries } from "../database/queries";
 
 class PagesController
 {
-	async getAllPages(textId: number): Promise<Page[]>
+	async getPagesByText(textId: number): Promise<Page[]>
 	{
 		const pages: Page[] = await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		);
 
