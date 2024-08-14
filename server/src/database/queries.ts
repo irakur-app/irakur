@@ -63,6 +63,15 @@ const queries: { [key: string]: string } = {
 		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
 		CONSTRAINT uq__entry__word_id__position UNIQUE (word_id, position)
 	)`,
+	createStatusLogTable: `CREATE TABLE IF NOT EXISTS status_log (
+		id INTEGER,
+		word_id INTEGER NOT NULL,
+		status INTEGER NOT NULL,
+		time_updated INTEGER NOT NULL,
+		CONSTRAINT pk__status_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
+		CONSTRAINT uq__status_log__word_id__time_updated UNIQUE (word_id, time_updated)
+	)`,
 	//#endregion
 
 	//#region Create indexes
@@ -78,6 +87,47 @@ const queries: { [key: string]: string } = {
 		ix__word__language_id__token_count__content ON word (
 			language_id, token_count, content
 		)`,
+	//#endregion
+
+	//#region Create triggers
+	createInsertStatusLogAfterInsertWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__status_log__after__insert__word
+		AFTER INSERT ON word
+		BEGIN
+			INSERT INTO status_log (
+				word_id,
+				status,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.status,
+				NEW.time_updated
+			);
+		END`,
+	createInsertStatusLogAfterUpdateWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__status_log__after__update__word
+		AFTER UPDATE ON word
+		WHEN OLD.status != NEW.status
+		BEGIN
+			INSERT INTO status_log (
+				word_id,
+				status,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.status,
+				NEW.time_updated
+			);
+		END`,
+	createDeleteStatusLogAfterDeleteWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__status_log__after__delete__word
+		AFTER DELETE ON word
+		BEGIN
+			DELETE FROM status_log
+			WHERE word_id = OLD.id;
+		END`,
 	//#endregion
 
 	//#region Language
@@ -275,6 +325,36 @@ const queries: { [key: string]: string } = {
 		)
 		VALUES %DYNAMIC%`,
 	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = ?`,
+	//#endregion
+
+	//#region Status Log
+	getWordsImprovedCount: `WITH first_status_of_day AS (
+			SELECT
+				word_id,
+				status AS first_status,
+				MIN(time_updated) AS first_time_updated
+			FROM status_log
+			WHERE time_updated >= strftime('%s', 'now') - 86400
+			GROUP BY word_id
+		),
+		last_status_of_day AS (
+			SELECT
+				word_id,
+				status AS last_status,
+				MAX(time_updated) AS last_time_updated
+			FROM status_log
+			WHERE time_updated >= strftime('%s', 'now') - 86400
+			GROUP BY word_id
+		)
+		SELECT
+			COUNT(*) AS wordsImprovedCount
+		FROM first_status_of_day fs
+		JOIN last_status_of_day ls
+		ON fs.word_id = ls.word_id
+		JOIN word
+		ON word.id = ls.word_id
+		WHERE last_status > first_status
+			AND word.language_id = ?`,
 	//#endregion
 
 	//#region Utils
