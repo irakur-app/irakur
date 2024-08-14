@@ -77,7 +77,7 @@ class DatabaseManager
 		// Create indexes
 		await this.executeQuery(queries.createTextLanguageIdTitleIndex);
 		await this.executeQuery(queries.createWordLowerContentLanguageIdIndex);
-		await this.executeQuery(queries.createWordLanguageIdItemCountContentIndex);
+		await this.executeQuery(queries.createWordLanguageIdTokenCountContentIndex);
 	}
 
 	executeQuery(query: string, parameters: any[] = []): Promise<any>

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { Language, ReducedWordData, Text } from '@common/types';
-import { itemizeString } from '../../../../common/utils';
+import { tokenizeString } from '../../../../common/utils';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
@@ -51,7 +51,7 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 	let cumulativeSelection = currentElement.textContent!;
 	const elements: HTMLElement[] = [];
 
-	const selectionOnFollowingWords = itemizeString(selection).slice(1).join('');
+	const selectionOnFollowingWords = tokenizeString(selection).slice(1).join('');
 	const multiwordBeginning: string = currentElement.textContent! + selectionOnFollowingWords;
 
 	while (currentElement !== null && multiwordBeginning.startsWith(cumulativeSelection))
@@ -504,7 +504,7 @@ const Reader = (
 		}
 		else if (word.type === 'multiword')
 		{
-			const itemsInside: JSX.Element[] = word.items!.map(renderWord);
+			const tokensInside: JSX.Element[] = word.tokens!.map(renderWord);
 			const id = uuid();
 			renderedElement = (
 				<span
@@ -520,7 +520,7 @@ const Reader = (
 						cursor: "pointer",
 						boxShadow: "0 0 0 2px " + getStyle(word.status ?? 0),
 					}}
-				>{itemsInside}</span>
+				>{tokensInside}</span>
 			);
 		}
 		else

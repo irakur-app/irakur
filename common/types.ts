@@ -33,7 +33,7 @@ type ReducedWordData = {
 	status: number | null;
 	type: string;
 	potentialMultiword: boolean | undefined;
-	items: ReducedWordData[] | undefined;
+	tokens: ReducedWordData[] | undefined;
 	index: number;
 };
 
@@ -51,7 +51,7 @@ type Word = {
 	notes: string;
 	datetimeAdded: string;
 	datetimeUpdated: string;
-	itemCount: number;
+	tokenCount: number;
 };
 
 type RawWord = {
@@ -62,7 +62,7 @@ type RawWord = {
 	notes: string;
 	datetimeAdded: string;
 	datetimeUpdated: string;
-	itemCount: number;
+	tokenCount: number;
 };
 
 export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };

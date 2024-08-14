@@ -48,7 +48,7 @@ const queries: { [key: string]: string } = {
 		notes TEXT,
 		datetime_added TEXT NOT NULL,
 		datetime_updated TEXT NOT NULL,
-		item_count INTEGER NOT NULL DEFAULT 1,
+		token_count INTEGER NOT NULL DEFAULT 1,
 		CONSTRAINT pk__word__id PRIMARY KEY (id),
 		CONSTRAINT fk__word__language_id FOREIGN KEY (language_id) REFERENCES language (id),
 		CONSTRAINT uq__word__language_id__content UNIQUE (language_id, content)
@@ -74,9 +74,9 @@ const queries: { [key: string]: string } = {
 		ix__word__lower_content__language_id ON word (
 			LOWER(content), language_id
 		)`,
-	createWordLanguageIdItemCountContentIndex: `CREATE INDEX IF NOT EXISTS
-		ix__word__language_id__item_count__content ON word (
-			language_id, item_count, content
+	createWordLanguageIdTokenCountContentIndex: `CREATE INDEX IF NOT EXISTS
+		ix__word__language_id__token_count__content ON word (
+			language_id, token_count, content
 		)`,
 	//#endregion
 
@@ -183,7 +183,7 @@ const queries: { [key: string]: string } = {
 			notes,
 			datetime_added AS datetimeAdded,
 			datetime_updated AS datetimeUpdated,
-			item_count AS itemCount
+			token_count AS tokenCount
 		FROM word
 		WHERE id = ?`,
 	findWord: `SELECT
@@ -194,7 +194,7 @@ const queries: { [key: string]: string } = {
 			notes,
 			datetime_added AS datetimeAdded,
 			datetime_updated AS datetimeUpdated,
-			item_count AS itemCount
+			token_count AS tokenCount
 		FROM word
 		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
 	findWordsInBatch: `WITH input_words(content) AS (VALUES %DYNAMIC%)
@@ -210,9 +210,9 @@ const queries: { [key: string]: string } = {
 				ELSE 'punctuation'
 			END AS type,
 			EXISTS (
-				SELECT item_count
+				SELECT token_count
 				FROM word
-				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.item_count > 1
+				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.token_count > 1
 			) AS potentialMultiword
 		FROM input_words
 		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = ?`,
@@ -223,7 +223,7 @@ const queries: { [key: string]: string } = {
 			notes,
 			datetime_added,
 			datetime_updated,
-			item_count
+			token_count
 		)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`,
 	addWordsInBatch: `INSERT INTO word (
@@ -233,7 +233,7 @@ const queries: { [key: string]: string } = {
 			notes,
 			datetime_added,
 			datetime_updated,
-			item_count
+			token_count
 		)
 		VALUES %DYNAMIC%`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,
@@ -246,11 +246,11 @@ const queries: { [key: string]: string } = {
 			notes,
 			datetime_added AS datetimeAdded,
 			datetime_updated AS datetimeUpdated,
-			item_count AS itemCount
+			token_count AS tokenCount
 		FROM word
 		WHERE content LIKE (? || '%')
 			AND language_id = ?
-			AND item_count > 1`,
+			AND token_count > 1`,
 	//#endregion
 
 	//#region Entry

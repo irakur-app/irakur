@@ -4,12 +4,12 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const itemizeString = (str: string): string[] =>
+const tokenizeString = (str: string): string[] =>
 {
-	const items: string[] = str.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
+	const tokens: string[] = str.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
 		.filter((sentence: string) => sentence !== '');
 
-	return items;
+	return tokens;
 }
 
-export { itemizeString };
+export { tokenizeString };

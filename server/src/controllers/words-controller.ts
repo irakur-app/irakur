@@ -5,7 +5,7 @@
  */
 
 import { Entry, RawWord, Word } from "@common/types";
-import { itemizeString } from "../../../common/utils";
+import { tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -21,11 +21,11 @@ class WordsController
 		datetimeUpdated: string
 	): Promise<void>
 	{
-		const itemizedContent: string[] = itemizeString(content);
+		const tokenizedContent: string[] = tokenizeString(content);
 
 		await databaseManager.executeQuery(
 			queries.addWord,
-			[languageId, content, status, notes, datetimeAdded, datetimeUpdated, itemizedContent.length]
+			[languageId, content, status, notes, datetimeAdded, datetimeUpdated, tokenizedContent.length]
 		);
 
 		const wordId: number = (await databaseManager.getLastInsertId()).id;
@@ -49,10 +49,10 @@ class WordsController
 		const valueList: string[] = [];
 		for (const content of contents)
 		{
-			const itemizedContent: string[] = itemizeString(content);
+			const tokenizedContent: string[] = tokenizeString(content);
 
 			valueList.push(
-				`(${languageId}, '${content}', ${status}, '', '${datetimeAdded}', '${datetimeAdded}', ${itemizedContent.length})`
+				`(${languageId}, '${content}', ${status}, '', '${datetimeAdded}', '${datetimeAdded}', ${tokenizedContent.length})`
 			);
 		}
 
@@ -152,10 +152,10 @@ class WordsController
 			updates.push('content = ?');
 			queryParams.push(content);
 
-			const itemizedContent: string[] = itemizeString(content);
+			const tokenizedContent: string[] = tokenizeString(content);
 
-			updates.push('item_count = ?');
-			queryParams.push(itemizedContent.length);
+			updates.push('token_count = ?');
+			queryParams.push(tokenizedContent.length);
 		}
 		if (status !== undefined)
 		{
@@ -208,11 +208,11 @@ class WordsController
 			/\%DYNAMIC\%/,
 			(): string => {
 				return entries.map(
-					(item: Entry, index: number): string => {
+					(token: Entry, index: number): string => {
 						return `(${wordId},
 								${index + 1},
-								'${item.meaning.replace(/'/g, "''")}',
-								'${item.reading.replace(/'/g, "''")}'
+								'${token.meaning.replace(/'/g, "''")}',
+								'${token.reading.replace(/'/g, "''")}'
 							)`;
 					}
 				).join(', ');

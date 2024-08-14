@@ -202,8 +202,8 @@ class TextsController
 				/\%DYNAMIC\%/,
 				(): string => {
 					return newPageContents.slice(pages.length).map(
-						(item: string, index: number): string => {
-							return `(${textId}, ${index + pages.length + 1}, '${item.replace(/'/g, "''")}')`;
+						(token: string, index: number): string => {
+							return `(${textId}, ${index + pages.length + 1}, '${token.replace(/'/g, "''")}')`;
 						}
 					).join(', ');
 				}
