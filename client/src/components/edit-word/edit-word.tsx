@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { Entry, Language } from '@common/types';
+import { getUnixTime } from '../../../../common/utils';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../loading';
 import { EntryElement } from './entry-element';
@@ -138,8 +139,8 @@ const EditWord = (
 				newStatus,
 				entriesToAdd,
 				notes ?? '',
-				new Date().toISOString(),
-				new Date().toISOString()
+				getUnixTime(),
+				getUnixTime()
 			);
 		}
 		else
@@ -149,7 +150,7 @@ const EditWord = (
 				newStatus,
 				entriesToAdd,
 				notes ?? '',
-				new Date().toISOString()
+				getUnixTime()
 			);
 		}
 

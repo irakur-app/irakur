@@ -17,14 +17,14 @@ type Text = {
 	title: string;
 	sourceUrl: string;
 	numberOfPages?: number;
-	datetimeOpened: string | null;
-	datetimeFinished: string | null;
+	timeOpened: number | null;
+	timeFinished: number | null;
 	progress: number;
 };
 
 type Page = {
 	textId: number;
-	number: number;
+	position: number;
 	content: string;
 };
 
@@ -33,7 +33,7 @@ type ReducedWordData = {
 	status: number | null;
 	type: string;
 	potentialMultiword: boolean | undefined;
-	items: ReducedWordData[] | undefined;
+	tokens: ReducedWordData[] | undefined;
 	index: number;
 };
 
@@ -49,9 +49,9 @@ type Word = {
 	status: number;
 	entries: Entry[];
 	notes: string;
-	datetimeAdded: string;
-	datetimeUpdated: string;
-	itemCount: number;
+	timeAdded: number;
+	timeUpdated: number;
+	tokenCount: number;
 };
 
 type RawWord = {
@@ -59,11 +59,10 @@ type RawWord = {
 	languageId: number;
 	content: string;
 	status: number;
-	entries: string,
 	notes: string;
-	datetimeAdded: string;
-	datetimeUpdated: string;
-	itemCount: number;
+	timeAdded: number;
+	timeUpdated: number;
+	tokenCount: number;
 };
 
 export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };

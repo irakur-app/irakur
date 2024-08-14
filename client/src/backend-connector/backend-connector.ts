@@ -187,8 +187,8 @@ class BackendConnector
 		content: string | undefined,
 		numberOfPages: number | undefined,
 		sourceUrl: string | undefined,
-		datetimeOpened: string | undefined,
-		datetimeFinished: string | undefined,
+		timeOpened: number | undefined,
+		timeFinished: number | undefined,
 		progress: number | undefined
 	): Promise<boolean>
 	{
@@ -206,8 +206,8 @@ class BackendConnector
 						content,
 						numberOfPages,
 						sourceUrl,
-						datetimeOpened,
-						datetimeFinished,
+						timeOpened,
+						timeFinished,
 						progress,
 					}
 				),
@@ -261,8 +261,8 @@ class BackendConnector
 		status: number,
 		entries: Entry[],
 		notes: string,
-		datetimeAdded: string,
-		datetimeUpdated: string
+		timeAdded: number,
+		timeUpdated: number
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -279,8 +279,8 @@ class BackendConnector
 						status,
 						entries,
 						notes,
-						datetimeAdded,
-						datetimeUpdated,
+						timeAdded,
+						timeUpdated,
 					}
 				),
 			}
@@ -302,7 +302,7 @@ class BackendConnector
 		languageId: number,
 		contents: string[],
 		status: number,
-		datetimeAdded: string
+		timeAdded: number
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -317,7 +317,7 @@ class BackendConnector
 						languageId,
 						contents,
 						status,
-						datetimeAdded,
+						timeAdded,
 					}
 				),
 			}
@@ -340,7 +340,7 @@ class BackendConnector
 		status: number,
 		entries: Entry[],
 		notes: string,
-		datetimeUpdated: string
+		timeUpdated: number
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -355,7 +355,7 @@ class BackendConnector
 						status,
 						entries,
 						notes,
-						datetimeUpdated,
+						timeUpdated,
 					}
 				),
 			}
@@ -373,9 +373,9 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
+	async getWords(textId: number, pagePosition: number): Promise<ReducedWordData[]>
 	{
-		const response: Response = await fetch('/api/texts/' + textId + '/pages/' + pageId + '/words');
+		const response: Response = await fetch('/api/texts/' + textId + '/pages/' + pagePosition + '/words');
 		const words = (await response.json()).words;
 		return words;
 	}

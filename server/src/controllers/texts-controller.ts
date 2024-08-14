@@ -58,7 +58,7 @@ class TextsController
 	async getNumberOfPages(textId: number): Promise<number>
 	{
 		const numberOfPages: number = (await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		)).length;
 
@@ -67,17 +67,10 @@ class TextsController
 
 	async deleteText(textId: number): Promise<void>
 	{
-		const pages: Page[] = await databaseManager.executeQuery(
-			queries.getAllPages,
+		await databaseManager.executeQuery(
+			queries.deletePagesByText,
 			[textId]
 		);
-		for (const page of pages)
-		{
-			await databaseManager.executeQuery(
-				queries.deletePage,
-				[textId, page.number]
-			);
-		}
 
 		await databaseManager.executeQuery(
 			queries.deleteText,
@@ -92,8 +85,8 @@ class TextsController
 		numberOfPages: number,
 		content: string,
 		textId: number,
-		datetimeOpened: string,
-		datetimeFinished: string,
+		timeOpened: number,
+		timeFinished: number,
 		progress: number
 	): Promise<void>
 	{
@@ -124,15 +117,15 @@ class TextsController
 			updates.push('source_url = ?');
 			queryParams.push(sourceUrl);
 		}
-		if (datetimeOpened !== undefined)
+		if (timeOpened !== undefined)
 		{
-			updates.push('datetime_opened = ?');
-			queryParams.push(datetimeOpened);
+			updates.push('time_opened = ?');
+			queryParams.push(timeOpened);
 		}
-		if (datetimeFinished !== undefined)
+		if (timeFinished !== undefined)
 		{
-			updates.push('datetime_finished = ?');
-			queryParams.push(datetimeFinished);
+			updates.push('time_finished = ?');
+			queryParams.push(timeFinished);
 		}
 		if (progress !== undefined)
 		{
@@ -162,7 +155,7 @@ class TextsController
 	private async updatePage(textId: number, numberOfPages: number, content: string)
 	{
 		const pages: Page[] = await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		);
 
@@ -182,24 +175,19 @@ class TextsController
 			.filter((sentence: string) => sentence !== '');
 		const sentencesPerPage: number = Math.floor(sentences.length / newNumberOfPages);
 
+		const newPageContents: string[] = [];
+
 		let firstPageIndex: number = 0;
 		let lastPageIndex: number = sentencesPerPage + (sentences.length % newNumberOfPages > 0 ? 0 : -1);
 		for (let i = 0; i < newNumberOfPages; i++)
 		{
 			// Do not trim the following string! Separators must be preserved in case the number of pages is changed
-			const pageContent: string = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
+			newPageContents[i] = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
 			if (i < pages.length)
 			{
 				await databaseManager.executeQuery(
 					queries.editPage,
-					[pageContent, textId, i+1]
-				);
-			}
-			else
-			{
-				await databaseManager.executeQuery(
-					queries.addPage,
-					[textId, i+1, pageContent]
+					[newPageContents[i], textId, i + 1]
 				);
 			}
 
@@ -208,11 +196,26 @@ class TextsController
 				+ sentencesPerPage
 				+ ((i + 1) < sentences.length % numberOfPages ? 0 : -1);
 		}
-		for (let i = newNumberOfPages; i < pages.length; i++)
+		if (newNumberOfPages > pages.length)
+		{
+			const dynamicQuery: string = queries.addPagesInBatch.replace(
+				/\%DYNAMIC\%/,
+				(): string => {
+					return newPageContents.slice(pages.length).map(
+						(token: string, index: number): string => {
+							return `(${textId}, ${index + pages.length + 1}, '${token.replace(/'/g, "''")}')`;
+						}
+					).join(', ');
+				}
+			);
+
+			await databaseManager.executeQuery(dynamicQuery);
+		}
+		if (newNumberOfPages < pages.length)
 		{
 			await databaseManager.executeQuery(
-				queries.deletePage,
-				[textId, (i+1).toString()]
+				queries.deletePagesInBatch,
+				[textId, newNumberOfPages + 1]
 			);
 		}
 	}

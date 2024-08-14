@@ -5,33 +5,33 @@
  */
 
 import { Page, ReducedWordData, Word } from "@common/types";
-import { itemizeString } from "../../../common/utils";
+import { tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
 class PagesController
 {
-	async getAllPages(textId: number): Promise<Page[]>
+	async getPagesByText(textId: number): Promise<Page[]>
 	{
 		const pages: Page[] = await databaseManager.executeQuery(
-			queries.getAllPages,
+			queries.getPagesByText,
 			[textId]
 		);
 
 		return pages;
 	}
 
-	async getPage(textId: number, pageId: number): Promise<Page>
+	async getPage(textId: number, pagePosition: number): Promise<Page>
 	{
 		const page: Page = await databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pageId]
+			[textId, pagePosition]
 		);
 
 		return page;
 	}
 
-	async editPage(textId: number, index: number, content: string, pageId: number): Promise<void>
+	async editPage(textId: number, index: number, content: string, pagePosition: number): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -45,7 +45,7 @@ class PagesController
 		if (updates.length > 0)
 		{
 			queryParams.push(textId);
-			queryParams.push(pageId);
+			queryParams.push(pagePosition);
 
 			const dynamicQuery: string = queries.editPage.replace(
 				/\%DYNAMIC\%/,
@@ -58,11 +58,11 @@ class PagesController
 		}
 	}
 
-	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
+	async getWords(textId: number, pagePosition: number): Promise<ReducedWordData[]>
 	{
 		const page: Page = await databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pageId]
+			[textId, pagePosition]
 		);
 
 		const languageId: number = (await databaseManager.getFirstRow(
@@ -70,13 +70,13 @@ class PagesController
 			[page.textId]
 		)).languageId;
 
-		const items: string[] = itemizeString(page.content);
+		const tokens: string[] = tokenizeString(page.content);
 		
 		const dynamicQuery: string = queries.findWordsInBatch.replace(
 			/\%DYNAMIC\%/,
 			(): string => {
-				return items.map((item: string): string => {
-					return `('${item.replace(/'/g, "''")}')`;
+				return tokens.map((token: string): string => {
+					return `('${token.replace(/'/g, "''")}')`;
 				}).join(', ');
 			}
 		);
@@ -96,19 +96,19 @@ class PagesController
 				);
 
 				let multiword: Word | null = null;
-				let itemCount: number | null = null;
-				let items: ReducedWordData[] | null = null;
+				let tokenCount: number | null = null;
+				let tokens: ReducedWordData[] | null = null;
 
 				for (const potentialMultiword of potentialMultiwords)
 				{
-					itemCount = potentialMultiword.itemCount;
+					tokenCount = potentialMultiword.tokenCount;
 
-					items = wordData.slice(i, i + itemCount);
-					const itemsContent: string = items.map((item: ReducedWordData): string => {
-						return item.content;
+					tokens = wordData.slice(i, i + tokenCount);
+					const tokensContent: string = tokens.map((token: ReducedWordData): string => {
+						return token.content;
 					}).join('');
 
-					if (itemsContent === potentialMultiword.content)
+					if (tokensContent === potentialMultiword.content)
 					{
 						multiword = potentialMultiword;
 						break;
@@ -117,16 +117,16 @@ class PagesController
 
 				if(multiword)
 				{
-					wordData.splice(i, multiword.itemCount, {
+					wordData.splice(i, multiword.tokenCount, {
 						content: multiword.content,
 						status: multiword.status,
 						type: "multiword",
-						items: items!,
+						tokens: tokens!,
 						potentialMultiword: undefined,
 						index: -1
 					});
 
-					i += multiword.itemCount - 1;
+					i += multiword.tokenCount - 1;
 				}
 			}
 
@@ -145,15 +145,15 @@ class PagesController
 			wordData[i].index = i+startIndex;
 			if(wordData[i].type === "multiword")
 			{
-				this.addIndexesToWordData(wordData[i].items!, wordData[i].index+1);
-				startIndex += wordData[i].items!.length;
+				this.addIndexesToWordData(wordData[i].tokens!, wordData[i].index+1);
+				startIndex += wordData[i].tokens!.length;
 			}
 		}
 	}
 	
-	isWord(item: string): boolean
+	isWord(token: string): boolean
 	{
-		return (item.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
+		return (token.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
 	}
 }
 

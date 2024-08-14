@@ -7,44 +7,77 @@
 const queries: { [key: string]: string } = {
 	//#region Create tables
 	createConfigurationTable: `CREATE TABLE IF NOT EXISTS configuration (
-		key TEXT NOT NULL PRIMARY KEY,
-		value TEXT
+		key TEXT NOT NULL,
+		value TEXT,
+		CONSTRAINT pk__configuration__key PRIMARY KEY (key)
 	)`,
 	createLanguageTable: `CREATE TABLE IF NOT EXISTS language (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL UNIQUE,
+		id INTEGER,
+		name TEXT NOT NULL,
 		dictionary_url TEXT,
-		should_show_spaces INTEGER NOT NULL DEFAULT 1
+		should_show_spaces INTEGER NOT NULL DEFAULT 1,
+		CONSTRAINT pk__language__id PRIMARY KEY (id),
+		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
 	createTextTable: `CREATE TABLE IF NOT EXISTS text (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id INTEGER,
 		language_id INTEGER NOT NULL,
 		title TEXT NOT NULL,
 		source_url TEXT,
-		datetime_opened TEXT,
-		datetime_finished TEXT,
+		time_opened INTEGER,
+		time_finished INTEGER,
 		progress REAL NOT NULL DEFAULT 0,
-		FOREIGN KEY(language_id) REFERENCES language(id)
+		CONSTRAINT pk__text__id PRIMARY KEY (id),
+		CONSTRAINT fk__text__language_id FOREIGN KEY (language_id) REFERENCES language (id),
+		CONSTRAINT uq__text__language_id__title UNIQUE (language_id, title)
 	)`,
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
-		text_id INTEGER NOT NULL,
-		number INTEGER NOT NULL,
+		id INTEGER,
+		text_id INTEGER,
+		position INTEGER,
 		content TEXT NOT NULL,
-		FOREIGN KEY(text_id) REFERENCES text(id),
-		UNIQUE(text_id, number)
+		CONSTRAINT pk__page__id PRIMARY KEY (id),
+		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT uq__page__text_id__position UNIQUE (text_id, position)
 	)`,
 	createWordTable: `CREATE TABLE IF NOT EXISTS word (
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id INTEGER,
 		language_id INTEGER NOT NULL,
 		content TEXT NOT NULL,
 		status INTEGER NOT NULL DEFAULT 0,
-		entries TEXT,
 		notes TEXT,
-		datetime_added TEXT NOT NULL,
-		datetime_updated TEXT NOT NULL,
-		item_count INTEGER NOT NULL DEFAULT 1,
-		FOREIGN KEY(language_id) REFERENCES language(id)
+		time_added INTEGER NOT NULL,
+		time_updated INTEGER NOT NULL,
+		token_count INTEGER NOT NULL DEFAULT 1,
+		CONSTRAINT pk__word__id PRIMARY KEY (id),
+		CONSTRAINT fk__word__language_id FOREIGN KEY (language_id) REFERENCES language (id),
+		CONSTRAINT uq__word__language_id__content UNIQUE (language_id, content)
 	)`,
+	createEntryTable: `CREATE TABLE IF NOT EXISTS entry (
+		id INTEGER,
+		word_id INTEGER NOT NULL,
+		position INTEGER NOT NULL,
+		meaning TEXT NOT NULL,
+		reading TEXT NOT NULL,
+		CONSTRAINT pk__entry__id PRIMARY KEY (id),
+		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
+		CONSTRAINT uq__entry__word_id__position UNIQUE (word_id, position)
+	)`,
+	//#endregion
+
+	//#region Create indexes
+	createTextLanguageIdTitleIndex: `CREATE INDEX IF NOT EXISTS
+		ix__text__language_id__title ON text (
+			language_id, title
+		)`,
+	createWordLowerContentLanguageIdIndex: `CREATE INDEX IF NOT EXISTS
+		ix__word__lower_content__language_id ON word (
+			LOWER(content), language_id
+		)`,
+	createWordLanguageIdTokenCountContentIndex: `CREATE INDEX IF NOT EXISTS
+		ix__word__language_id__token_count__content ON word (
+			language_id, token_count, content
+		)`,
 	//#endregion
 
 	//#region Language
@@ -76,8 +109,8 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			title,
 			source_url AS sourceUrl,
-			datetime_opened AS datetimeOpened,
-			datetime_finished AS datetimeFinished,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
 			progress
 		FROM text`,
 	getTextsByLanguage: `SELECT
@@ -85,8 +118,8 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			title,
 			source_url AS sourceUrl,
-			datetime_opened AS datetimeOpened,
-			datetime_finished AS datetimeFinished,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
 			progress
 		FROM text
 		WHERE language_id = ?`,
@@ -95,8 +128,8 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			title,
 			source_url AS sourceUrl,
-			datetime_opened AS datetimeOpened,
-			datetime_finished AS datetimeFinished,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
 			progress
 		FROM text
 		WHERE id = ?`,
@@ -111,26 +144,34 @@ const queries: { [key: string]: string } = {
 	//#endregion
 
 	//#region Page
-	getAllPages: `SELECT
+	getPagesByText: `SELECT
 			text_id AS textId,
-			number,
+			position,
 			content
 		FROM page
 		WHERE text_id = ?`,
 	getPage: `SELECT
 			text_id AS textId,
-			number,
+			position,
 			content
 		FROM page
-		WHERE text_id = ? AND number = ?`,
+		WHERE text_id = ? AND position = ?`,
 	addPage: `INSERT INTO page (
 			text_id,
-			number,
+			position,
 			content
 		)
 		VALUES (?, ?, ?)`,
-	deletePage: `DELETE FROM page WHERE text_id = ? AND number = ?`,
-	editPage: `UPDATE page SET content = ? WHERE text_id = ? AND number = ?`,
+	addPagesInBatch: `INSERT INTO page (
+			text_id,
+			position,
+			content
+		)
+		VALUES %DYNAMIC%`,
+	deletePage: `DELETE FROM page WHERE text_id = ? AND position = ?`,
+	deletePagesInBatch: `DELETE FROM page WHERE text_id = ? AND position >= ?`,
+	deletePagesByText: `DELETE FROM page WHERE text_id = ?`,
+	editPage: `UPDATE page SET content = ? WHERE text_id = ? AND position = ?`,
 	//#endregion
 
 	//#region Word
@@ -139,11 +180,10 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			content,
 			status,
-			entries,
 			notes,
-			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated,
-			item_count AS itemCount
+			time_added AS timeAdded,
+			time_updated AS timeUpdated,
+			token_count AS tokenCount
 		FROM word
 		WHERE id = ?`,
 	findWord: `SELECT
@@ -151,11 +191,10 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			content,
 			status,
-			entries,
 			notes,
-			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated,
-			item_count AS itemCount
+			time_added AS timeAdded,
+			time_updated AS timeUpdated,
+			token_count AS tokenCount
 		FROM word
 		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
 	findWordsInBatch: `WITH input_words(content) AS (VALUES %DYNAMIC%)
@@ -171,9 +210,9 @@ const queries: { [key: string]: string } = {
 				ELSE 'punctuation'
 			END AS type,
 			EXISTS (
-				SELECT item_count
+				SELECT token_count
 				FROM word
-				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.item_count > 1
+				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.token_count > 1
 			) AS potentialMultiword
 		FROM input_words
 		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = ?`,
@@ -181,22 +220,20 @@ const queries: { [key: string]: string } = {
 			language_id,
 			content,
 			status,
-			entries,
 			notes,
-			datetime_added,
-			datetime_updated,
-			item_count
+			time_added,
+			time_updated,
+			token_count
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		VALUES (?, ?, ?, ?, ?, ?, ?)`,
 	addWordsInBatch: `INSERT INTO word (
 			language_id,
 			content,
 			status,
-			entries,
 			notes,
-			datetime_added,
-			datetime_updated,
-			item_count
+			time_added,
+			time_updated,
+			token_count
 		)
 		VALUES %DYNAMIC%`,
 	deleteWord: `DELETE FROM word WHERE id = ?`,
@@ -206,15 +243,38 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			content,
 			status,
-			entries,
 			notes,
-			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated,
-			item_count AS itemCount
+			time_added AS timeAdded,
+			time_updated AS timeUpdated,
+			token_count AS tokenCount
 		FROM word
 		WHERE content LIKE (? || '%')
 			AND language_id = ?
-			AND item_count > 1`,
+			AND token_count > 1`,
+	//#endregion
+
+	//#region Entry
+	getEntriesByWord: `SELECT
+			meaning,
+			reading
+		FROM entry
+		WHERE word_id = ?
+		ORDER BY position ASC`,
+	addEntry: `INSERT INTO entry (
+			word_id,
+			position,
+			meaning,
+			reading
+		)
+		VALUES (?, ?, ?, ?)`,
+	addEntriesInBatch: `INSERT INTO entry (
+			word_id,
+			position,
+			meaning,
+			reading
+		)
+		VALUES %DYNAMIC%`,
+	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = ?`,
 	//#endregion
 
 	//#region Utils

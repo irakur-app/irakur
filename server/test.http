@@ -82,8 +82,8 @@ Content-Type: application/json
 		}
 	],
 	"notes": "Test notes",
-	"datetimeAdded": "2021-01-01T00:00:00",
-	"datetimeUpdated": "2021-01-01T00:00:00"
+	"timeAdded": 1723645819,
+	"timeUpdated": 1723645819
 }
 
 ###
@@ -94,7 +94,7 @@ Content-Type: application/json
 	"languageId": 26,
 	"contents": ["y", "la", "que", "en"],
 	"status": 99,
-	"datetimeAdded": "2024-04-18T21:46:39"
+	"timeAdded": 1723646053
 }
 
 ###
@@ -112,7 +112,7 @@ Content-Type: application/json
 			"reading": "Updated reading"
 		}
 	],
-	"datetimeUpdated": "2021-01-05T00:00:00"
+	"timeUpdated": 1723646073
 }
 
 ###

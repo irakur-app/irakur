@@ -147,8 +147,8 @@ router.patch(
 				req.body.numberOfPages,
 				req.body.content,
 				parseInt(req.params.textId),
-				req.body.datetimeOpened,
-				req.body.datetimeFinished,
+				req.body.timeOpened,
+				req.body.timeFinished,
 				req.body.progress
 			);
 			res.sendStatus(200);
@@ -162,39 +162,39 @@ router.get(
 	'/texts/:textId/pages/',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({ pages: await pagesController.getAllPages(parseInt(req.params.textId)) });
+			res.json({ pages: await pagesController.getPagesByText(parseInt(req.params.textId)) });
 		}
 	)
 );
 router.get(
-	'/texts/:textId/pages/:pageId',
+	'/texts/:textId/pages/:pagePosition',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json(await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pageId)));
+			res.json(await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pagePosition)));
 		}
 	)
 );
 router.get(
-	'/texts/:textId/pages/:pageId/words',
+	'/texts/:textId/pages/:pagePosition/words',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			res.json(
 				{
-					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pageId)),
+					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pagePosition)),
 				}
 			);
 		}
 	)
 );
 router.patch(
-	'/texts/:textId/pages/:pageId',
+	'/texts/:textId/pages/:pagePosition',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			await pagesController.editPage(
 				parseInt(req.params.textId),
 				req.body.index,
 				req.body.content,
-				parseInt(req.params.pageId)
+				parseInt(req.params.pagePosition)
 			);
 			res.sendStatus(200);
 		}
@@ -248,8 +248,8 @@ router.post(
 				req.body.status,
 				req.body.entries,
 				req.body.notes,
-				req.body.datetimeAdded,
-				req.body.datetimeUpdated
+				req.body.timeAdded,
+				req.body.timeUpdated
 			);
 			res.sendStatus(200);
 		}
@@ -263,7 +263,7 @@ router.post(
 				req.body.languageId,
 				req.body.contents,
 				req.body.status,
-				req.body.datetimeAdded
+				req.body.timeAdded
 			);
 			res.sendStatus(200);
 		}
@@ -288,8 +288,8 @@ router.patch(
 				req.body.status,
 				req.body.entries,
 				req.body.notes,
-				req.body.datetimeAdded,
-				req.body.datetimeUpdated,
+				req.body.timeAdded,
+				req.body.timeUpdated,
 				parseInt(req.params.wordId)
 			);
 			res.sendStatus(200);

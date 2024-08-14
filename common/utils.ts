@@ -4,12 +4,17 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const itemizeString = (str: string): string[] =>
+const getUnixTime = (): number =>
 {
-	const items: string[] = str.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
-		.filter((sentence: string) => sentence !== '');
-
-	return items;
+	return Math.floor(Date.now() / 1000);
 }
 
-export { itemizeString };
+const tokenizeString = (str: string): string[] =>
+{
+	const tokens: string[] = str.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
+		.filter((sentence: string) => sentence !== '');
+
+	return tokens;
+}
+
+export { getUnixTime, tokenizeString };

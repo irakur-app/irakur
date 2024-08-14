@@ -5,7 +5,7 @@
  */
 
 import { Entry, RawWord, Word } from "@common/types";
-import { itemizeString } from "../../../common/utils";
+import { tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -17,32 +17,42 @@ class WordsController
 		status: number,
 		entries: Entry[],
 		notes: string,
-		datetimeAdded: string,
-		datetimeUpdated: string
+		timeAdded: number,
+		timeUpdated: number
 	): Promise<void>
 	{
-		const itemizedContent: string[] = itemizeString(content);
+		const tokenizedContent: string[] = tokenizeString(content);
 
 		await databaseManager.executeQuery(
 			queries.addWord,
-			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated, itemizedContent.length]
+			[languageId, content, status, notes, timeAdded, timeUpdated, tokenizedContent.length]
 		);
+
+		const wordId: number = (await databaseManager.getLastInsertId()).id;
+
+		for (let i = 0; i < entries.length; i++)
+		{
+			await databaseManager.executeQuery(
+				queries.addEntry,
+				[wordId, i, entries[i].meaning, entries[i].reading]
+			);
+		}
 	}
 
 	async addWordsInBatch(
 		languageId: number,
 		contents: string[],
 		status: number,
-		datetimeAdded: string
+		timeAdded: number
 	): Promise<void>
 	{
 		const valueList: string[] = [];
 		for (const content of contents)
 		{
-			const itemizedContent: string[] = itemizeString(content);
+			const tokenizedContent: string[] = tokenizeString(content);
 
 			valueList.push(
-				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}', ${itemizedContent.length})`
+				`(${languageId}, '${content}', ${status}, '', '${timeAdded}', '${timeAdded}', ${tokenizedContent.length})`
 			);
 		}
 
@@ -63,9 +73,14 @@ class WordsController
 			[wordId]
 		);
 
+		const entries: Entry[] = await databaseManager.executeQuery(
+			queries.getEntriesByWord,
+			[wordId]
+		);
+
 		const word: Word = {
 			...rawWord,
-			entries: JSON.parse(rawWord.entries)
+			entries: entries
 		};
 
 		return word;
@@ -83,9 +98,14 @@ class WordsController
 			return null;
 		}
 
+		const entries: Entry[] = await databaseManager.executeQuery(
+			queries.getEntriesByWord,
+			[rawWord.id]
+		);
+
 		const word: Word = {
 			...rawWord,
-			entries: JSON.parse(rawWord.entries)
+			entries: entries
 		};
 
 		return word;
@@ -105,8 +125,8 @@ class WordsController
 		status: number,
 		entries: Entry[],
 		notes: string,
-		datetimeAdded: string,
-		datetimeUpdated: string,
+		timeAdded: number,
+		timeUpdated: number,
 		wordId: number
 	): Promise<void>
 	{
@@ -132,10 +152,10 @@ class WordsController
 			updates.push('content = ?');
 			queryParams.push(content);
 
-			const itemizedContent: string[] = itemizeString(content);
+			const tokenizedContent: string[] = tokenizeString(content);
 
-			updates.push('item_count = ?');
-			queryParams.push(itemizedContent.length);
+			updates.push('token_count = ?');
+			queryParams.push(tokenizedContent.length);
 		}
 		if (status !== undefined)
 		{
@@ -144,23 +164,22 @@ class WordsController
 		}
 		if (entries !== undefined)
 		{
-			updates.push('entries = ?');
-			queryParams.push(JSON.stringify(entries));
+			await this.updateEntries(wordId, entries);
 		}
 		if (notes !== undefined)
 		{
 			updates.push('notes = ?');
 			queryParams.push(notes);
 		}
-		if (datetimeAdded !== undefined)
+		if (timeAdded !== undefined)
 		{
-			updates.push('datetime_added = ?');
-			queryParams.push(datetimeAdded);
+			updates.push('time_added = ?');
+			queryParams.push(timeAdded);
 		}
-		if (datetimeUpdated !== undefined)
+		if (timeUpdated !== undefined)
 		{
-			updates.push('datetime_updated = ?');
-			queryParams.push(datetimeUpdated);
+			updates.push('time_updated = ?');
+			queryParams.push(timeUpdated);
 		}
 
 		if (updates.length > 0)
@@ -176,6 +195,36 @@ class WordsController
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
 		}
+	}
+
+	async updateEntries(wordId: number, entries: Entry[]): Promise<void>
+	{
+		await databaseManager.executeQuery(
+			queries.deleteEntriesByWord,
+			[wordId]
+		);
+
+		if (!entries || entries.length === 0)
+		{
+			return;
+		}
+
+		const dynamicQuery: string = queries.addEntriesInBatch.replace(
+			/\%DYNAMIC\%/,
+			(): string => {
+				return entries.map(
+					(token: Entry, index: number): string => {
+						return `(${wordId},
+								${index + 1},
+								'${token.meaning.replace(/'/g, "''")}',
+								'${token.reading.replace(/'/g, "''")}'
+							)`;
+					}
+				).join(', ');
+			}
+		);
+
+		await databaseManager.executeQuery(dynamicQuery);
 	}
 }
 
