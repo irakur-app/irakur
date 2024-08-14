@@ -213,6 +213,11 @@ class WordsController
 			[wordId]
 		);
 
+		if (!entries || entries.length === 0)
+		{
+			return;
+		}
+
 		const dynamicQuery: string = queries.addEntriesInBatch.replace(
 			/\%DYNAMIC\%/,
 			(): string => {
