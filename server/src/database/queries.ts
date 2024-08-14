@@ -162,7 +162,15 @@ const queries: { [key: string]: string } = {
 			content
 		)
 		VALUES (?, ?, ?)`,
+	addPagesInBatch: `INSERT INTO page (
+			text_id,
+			number,
+			content
+		)
+		VALUES %DYNAMIC%`,
 	deletePage: `DELETE FROM page WHERE text_id = ? AND number = ?`,
+	deletePagesInBatch: `DELETE FROM page WHERE text_id = ? AND number >= ?`,
+	deletePagesByText: `DELETE FROM page WHERE text_id = ?`,
 	editPage: `UPDATE page SET content = ? WHERE text_id = ? AND number = ?`,
 	//#endregion
 
