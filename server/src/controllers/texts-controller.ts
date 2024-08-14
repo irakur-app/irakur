@@ -5,7 +5,6 @@
  */
 
 import { Page, Text } from '@common/types';
-import { convertIsoDatetimeToUnix } from '../../../common/utils';
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -86,8 +85,8 @@ class TextsController
 		numberOfPages: number,
 		content: string,
 		textId: number,
-		datetimeOpened: string,
-		datetimeFinished: string,
+		timeOpened: number,
+		timeFinished: number,
 		progress: number
 	): Promise<void>
 	{
@@ -118,17 +117,13 @@ class TextsController
 			updates.push('source_url = ?');
 			queryParams.push(sourceUrl);
 		}
-		if (datetimeOpened !== undefined)
+		if (timeOpened !== undefined)
 		{
-			const timeOpened: number = convertIsoDatetimeToUnix(datetimeOpened);
-
 			updates.push('time_opened = ?');
 			queryParams.push(timeOpened);
 		}
-		if (datetimeFinished !== undefined)
+		if (timeFinished !== undefined)
 		{
-			const timeFinished: number = convertIsoDatetimeToUnix(datetimeFinished);
-
 			updates.push('time_finished = ?');
 			queryParams.push(timeFinished);
 		}

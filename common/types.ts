@@ -17,8 +17,8 @@ type Text = {
 	title: string;
 	sourceUrl: string;
 	numberOfPages?: number;
-	datetimeOpened: string | null;
-	datetimeFinished: string | null;
+	timeOpened: number | null;
+	timeFinished: number | null;
 	progress: number;
 };
 
@@ -49,8 +49,8 @@ type Word = {
 	status: number;
 	entries: Entry[];
 	notes: string;
-	datetimeAdded: string;
-	datetimeUpdated: string;
+	timeAdded: number;
+	timeUpdated: number;
 	tokenCount: number;
 };
 
@@ -60,8 +60,8 @@ type RawWord = {
 	content: string;
 	status: number;
 	notes: string;
-	datetimeAdded: string;
-	datetimeUpdated: string;
+	timeAdded: number;
+	timeUpdated: number;
 	tokenCount: number;
 };
 

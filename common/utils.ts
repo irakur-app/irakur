@@ -4,9 +4,9 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const convertIsoDatetimeToUnix = (isoDatetime: string): number =>
+const getUnixTime = (): number =>
 {
-	return Math.floor(new Date(isoDatetime).getTime() / 1000);
+	return Math.floor(Date.now() / 1000);
 }
 
 const tokenizeString = (str: string): string[] =>
@@ -17,4 +17,4 @@ const tokenizeString = (str: string): string[] =>
 	return tokens;
 }
 
-export { convertIsoDatetimeToUnix, tokenizeString };
+export { getUnixTime, tokenizeString };

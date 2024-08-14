@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { Language, ReducedWordData, Text } from '@common/types';
-import { tokenizeString } from '../../../../common/utils';
+import { getUnixTime,tokenizeString } from '../../../../common/utils';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
@@ -170,13 +170,13 @@ const Reader = (
 
 	const updateTextStatistics = async (): Promise<void> => {
 		const newProgress = currentPage/textData.numberOfPages!;
-		const newDatetime = new Date().toISOString();
+		const newTime = getUnixTime();
 
-		const shouldUpdateDatetimeFinished: boolean = (
-			currentPage === textData.numberOfPages! && textData.datetimeFinished === null
+		const shouldUpdateTimeFinished: boolean = (
+			currentPage === textData.numberOfPages! && textData.timeFinished === null
 		);
 
-		console.log("shouldUpdateDatetimeFinished:", shouldUpdateDatetimeFinished);
+		console.log("shouldUpdateTimeFinished:", shouldUpdateTimeFinished);
 		console.log("newProgress:", newProgress);
 
 		await backendConnector.editText(
@@ -187,13 +187,13 @@ const Reader = (
 			undefined,
 			undefined,
 			undefined,
-			(shouldUpdateDatetimeFinished) ? newDatetime : undefined,
+			(shouldUpdateTimeFinished) ? newTime : undefined,
 			(newProgress > textData.progress) ? newProgress : undefined
 		);
 
-		if (shouldUpdateDatetimeFinished)
+		if (shouldUpdateTimeFinished)
 		{
-			textData.datetimeFinished = newDatetime;
+			textData.timeFinished = newTime;
 		}
 		if (newProgress > textData.progress)
 		{
@@ -213,7 +213,7 @@ const Reader = (
 			undefined,
 			undefined,
 			undefined,
-			new Date().toISOString(),
+			getUnixTime(),
 			undefined,
 			undefined
 		);
@@ -274,7 +274,7 @@ const Reader = (
 
 		newWordContents = [...new Set(newWordContents)];
 
-		await backendConnector.addWordsInBatch(languageData.id, newWordContents, status, new Date().toISOString()).then(
+		await backendConnector.addWordsInBatch(languageData.id, newWordContents, status, getUnixTime()).then(
 			(): void => {
 				for (const content of newWordContents)
 				{

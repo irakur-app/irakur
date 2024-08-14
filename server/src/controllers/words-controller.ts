@@ -5,7 +5,7 @@
  */
 
 import { Entry, RawWord, Word } from "@common/types";
-import { convertIsoDatetimeToUnix, tokenizeString } from "../../../common/utils";
+import { tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -17,14 +17,11 @@ class WordsController
 		status: number,
 		entries: Entry[],
 		notes: string,
-		datetimeAdded: string,
-		datetimeUpdated: string
+		timeAdded: number,
+		timeUpdated: number
 	): Promise<void>
 	{
 		const tokenizedContent: string[] = tokenizeString(content);
-
-		const timeAdded = convertIsoDatetimeToUnix(datetimeAdded);
-		const timeUpdated = convertIsoDatetimeToUnix(datetimeUpdated);
 
 		await databaseManager.executeQuery(
 			queries.addWord,
@@ -46,15 +43,13 @@ class WordsController
 		languageId: number,
 		contents: string[],
 		status: number,
-		datetimeAdded: string
+		timeAdded: number
 	): Promise<void>
 	{
 		const valueList: string[] = [];
 		for (const content of contents)
 		{
 			const tokenizedContent: string[] = tokenizeString(content);
-
-			const timeAdded = convertIsoDatetimeToUnix(datetimeAdded);
 
 			valueList.push(
 				`(${languageId}, '${content}', ${status}, '', '${timeAdded}', '${timeAdded}', ${tokenizedContent.length})`
@@ -130,8 +125,8 @@ class WordsController
 		status: number,
 		entries: Entry[],
 		notes: string,
-		datetimeAdded: string,
-		datetimeUpdated: string,
+		timeAdded: number,
+		timeUpdated: number,
 		wordId: number
 	): Promise<void>
 	{
@@ -176,17 +171,13 @@ class WordsController
 			updates.push('notes = ?');
 			queryParams.push(notes);
 		}
-		if (datetimeAdded !== undefined)
+		if (timeAdded !== undefined)
 		{
-			const timeAdded = convertIsoDatetimeToUnix(datetimeAdded);
-
 			updates.push('time_added = ?');
 			queryParams.push(timeAdded);
 		}
-		if (datetimeUpdated !== undefined)
+		if (timeUpdated !== undefined)
 		{
-			const timeUpdated = convertIsoDatetimeToUnix(datetimeUpdated);
-
 			updates.push('time_updated = ?');
 			queryParams.push(timeUpdated);
 		}

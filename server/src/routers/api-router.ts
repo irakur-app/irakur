@@ -147,8 +147,8 @@ router.patch(
 				req.body.numberOfPages,
 				req.body.content,
 				parseInt(req.params.textId),
-				req.body.datetimeOpened,
-				req.body.datetimeFinished,
+				req.body.timeOpened,
+				req.body.timeFinished,
 				req.body.progress
 			);
 			res.sendStatus(200);
@@ -248,8 +248,8 @@ router.post(
 				req.body.status,
 				req.body.entries,
 				req.body.notes,
-				req.body.datetimeAdded,
-				req.body.datetimeUpdated
+				req.body.timeAdded,
+				req.body.timeUpdated
 			);
 			res.sendStatus(200);
 		}
@@ -263,7 +263,7 @@ router.post(
 				req.body.languageId,
 				req.body.contents,
 				req.body.status,
-				req.body.datetimeAdded
+				req.body.timeAdded
 			);
 			res.sendStatus(200);
 		}
@@ -288,8 +288,8 @@ router.patch(
 				req.body.status,
 				req.body.entries,
 				req.body.notes,
-				req.body.datetimeAdded,
-				req.body.datetimeUpdated,
+				req.body.timeAdded,
+				req.body.timeUpdated,
 				parseInt(req.params.wordId)
 			);
 			res.sendStatus(200);
