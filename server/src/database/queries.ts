@@ -267,6 +267,13 @@ const queries: { [key: string]: string } = {
 			reading
 		)
 		VALUES (?, ?, ?, ?)`,
+	addEntriesInBatch: `INSERT INTO entry (
+			word_id,
+			number,
+			meaning,
+			reading
+		)
+		VALUES %DYNAMIC%`,
 	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = ?`,
 	//#endregion
 

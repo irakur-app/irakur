@@ -204,13 +204,22 @@ class WordsController
 			[wordId]
 		);
 
-		for (let i = 0; i < entries.length; i++)
-		{
-			await databaseManager.executeQuery(
-				queries.addEntry,
-				[wordId, i, entries[i].meaning, entries[i].reading]
-			);
-		}
+		const dynamicQuery: string = queries.addEntriesInBatch.replace(
+			/\%DYNAMIC\%/,
+			(): string => {
+				return entries.map(
+					(item: Entry, index: number): string => {
+						return `(${wordId},
+								${index + 1},
+								'${item.meaning.replace(/'/g, "''")}',
+								'${item.reading.replace(/'/g, "''")}'
+							)`;
+					}
+				).join(', ');
+			}
+		);
+
+		await databaseManager.executeQuery(dynamicQuery);
 	}
 }
 
