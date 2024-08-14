@@ -59,7 +59,6 @@ type RawWord = {
 	languageId: number;
 	content: string;
 	status: number;
-	entries: string,
 	notes: string;
 	datetimeAdded: string;
 	datetimeUpdated: string;

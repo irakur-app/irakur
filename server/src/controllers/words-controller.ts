@@ -25,8 +25,18 @@ class WordsController
 
 		await databaseManager.executeQuery(
 			queries.addWord,
-			[languageId, content, status, JSON.stringify(entries), notes, datetimeAdded, datetimeUpdated, itemizedContent.length]
+			[languageId, content, status, notes, datetimeAdded, datetimeUpdated, itemizedContent.length]
 		);
+
+		const wordId: number = (await databaseManager.getLastInsertId()).id;
+
+		for (let i = 0; i < entries.length; i++)
+		{
+			await databaseManager.executeQuery(
+				queries.addEntry,
+				[wordId, i, entries[i].meaning, entries[i].reading]
+			);
+		}
 	}
 
 	async addWordsInBatch(
@@ -42,7 +52,7 @@ class WordsController
 			const itemizedContent: string[] = itemizeString(content);
 
 			valueList.push(
-				`(${languageId}, '${content}', ${status}, '[]', '', '${datetimeAdded}', '${datetimeAdded}', ${itemizedContent.length})`
+				`(${languageId}, '${content}', ${status}, '', '${datetimeAdded}', '${datetimeAdded}', ${itemizedContent.length})`
 			);
 		}
 
@@ -63,9 +73,14 @@ class WordsController
 			[wordId]
 		);
 
+		const entries: Entry[] = await databaseManager.executeQuery(
+			queries.getEntriesByWord,
+			[wordId]
+		);
+
 		const word: Word = {
 			...rawWord,
-			entries: JSON.parse(rawWord.entries)
+			entries: entries
 		};
 
 		return word;
@@ -83,9 +98,14 @@ class WordsController
 			return null;
 		}
 
+		const entries: Entry[] = await databaseManager.executeQuery(
+			queries.getEntriesByWord,
+			[rawWord.id]
+		);
+
 		const word: Word = {
 			...rawWord,
-			entries: JSON.parse(rawWord.entries)
+			entries: entries
 		};
 
 		return word;
@@ -144,8 +164,7 @@ class WordsController
 		}
 		if (entries !== undefined)
 		{
-			updates.push('entries = ?');
-			queryParams.push(JSON.stringify(entries));
+			await this.updateEntries(wordId, entries);
 		}
 		if (notes !== undefined)
 		{
@@ -175,6 +194,22 @@ class WordsController
 			);
 
 			await databaseManager.executeQuery(dynamicQuery, queryParams);
+		}
+	}
+
+	async updateEntries(wordId: number, entries: Entry[]): Promise<void>
+	{
+		await databaseManager.executeQuery(
+			queries.deleteEntriesByWord,
+			[wordId]
+		);
+
+		for (let i = 0; i < entries.length; i++)
+		{
+			await databaseManager.executeQuery(
+				queries.addEntry,
+				[wordId, i, entries[i].meaning, entries[i].reading]
+			);
 		}
 	}
 }

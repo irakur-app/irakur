@@ -45,7 +45,6 @@ const queries: { [key: string]: string } = {
 		language_id INTEGER NOT NULL,
 		content TEXT NOT NULL,
 		status INTEGER NOT NULL DEFAULT 0,
-		entries TEXT,
 		notes TEXT,
 		datetime_added TEXT NOT NULL,
 		datetime_updated TEXT NOT NULL,
@@ -53,6 +52,16 @@ const queries: { [key: string]: string } = {
 		CONSTRAINT pk__word__id PRIMARY KEY (id),
 		CONSTRAINT fk__word__language_id FOREIGN KEY (language_id) REFERENCES language (id),
 		CONSTRAINT uq__word__language_id__content UNIQUE (language_id, content)
+	)`,
+	createEntryTable: `CREATE TABLE IF NOT EXISTS entry (
+		id INTEGER,
+		word_id INTEGER NOT NULL,
+		number INTEGER NOT NULL,
+		meaning TEXT NOT NULL,
+		reading TEXT NOT NULL,
+		CONSTRAINT pk__entry__id PRIMARY KEY (id),
+		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
+		CONSTRAINT uq__entry__word_id__number UNIQUE (word_id, number)
 	)`,
 	//#endregion
 
@@ -163,7 +172,6 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			content,
 			status,
-			entries,
 			notes,
 			datetime_added AS datetimeAdded,
 			datetime_updated AS datetimeUpdated,
@@ -175,7 +183,6 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			content,
 			status,
-			entries,
 			notes,
 			datetime_added AS datetimeAdded,
 			datetime_updated AS datetimeUpdated,
@@ -205,18 +212,16 @@ const queries: { [key: string]: string } = {
 			language_id,
 			content,
 			status,
-			entries,
 			notes,
 			datetime_added,
 			datetime_updated,
 			item_count
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		VALUES (?, ?, ?, ?, ?, ?, ?)`,
 	addWordsInBatch: `INSERT INTO word (
 			language_id,
 			content,
 			status,
-			entries,
 			notes,
 			datetime_added,
 			datetime_updated,
@@ -230,7 +235,6 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			content,
 			status,
-			entries,
 			notes,
 			datetime_added AS datetimeAdded,
 			datetime_updated AS datetimeUpdated,
@@ -239,6 +243,23 @@ const queries: { [key: string]: string } = {
 		WHERE content LIKE (? || '%')
 			AND language_id = ?
 			AND item_count > 1`,
+	//#endregion
+
+	//#region Entry
+	getEntriesByWord: `SELECT
+			meaning,
+			reading
+		FROM entry
+		WHERE word_id = ?
+		ORDER BY number ASC`,
+	addEntry: `INSERT INTO entry (
+			word_id,
+			number,
+			meaning,
+			reading
+		)
+		VALUES (?, ?, ?, ?)`,
+	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = ?`,
 	//#endregion
 
 	//#region Utils
