@@ -34,11 +34,11 @@ const queries: { [key: string]: string } = {
 	createPageTable: `CREATE TABLE IF NOT EXISTS page (
 		id INTEGER,
 		text_id INTEGER,
-		number INTEGER,
+		position INTEGER,
 		content TEXT NOT NULL,
 		CONSTRAINT pk__page__id PRIMARY KEY (id),
 		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id)
-		CONSTRAINT uq__page__text_id__number UNIQUE (text_id, number)
+		CONSTRAINT uq__page__text_id__position UNIQUE (text_id, position)
 	)`,
 	createWordTable: `CREATE TABLE IF NOT EXISTS word (
 		id INTEGER,
@@ -56,12 +56,12 @@ const queries: { [key: string]: string } = {
 	createEntryTable: `CREATE TABLE IF NOT EXISTS entry (
 		id INTEGER,
 		word_id INTEGER NOT NULL,
-		number INTEGER NOT NULL,
+		position INTEGER NOT NULL,
 		meaning TEXT NOT NULL,
 		reading TEXT NOT NULL,
 		CONSTRAINT pk__entry__id PRIMARY KEY (id),
 		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
-		CONSTRAINT uq__entry__word_id__number UNIQUE (word_id, number)
+		CONSTRAINT uq__entry__word_id__position UNIQUE (word_id, position)
 	)`,
 	//#endregion
 
@@ -146,32 +146,32 @@ const queries: { [key: string]: string } = {
 	//#region Page
 	getPagesByText: `SELECT
 			text_id AS textId,
-			number,
+			position,
 			content
 		FROM page
 		WHERE text_id = ?`,
 	getPage: `SELECT
 			text_id AS textId,
-			number,
+			position,
 			content
 		FROM page
-		WHERE text_id = ? AND number = ?`,
+		WHERE text_id = ? AND position = ?`,
 	addPage: `INSERT INTO page (
 			text_id,
-			number,
+			position,
 			content
 		)
 		VALUES (?, ?, ?)`,
 	addPagesInBatch: `INSERT INTO page (
 			text_id,
-			number,
+			position,
 			content
 		)
 		VALUES %DYNAMIC%`,
-	deletePage: `DELETE FROM page WHERE text_id = ? AND number = ?`,
-	deletePagesInBatch: `DELETE FROM page WHERE text_id = ? AND number >= ?`,
+	deletePage: `DELETE FROM page WHERE text_id = ? AND position = ?`,
+	deletePagesInBatch: `DELETE FROM page WHERE text_id = ? AND position >= ?`,
 	deletePagesByText: `DELETE FROM page WHERE text_id = ?`,
-	editPage: `UPDATE page SET content = ? WHERE text_id = ? AND number = ?`,
+	editPage: `UPDATE page SET content = ? WHERE text_id = ? AND position = ?`,
 	//#endregion
 
 	//#region Word
@@ -259,17 +259,17 @@ const queries: { [key: string]: string } = {
 			reading
 		FROM entry
 		WHERE word_id = ?
-		ORDER BY number ASC`,
+		ORDER BY position ASC`,
 	addEntry: `INSERT INTO entry (
 			word_id,
-			number,
+			position,
 			meaning,
 			reading
 		)
 		VALUES (?, ?, ?, ?)`,
 	addEntriesInBatch: `INSERT INTO entry (
 			word_id,
-			number,
+			position,
 			meaning,
 			reading
 		)

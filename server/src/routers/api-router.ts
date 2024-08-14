@@ -167,34 +167,34 @@ router.get(
 	)
 );
 router.get(
-	'/texts/:textId/pages/:pageId',
+	'/texts/:textId/pages/:pagePosition',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json(await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pageId)));
+			res.json(await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pagePosition)));
 		}
 	)
 );
 router.get(
-	'/texts/:textId/pages/:pageId/words',
+	'/texts/:textId/pages/:pagePosition/words',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			res.json(
 				{
-					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pageId)),
+					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pagePosition)),
 				}
 			);
 		}
 	)
 );
 router.patch(
-	'/texts/:textId/pages/:pageId',
+	'/texts/:textId/pages/:pagePosition',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			await pagesController.editPage(
 				parseInt(req.params.textId),
 				req.body.index,
 				req.body.content,
-				parseInt(req.params.pageId)
+				parseInt(req.params.pagePosition)
 			);
 			res.sendStatus(200);
 		}

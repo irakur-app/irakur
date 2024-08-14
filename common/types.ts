@@ -24,7 +24,7 @@ type Text = {
 
 type Page = {
 	textId: number;
-	number: number;
+	position: number;
 	content: string;
 };
 

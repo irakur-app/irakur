@@ -201,10 +201,10 @@ const Reader = (
 		}
 	}
 
-	const loadPage = async (textId: number, pageId: number): Promise<void> => {
+	const loadPage = async (textId: number, pagePosition: number): Promise<void> => {
 		setIsLoading(true);
 		setWords(null);
-		setWords(await backendConnector.getWords(textId, pageId));
+		setWords(await backendConnector.getWords(textId, pagePosition));
 
 		await backendConnector.editText(
 			textData.id,
@@ -218,7 +218,7 @@ const Reader = (
 			undefined
 		);
 
-		setCurrentPage(pageId);
+		setCurrentPage(pagePosition);
 
 		document.querySelectorAll<HTMLElement>('.word').forEach(
 			(element: HTMLElement): void => {

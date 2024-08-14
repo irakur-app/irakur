@@ -373,9 +373,9 @@ class BackendConnector
 		return response.ok;
 	}
 
-	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
+	async getWords(textId: number, pagePosition: number): Promise<ReducedWordData[]>
 	{
-		const response: Response = await fetch('/api/texts/' + textId + '/pages/' + pageId + '/words');
+		const response: Response = await fetch('/api/texts/' + textId + '/pages/' + pagePosition + '/words');
 		const words = (await response.json()).words;
 		return words;
 	}

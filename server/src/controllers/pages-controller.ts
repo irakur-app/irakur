@@ -21,17 +21,17 @@ class PagesController
 		return pages;
 	}
 
-	async getPage(textId: number, pageId: number): Promise<Page>
+	async getPage(textId: number, pagePosition: number): Promise<Page>
 	{
 		const page: Page = await databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pageId]
+			[textId, pagePosition]
 		);
 
 		return page;
 	}
 
-	async editPage(textId: number, index: number, content: string, pageId: number): Promise<void>
+	async editPage(textId: number, index: number, content: string, pagePosition: number): Promise<void>
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -45,7 +45,7 @@ class PagesController
 		if (updates.length > 0)
 		{
 			queryParams.push(textId);
-			queryParams.push(pageId);
+			queryParams.push(pagePosition);
 
 			const dynamicQuery: string = queries.editPage.replace(
 				/\%DYNAMIC\%/,
@@ -58,11 +58,11 @@ class PagesController
 		}
 	}
 
-	async getWords(textId: number, pageId: number): Promise<ReducedWordData[]>
+	async getWords(textId: number, pagePosition: number): Promise<ReducedWordData[]>
 	{
 		const page: Page = await databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pageId]
+			[textId, pagePosition]
 		);
 
 		const languageId: number = (await databaseManager.getFirstRow(
