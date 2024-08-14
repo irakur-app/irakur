@@ -24,8 +24,8 @@ const queries: { [key: string]: string } = {
 		language_id INTEGER NOT NULL,
 		title TEXT NOT NULL,
 		source_url TEXT,
-		datetime_opened TEXT,
-		datetime_finished TEXT,
+		time_opened INTEGER,
+		time_finished INTEGER,
 		progress REAL NOT NULL DEFAULT 0,
 		CONSTRAINT pk__text__id PRIMARY KEY (id),
 		CONSTRAINT fk__text__language_id FOREIGN KEY (language_id) REFERENCES language (id),
@@ -46,8 +46,8 @@ const queries: { [key: string]: string } = {
 		content TEXT NOT NULL,
 		status INTEGER NOT NULL DEFAULT 0,
 		notes TEXT,
-		datetime_added TEXT NOT NULL,
-		datetime_updated TEXT NOT NULL,
+		time_added INTEGER NOT NULL,
+		time_updated INTEGER NOT NULL,
 		token_count INTEGER NOT NULL DEFAULT 1,
 		CONSTRAINT pk__word__id PRIMARY KEY (id),
 		CONSTRAINT fk__word__language_id FOREIGN KEY (language_id) REFERENCES language (id),
@@ -109,8 +109,8 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			title,
 			source_url AS sourceUrl,
-			datetime_opened AS datetimeOpened,
-			datetime_finished AS datetimeFinished,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
 			progress
 		FROM text`,
 	getTextsByLanguage: `SELECT
@@ -118,8 +118,8 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			title,
 			source_url AS sourceUrl,
-			datetime_opened AS datetimeOpened,
-			datetime_finished AS datetimeFinished,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
 			progress
 		FROM text
 		WHERE language_id = ?`,
@@ -128,8 +128,8 @@ const queries: { [key: string]: string } = {
 			language_id AS languageId,
 			title,
 			source_url AS sourceUrl,
-			datetime_opened AS datetimeOpened,
-			datetime_finished AS datetimeFinished,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
 			progress
 		FROM text
 		WHERE id = ?`,
@@ -181,8 +181,8 @@ const queries: { [key: string]: string } = {
 			content,
 			status,
 			notes,
-			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated,
+			time_added AS timeAdded,
+			time_updated AS timeUpdated,
 			token_count AS tokenCount
 		FROM word
 		WHERE id = ?`,
@@ -192,8 +192,8 @@ const queries: { [key: string]: string } = {
 			content,
 			status,
 			notes,
-			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated,
+			time_added AS timeAdded,
+			time_updated AS timeUpdated,
 			token_count AS tokenCount
 		FROM word
 		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
@@ -221,8 +221,8 @@ const queries: { [key: string]: string } = {
 			content,
 			status,
 			notes,
-			datetime_added,
-			datetime_updated,
+			time_added,
+			time_updated,
 			token_count
 		)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -231,8 +231,8 @@ const queries: { [key: string]: string } = {
 			content,
 			status,
 			notes,
-			datetime_added,
-			datetime_updated,
+			time_added,
+			time_updated,
 			token_count
 		)
 		VALUES %DYNAMIC%`,
@@ -244,8 +244,8 @@ const queries: { [key: string]: string } = {
 			content,
 			status,
 			notes,
-			datetime_added AS datetimeAdded,
-			datetime_updated AS datetimeUpdated,
+			time_added AS timeAdded,
+			time_updated AS timeUpdated,
 			token_count AS tokenCount
 		FROM word
 		WHERE content LIKE (? || '%')

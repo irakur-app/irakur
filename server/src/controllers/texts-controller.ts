@@ -5,6 +5,7 @@
  */
 
 import { Page, Text } from '@common/types';
+import { convertIsoDatetimeToUnix } from '../../../common/utils';
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -119,13 +120,17 @@ class TextsController
 		}
 		if (datetimeOpened !== undefined)
 		{
-			updates.push('datetime_opened = ?');
-			queryParams.push(datetimeOpened);
+			const timeOpened: number = convertIsoDatetimeToUnix(datetimeOpened);
+
+			updates.push('time_opened = ?');
+			queryParams.push(timeOpened);
 		}
 		if (datetimeFinished !== undefined)
 		{
-			updates.push('datetime_finished = ?');
-			queryParams.push(datetimeFinished);
+			const timeFinished: number = convertIsoDatetimeToUnix(datetimeFinished);
+
+			updates.push('time_finished = ?');
+			queryParams.push(timeFinished);
 		}
 		if (progress !== undefined)
 		{

@@ -4,6 +4,11 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+const convertIsoDatetimeToUnix = (isoDatetime: string): number =>
+{
+	return Math.floor(new Date(isoDatetime).getTime() / 1000);
+}
+
 const tokenizeString = (str: string): string[] =>
 {
 	const tokens: string[] = str.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
@@ -12,4 +17,4 @@ const tokenizeString = (str: string): string[] =>
 	return tokens;
 }
 
-export { tokenizeString };
+export { convertIsoDatetimeToUnix, tokenizeString };

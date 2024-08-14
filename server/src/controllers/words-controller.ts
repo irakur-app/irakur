@@ -5,7 +5,7 @@
  */
 
 import { Entry, RawWord, Word } from "@common/types";
-import { tokenizeString } from "../../../common/utils";
+import { convertIsoDatetimeToUnix, tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -23,9 +23,12 @@ class WordsController
 	{
 		const tokenizedContent: string[] = tokenizeString(content);
 
+		const timeAdded = convertIsoDatetimeToUnix(datetimeAdded);
+		const timeUpdated = convertIsoDatetimeToUnix(datetimeUpdated);
+
 		await databaseManager.executeQuery(
 			queries.addWord,
-			[languageId, content, status, notes, datetimeAdded, datetimeUpdated, tokenizedContent.length]
+			[languageId, content, status, notes, timeAdded, timeUpdated, tokenizedContent.length]
 		);
 
 		const wordId: number = (await databaseManager.getLastInsertId()).id;
@@ -51,8 +54,10 @@ class WordsController
 		{
 			const tokenizedContent: string[] = tokenizeString(content);
 
+			const timeAdded = convertIsoDatetimeToUnix(datetimeAdded);
+
 			valueList.push(
-				`(${languageId}, '${content}', ${status}, '', '${datetimeAdded}', '${datetimeAdded}', ${tokenizedContent.length})`
+				`(${languageId}, '${content}', ${status}, '', '${timeAdded}', '${timeAdded}', ${tokenizedContent.length})`
 			);
 		}
 
@@ -173,13 +178,17 @@ class WordsController
 		}
 		if (datetimeAdded !== undefined)
 		{
-			updates.push('datetime_added = ?');
-			queryParams.push(datetimeAdded);
+			const timeAdded = convertIsoDatetimeToUnix(datetimeAdded);
+
+			updates.push('time_added = ?');
+			queryParams.push(timeAdded);
 		}
 		if (datetimeUpdated !== undefined)
 		{
-			updates.push('datetime_updated = ?');
-			queryParams.push(datetimeUpdated);
+			const timeUpdated = convertIsoDatetimeToUnix(datetimeUpdated);
+
+			updates.push('time_updated = ?');
+			queryParams.push(timeUpdated);
 		}
 
 		if (updates.length > 0)
