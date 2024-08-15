@@ -26,6 +26,12 @@ app.use(express.urlencoded({ limit: '50mb', extended: false }));
 
 // Routes
 app.use('/api', router);
+app.use(
+	'/status',
+	(req: express.Request, res: express.Response) => {
+		res.sendStatus(200);
+	}
+);
 
 app.listen(
 	app.get('port'),

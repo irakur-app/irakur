@@ -1,0 +1,27 @@
+{
+  "name": "irakur",
+  "version": "0.0.1",
+  "description": "Learn languages through immersion",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/irakur-app/irakur.git"
+  },
+  "author": "Ander Aginaga San Sebastián (a.k.a. Laquin or Laquinh)",
+  "license": "SEE LICENSE IN <LICENSE>",
+  "bugs": {
+    "url": "https://github.com/irakur-app/irakur/issues"
+  },
+  "homepage": "https://github.com/irakur-app/irakur#readme",
+  "dependencies": {
+    "concurrently": "^8.2.2",
+    "wait-on": "^7.2.0"
+  },
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run start",
+    "dev:electron": "wait-on http://localhost:5000/status && cd client && npm run electron",
+    "dev:app": "concurrently --kill-others \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:electron\"",
+    "dev:web": "concurrently --kill-others \"npm run dev:server\" \"npm run dev:client\""
+  }
+}

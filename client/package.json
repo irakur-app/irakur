@@ -4,11 +4,13 @@
 	"private": true,
 	"author": "Ander \"Laquin\" Aginaga San Sebastián",
 	"license": "SEE LICENSE IN LICENSE",
+	"main": "main.js",
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.17.0",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
 		"@vitejs/plugin-react-swc": "^3.6.0",
+		"electron": "^31.4.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-helmet-async": "^2.0.4",
@@ -22,7 +24,8 @@
 	"scripts": {
 		"start": "vite --port 3000",
 		"build": "tsc && vite build",
-		"serve": "vite preview"
+		"serve": "vite preview",
+		"electron": "electron ."
 	},
 	"eslintConfig": {
 		"extends": [
