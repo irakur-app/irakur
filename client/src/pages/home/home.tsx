@@ -67,6 +67,8 @@ const Home = (): JSX.Element => {
 			<Link to="/languages">Go to languages</Link>
 			<br />
 			<Link to="/texts">Go to texts</Link>
+			<br />
+			<Link to="/statistics">Go to statistics</Link>
 		</HelmetProvider>
 	);
 };

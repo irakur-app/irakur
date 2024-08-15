@@ -73,11 +73,17 @@ class DatabaseManager
 		await this.executeQuery(queries.createPageTable);
 		await this.executeQuery(queries.createWordTable);
 		await this.executeQuery(queries.createEntryTable);
+		await this.executeQuery(queries.createStatusLogTable);
 
 		// Create indexes
 		await this.executeQuery(queries.createTextLanguageIdTitleIndex);
 		await this.executeQuery(queries.createWordLowerContentLanguageIdIndex);
 		await this.executeQuery(queries.createWordLanguageIdTokenCountContentIndex);
+
+		// Create triggers
+		await this.executeQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
+		await this.executeQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
+		await this.executeQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
 	}
 
 	executeQuery(query: string, parameters: any[] = []): Promise<any>

@@ -8,6 +8,7 @@ import express from 'express';
 
 import { LanguagesController } from '../controllers/languages-controller';
 import { PagesController } from '../controllers/pages-controller';
+import { StatisticsController } from '../controllers/statistics-controller';
 import { TextsController } from '../controllers/texts-controller';
 import { WordsController } from '../controllers/words-controller';
 
@@ -15,6 +16,7 @@ const languagesController = new LanguagesController();
 const textsController = new TextsController();
 const pagesController = new PagesController();
 const wordsController = new WordsController();
+const statisticsController = new StatisticsController();
 
 const router = express.Router();
 
@@ -296,6 +298,17 @@ router.patch(
 		}
 	)
 );
+//#endregion
+
+//#region Statistics
+router.get(
+	'/statistics/words-improved-count/:languageId',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			res.json(await statisticsController.getWordsImprovedCount(parseInt(req.params.languageId)));
+		}
+	)
+)
 //#endregion
 
 export { router };
