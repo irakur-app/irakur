@@ -5,6 +5,7 @@
  */
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 
@@ -28,7 +29,7 @@ class DatabaseManager
 
 		if (!fs.existsSync(dataFolderPath))
 		{
-			fs.mkdirSync(dataFolderPath);
+			fs.mkdirSync(dataFolderPath, { recursive: true });
 		}
 
 		if (!fs.existsSync(databaseFilePath))
@@ -54,7 +55,7 @@ class DatabaseManager
 				}
 				else
 				{
-					console.log('Connected to the Irakur database.');
+					console.log('Connected to ' + databaseFilePath);
 				}
 			}
 		);
@@ -136,5 +137,15 @@ class DatabaseManager
 	}
 }
 
-const databaseManager = new DatabaseManager('data', 'irakur.db');
+let dataFolderPath: string;
+if (os.platform() === 'win32') {
+    dataFolderPath = path.join(os.homedir(), 'AppData', 'Roaming', 'irakur');
+} else {
+    dataFolderPath = path.join(os.homedir(), '.config', 'irakur');
+}
+
+const databaseFileName: string = 'database.db';
+
+const databaseManager = new DatabaseManager(dataFolderPath, databaseFileName);
+
 export { databaseManager };
