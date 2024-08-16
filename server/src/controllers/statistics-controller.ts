@@ -10,13 +10,13 @@ import { queries } from "../database/queries";
 class StatisticsController
 {
 	async getWordsImprovedCount(languageId: number): Promise<{wordsImprovedCount: number}>
-    {
-        return {
-            wordsImprovedCount: (await databaseManager.getFirstRow(
-                queries.getWordsImprovedCount, [languageId]
-            )).wordsImprovedCount
-        };
-    }
+	{
+		return {
+			wordsImprovedCount: (await databaseManager.getFirstRow(
+				queries.getWordsImprovedCount, [languageId]
+			)).wordsImprovedCount
+		};
+	}
 }
 
 export { StatisticsController };
