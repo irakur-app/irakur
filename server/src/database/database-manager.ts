@@ -5,10 +5,10 @@
  */
 
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 
+import { getEnvironmentVariable } from '../../../common/utils';
 import { queries } from './queries';
 
 class DatabaseManager
@@ -137,15 +137,8 @@ class DatabaseManager
 	}
 }
 
-let dataFolderPath: string;
-if (os.platform() === 'win32') {
-    dataFolderPath = path.join(os.homedir(), 'AppData', 'Roaming', 'irakur');
-} else {
-    dataFolderPath = path.join(os.homedir(), '.config', 'irakur');
-}
-
 const databaseFileName: string = 'database.db';
 
-const databaseManager = new DatabaseManager(dataFolderPath, databaseFileName);
+const databaseManager = new DatabaseManager(getEnvironmentVariable('DATA_FOLDER_PATH'), databaseFileName);
 
 export { databaseManager };

@@ -7,7 +7,7 @@
 const getUnixTime = (): number =>
 {
 	return Math.floor(Date.now() / 1000);
-}
+};
 
 const tokenizeString = (str: string): string[] =>
 {
@@ -15,6 +15,18 @@ const tokenizeString = (str: string): string[] =>
 		.filter((sentence: string) => sentence !== '');
 
 	return tokens;
-}
+};
 
-export { getUnixTime, tokenizeString };
+const getEnvironmentVariable = (name: string): string =>
+{
+	if (process.env[name] !== undefined)
+	{
+		return process.env[name] as string;
+	}
+	else
+	{
+		throw new Error(`Environment variable ${name} not found`);
+	}
+};
+
+export { getEnvironmentVariable, getUnixTime, tokenizeString };
