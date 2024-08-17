@@ -11,8 +11,8 @@ import os from 'os';
 import path from 'path';
 
 process.env.DATA_FOLDER_PATH = (os.platform() === 'win32')
-	? path.join(os.homedir(), 'AppData', 'Local', 'irakur', 'data')
-	: path.join(os.homedir(), '.config', 'irakur', 'data')
+	? path.join(os.homedir(), 'AppData', 'Local', 'irakur')
+	: path.join(os.homedir(), '.config', 'irakur')
 
 import { router } from './routers/api-router';
 

@@ -6,6 +6,7 @@
 
 import express from 'express';
 
+import { dataFolderManager } from '../managers/data-folder-manager';
 import { LanguagesController } from '../controllers/languages-controller';
 import { PagesController } from '../controllers/pages-controller';
 import { StatisticsController } from '../controllers/statistics-controller';
@@ -309,6 +310,35 @@ router.get(
 		}
 	)
 )
+//#endregion
+
+//#region Profiles
+router.get(
+	'/profiles/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			res.json({ profiles: dataFolderManager.getProfileNames() });
+		}
+	)
+)
+router.post(
+	'/profiles/active',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.setActiveProfile(req.body.profileName);
+			res.sendStatus(200);
+		}
+	)
+)
+router.post(
+	'/profiles/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.createProfile(req.body.profileName);
+			res.sendStatus(200);
+		}
+	)
+);
 //#endregion
 
 export { router };
