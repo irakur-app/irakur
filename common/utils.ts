@@ -4,6 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+declare var process: any;
+
 const getUnixTime = (): number =>
 {
 	return Math.floor(Date.now() / 1000);
