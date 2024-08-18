@@ -12,6 +12,7 @@ import { EditLanguage } from './pages/edit-language';
 import { EditText } from './pages/edit-text';
 import { Home } from './pages/home';
 import { Languages } from './pages/languages';
+import { Profiles } from './pages/profiles';
 import { ReadText } from './pages/read-text';
 import { Statistics } from './pages/statistics';
 import { Texts } from './pages/texts';
@@ -20,7 +21,8 @@ const App = (): JSX.Element => {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Home />} />
+				<Route path="/" element={<Profiles />} />
+				<Route path="/home" element={<Home />} />
 				<Route path="/texts" element={<Texts />} />
 				<Route path="/texts/add" element={<AddText />} />
 				<Route path="/texts/edit/:id" element={<EditText />} />

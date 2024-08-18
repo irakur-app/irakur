@@ -397,6 +397,42 @@ class BackendConnector
 		const wordsImprovedCount = (await response.json()).wordsImprovedCount;
 		return wordsImprovedCount;
 	}
+
+	async getProfiles(): Promise<string[]>
+	{
+		const response: Response = await fetch('/api/profiles');
+		const profiles = (await response.json()).profiles;
+		return profiles;
+	}
+
+	async setActiveProfile(profileName: string): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/profiles/active',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						profileName,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to add words');
+		}
+		else
+		{
+			console.log('Words added');
+		}
+
+		return response.ok;
+	}
 }
 
 const backendConnector: BackendConnector = new BackendConnector();
