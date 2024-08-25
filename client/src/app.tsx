@@ -7,6 +7,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { AddLanguage } from './pages/add-language';
+import { AddProfile } from './pages/add-profile';
 import { AddText } from './pages/add-text';
 import { EditLanguage } from './pages/edit-language';
 import { EditText } from './pages/edit-text';
@@ -30,6 +31,8 @@ const App = (): JSX.Element => {
 				<Route path="/languages" element={<Languages />} />
 				<Route path="/languages/add" element={<AddLanguage />} />
 				<Route path="/languages/edit/:id" element={<EditLanguage />} />
+				<Route path="/profiles" element={<Profiles />} />
+				<Route path="/profiles/add" element={<AddProfile />} />
 				<Route path="/statistics" element={<Statistics />} />
 			</Routes>
 		</BrowserRouter>

@@ -6,6 +6,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
@@ -74,6 +75,7 @@ const Profiles = (): JSX.Element => {
 				<title>Irakur - Profiles</title>
 			</Helmet>
 			<h1>Irakur - Profiles</h1>
+			<Link to="/profiles/add">Add profile</Link>
 			<form method="post" onSubmit={handleSubmit}>
 				<select name="activeProfile" id="activeProfile" onChange={handleProfileChange}>
 					<option value="">Select profile</option>
