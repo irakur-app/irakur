@@ -22,7 +22,7 @@ const App = (): JSX.Element => {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Profiles />} />
+				<Route path="/" element={<Home />} />
 				<Route path="/home" element={<Home />} />
 				<Route path="/texts" element={<Texts />} />
 				<Route path="/texts/add" element={<AddText />} />
