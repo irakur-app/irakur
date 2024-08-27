@@ -62,6 +62,16 @@ class DatabaseManager
 		return this.database;
 	}
 
+	closeDatabase(): void
+	{
+		if (this.database === null)
+		{
+			return;
+		}
+		this.database.close();
+		this.database = null;
+	}
+
 	async initializeDatabase(): Promise<void>
 	{
 		// Create tables

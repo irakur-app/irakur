@@ -17,7 +17,7 @@ class DataFolderManager
 
 	private profileNames: string[] = [];
 
-	private activeProfile: string = '';
+	private activeProfile: string | null = null;
 	
 	constructor()
 	{
@@ -87,17 +87,50 @@ class DataFolderManager
 		fs.renameSync(oldPath, newPath);
 	}
 
-	getActiveProfile(): string
+	getActiveProfile(): string | null
 	{
 		return this.activeProfile;
 	}
 
-	setActiveProfile(profileName: string): void
+	setActiveProfile(profileName: string | null): void
 	{
+		if (profileName === null)
+		{
+			databaseManager.closeDatabase();
+			this.activeProfile = null;
+			return;
+		}
 		this.activeProfile = profileName;
 		databaseManager.openDatabase(
 			path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', profileName, 'database.db')
 		);
+	}
+
+	deleteProfile(profileName: string): void
+	{
+		if (profileName === this.activeProfile)
+		{
+			databaseManager.closeDatabase();
+		}
+
+		const profilePath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', profileName);
+		fs.rmSync(profilePath, { recursive: true, force: true });
+
+		this.profileNames = this.profileNames.filter((name: string) => name !== profileName);
+
+		if (this.profileNames.length === 0)
+		{
+			this.createProfile('User 1');
+			this.setActiveProfile('User 1');
+		}
+		else if (this.profileNames.length === 1)
+		{
+			this.setActiveProfile(this.profileNames[0]);
+		}
+		else if (profileName === this.activeProfile)
+		{
+			this.activeProfile = null;
+		}
 	}
 }
 
