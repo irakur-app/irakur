@@ -102,6 +102,10 @@ class DataFolderManager
 			this.activeProfile = null;
 			return;
 		}
+		else if (!this.profileNames.includes(profileName))
+		{
+			throw new Error('Profile ' + profileName + ' does not exist');
+		}
 		this.activeProfile = profileName;
 		databaseManager.openDatabase(
 			path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', profileName, 'database.db')
