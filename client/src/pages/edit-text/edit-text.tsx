@@ -54,6 +54,9 @@ const EditText = (): JSX.Element => {
 			form.get('content') as string,
 			Number(form.get('numberOfPages') as string),
 			form.get('sourceUrl') as string,
+			undefined,
+			undefined,
+			undefined
 		);
 
 		if (wasEdited)
