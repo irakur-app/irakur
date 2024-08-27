@@ -51,16 +51,20 @@ class DataFolderManager
 
 		console.log('Data folder path: ' + dataFolderPath);
 
-		// Find an array of folders in the data folder that start with 'profile-'
-		this.profileNames = fs.readdirSync(dataFolderPath, { withFileTypes: true })
-			.filter((dirent: fs.Dirent) => (dirent.name.startsWith('profile-') && dirent.isDirectory()))
-			.map((dirent: fs.Dirent) => dirent.name)
-			.map((folder: string) => folder.substring('profile-'.length));
+		const profilesFolderPath: string = path.join(dataFolderPath, 'profiles');
+		if (!fs.existsSync(profilesFolderPath))
+		{
+			fs.mkdirSync(profilesFolderPath, { recursive: true });
+		}
+
+		this.profileNames = fs.readdirSync(profilesFolderPath, { withFileTypes: true })
+			.filter((dirent: fs.Dirent) => dirent.isDirectory())
+			.map((dirent: fs.Dirent) => dirent.name);
 	}
 
 	createProfile(name: string): void
 	{
-		const profilePath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profile-' + name);
+		const profilePath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', name);
 		if (fs.existsSync(profilePath))
 		{
 			throw new Error('Profile ' + name + ' already exists');
@@ -78,8 +82,8 @@ class DataFolderManager
 
 	renameProfile(oldName: string, newName: string): void
 	{
-		const oldPath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profile-' + oldName);
-		const newPath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profile-' + newName);
+		const oldPath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', oldName);
+		const newPath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', newName);
 		fs.renameSync(oldPath, newPath);
 	}
 
@@ -92,7 +96,7 @@ class DataFolderManager
 	{
 		this.activeProfile = profileName;
 		databaseManager.openDatabase(
-			path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profile-' + profileName, 'database.db')
+			path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', profileName, 'database.db')
 		);
 	}
 }
