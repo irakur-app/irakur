@@ -4,13 +4,16 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
+import { Language } from '@common/types';
 import { backendConnector } from '../../backend-connector';
+import { Loading } from '../../components/loading';
 
 const AddText = (): JSX.Element => {
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+	const [languages, setLanguages] = useState<Language[] | null>(null);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
@@ -40,6 +43,22 @@ const AddText = (): JSX.Element => {
 		setIsSubmitting(false);
 	};
 
+	useEffect(
+		(): void => {
+			backendConnector.getLanguages().then(
+				(languages: Language[]): void => {
+					setLanguages(languages);
+				}
+			);
+		},
+		[]
+	);
+
+	if (!languages)
+	{
+		return <Loading />;
+	}
+
 	// Render your React components using the fetched data
 	return (
 		<HelmetProvider>
@@ -52,7 +71,16 @@ const AddText = (): JSX.Element => {
 				<input type="text" name="title" id="title" />
 				<br />
 				<label htmlFor="languageId">Language</label>
-				<input type="text" name="languageId" id="languageId" />
+				<select name="languageId" id="languageId">
+					<option value="">Select language</option>
+					{
+						languages.map(
+							(language: Language) =>(
+								<option key={language.id} value={language.id}>{language.name}</option>
+							)
+						)
+					}
+				</select>
 				<br />
 				<label htmlFor="content">Content</label>
 				<textarea name="content" id="content" />

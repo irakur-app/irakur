@@ -7,17 +7,29 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
-import { Page, Text } from '@common/types';
+import { Language, Page, Text } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 
 
 const EditText = (): JSX.Element => {
+	const [languages, setLanguages] = useState<Language[] | null>(null);
 	const [text, setText] = useState<Text | null>(null);
 	const [pages, setPages] = useState<Page[] | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const textId = Number(document.location.pathname.split('/').pop());
+
+	useEffect(
+		(): void => {
+			backendConnector.getLanguages().then(
+				(languages: Language[]): void => {
+					setLanguages(languages);
+				}
+			);
+		},
+		[]
+	);
 
 	useEffect(
 		(): void => {
@@ -67,7 +79,7 @@ const EditText = (): JSX.Element => {
 		setIsSubmitting(false);
 	};
 
-	if (!text || !pages)
+	if (!text || !pages || !languages)
 	{
 		return <Loading />;
 	}
@@ -86,7 +98,16 @@ const EditText = (): JSX.Element => {
 				<input type="text" name="title" id="title" defaultValue={text.title}/>
 				<br />
 				<label htmlFor="languageId">Language</label>
-				<input type="text" name="languageId" id="languageId" defaultValue={text.languageId}/>
+				<select name="languageId" id="languageId" defaultValue={text.languageId}>
+					<option value="">Select language</option>
+					{
+						languages.map(
+							(language: Language) =>(
+								<option key={language.id} value={language.id}>{language.name}</option>
+							)
+						)
+					}
+				</select>
 				<br />
 				<label htmlFor="content">Content</label>
 				<textarea name="content" id="content" defaultValue={textContent}/>
