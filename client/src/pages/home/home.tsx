@@ -53,6 +53,8 @@ const Home = (): JSX.Element => {
 				<title>Irakur - Home</title>
 			</Helmet>
 			<h1>Irakur - Home</h1>
+			<Link to="/profiles">Choose profile</Link>
+			<br />
 			<select name="activeLanguage" id="activeLanguage" onChange={handleLanguageChange}>
 				<option value="">Select language</option>
 				{

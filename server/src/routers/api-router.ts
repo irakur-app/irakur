@@ -6,6 +6,7 @@
 
 import express from 'express';
 
+import { dataFolderManager } from '../managers/data-folder-manager';
 import { LanguagesController } from '../controllers/languages-controller';
 import { PagesController } from '../controllers/pages-controller';
 import { StatisticsController } from '../controllers/statistics-controller';
@@ -306,6 +307,70 @@ router.get(
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			res.json(await statisticsController.getWordsImprovedCount(parseInt(req.params.languageId)));
+		}
+	)
+);
+//#endregion
+
+//#region Profiles
+router.get(
+	'/profiles/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			res.json({ profiles: dataFolderManager.getProfileNames() });
+		}
+	)
+);
+router.get(
+	'/profiles/active',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			const profileName: string | null = dataFolderManager.getActiveProfile();
+
+			if (profileName)
+			{
+				res.json({ profileName });
+			}
+			else
+			{
+				res.sendStatus(404);
+			}
+		}
+	)
+);
+router.post(
+	'/profiles/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.createProfile(req.body.profileName);
+			res.sendStatus(200);
+		}
+	)
+);
+router.post(
+	'/profiles/active',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.setActiveProfile(req.body.profileName);
+			res.sendStatus(200);
+		}
+	)
+);
+router.delete(
+	'/profiles/:profileName',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.deleteProfile(req.params.profileName);
+			res.sendStatus(200);
+		}
+	)
+);
+router.patch(
+	'/profiles/:profileName',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.renameProfile(req.params.profileName, req.body.newProfileName);
+			res.sendStatus(200);
 		}
 	)
 )

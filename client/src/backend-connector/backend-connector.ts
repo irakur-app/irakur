@@ -397,6 +397,82 @@ class BackendConnector
 		const wordsImprovedCount = (await response.json()).wordsImprovedCount;
 		return wordsImprovedCount;
 	}
+
+	async getProfiles(): Promise<string[]>
+	{
+		const response: Response = await fetch('/api/profiles');
+		const profiles = (await response.json()).profiles;
+		return profiles;
+	}
+
+	async getActiveProfile(): Promise<string | null>
+	{
+		const response: Response = await fetch('/api/profiles/active');
+		if (!response.ok)
+		{
+			return null;
+		}
+		const profileName = (await response.json()).profileName;
+		return profileName;
+	}
+
+	async setActiveProfile(profileName: string): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/profiles/active',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						profileName,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to set active profile');
+		}
+		else
+		{
+			console.log('Active profile set');
+		}
+
+		return response.ok;
+	}
+
+	async addProfile(profileName: string): Promise<boolean>
+	{
+		const response: Response = await fetch(
+			'/api/profiles',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						profileName
+					}
+				),
+			}
+		);
+		
+		if (!response.ok)
+		{
+			console.error('Failed to add profile');
+		}
+		else
+		{
+			console.log('Profile added');
+		}
+
+		return response.ok;
+	}
 }
 
 const backendConnector: BackendConnector = new BackendConnector();

@@ -8,14 +8,15 @@ import fs from 'fs';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 
+import { getEnvironmentVariable } from '../../../common/utils';
 import { queries } from './queries';
 
 class DatabaseManager
 {
 	private static instance: DatabaseManager;
-	database: sqlite3.Database;
+	database: sqlite3.Database | null = null;
 
-	constructor(folderPath: string, fileName: string)
+	constructor()
 	{
 		if (DatabaseManager.instance)
 		{
@@ -23,21 +24,18 @@ class DatabaseManager
 			return DatabaseManager.instance;
 		}
 
-		const dataFolderPath: string = folderPath;
-		const databaseFilePath: string = path.join(dataFolderPath, fileName);
+		DatabaseManager.instance = this;
+	}
 
-		if (!fs.existsSync(dataFolderPath))
-		{
-			fs.mkdirSync(dataFolderPath);
-		}
-
+	openDatabase(databaseFilePath: string): sqlite3.Database
+	{
 		if (!fs.existsSync(databaseFilePath))
 		{
 			console.log('Database not found. Creating empty database.');
 			try
 			{
 				fs.writeFileSync(databaseFilePath, '');
-				console.log('Created empty database.');
+				console.log('Database created.');
 			}
 			catch(error)
 			{
@@ -54,14 +52,24 @@ class DatabaseManager
 				}
 				else
 				{
-					console.log('Connected to the Irakur database.');
+					console.log('Connected to ' + databaseFilePath);
 				}
 			}
 		);
 
 		this.initializeDatabase();
 
-		DatabaseManager.instance = this;
+		return this.database;
+	}
+
+	closeDatabase(): void
+	{
+		if (this.database === null)
+		{
+			return;
+		}
+		this.database.close();
+		this.database = null;
 	}
 
 	async initializeDatabase(): Promise<void>
@@ -90,6 +98,11 @@ class DatabaseManager
 	{
 		return new Promise(
 			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
+				if (this.database === null)
+				{
+					reject('Database not initialized.');
+					return;
+				}
 				this.database.all(
 					query,
 					parameters,
@@ -112,6 +125,11 @@ class DatabaseManager
 	{
 		return new Promise(
 			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
+				if (this.database === null)
+				{
+					reject('Database not initialized.');
+					return;
+				}
 				this.database.all(
 					query,
 					parameters,
@@ -136,5 +154,8 @@ class DatabaseManager
 	}
 }
 
-const databaseManager = new DatabaseManager('data', 'irakur.db');
+const databaseFileName: string = 'database.db';
+
+const databaseManager = new DatabaseManager();
+
 export { databaseManager };
