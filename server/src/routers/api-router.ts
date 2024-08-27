@@ -356,6 +356,24 @@ router.post(
 		}
 	)
 );
+router.delete(
+	'/profiles/:profileName',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.deleteProfile(req.params.profileName);
+			res.sendStatus(200);
+		}
+	)
+);
+router.patch(
+	'/profiles/:profileName',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.renameProfile(req.params.profileName, req.body.newProfileName);
+			res.sendStatus(200);
+		}
+	)
+)
 //#endregion
 
 export { router };

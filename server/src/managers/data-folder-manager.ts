@@ -85,6 +85,8 @@ class DataFolderManager
 		const oldPath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', oldName);
 		const newPath: string = path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profiles', newName);
 		fs.renameSync(oldPath, newPath);
+
+		this.profileNames = this.profileNames.map((name: string) => name === oldName ? newName : name);
 	}
 
 	getActiveProfile(): string | null
