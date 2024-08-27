@@ -16,6 +16,8 @@ class DataFolderManager
 	private static instance: DataFolderManager;
 
 	private profileNames: string[] = [];
+
+	private activeProfile: string = '';
 	
 	constructor()
 	{
@@ -81,8 +83,14 @@ class DataFolderManager
 		fs.renameSync(oldPath, newPath);
 	}
 
+	getActiveProfile(): string
+	{
+		return this.activeProfile;
+	}
+
 	setActiveProfile(profileName: string): void
 	{
+		this.activeProfile = profileName;
 		databaseManager.openDatabase(
 			path.join(getEnvironmentVariable('DATA_FOLDER_PATH'), 'profile-' + profileName, 'database.db')
 		);

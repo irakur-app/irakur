@@ -405,6 +405,17 @@ class BackendConnector
 		return profiles;
 	}
 
+	async getActiveProfile(): Promise<string | null>
+	{
+		const response: Response = await fetch('/api/profiles/active');
+		if (!response.ok)
+		{
+			return null;
+		}
+		const profileName = (await response.json()).profileName;
+		return profileName;
+	}
+
 	async setActiveProfile(profileName: string): Promise<boolean>
 	{
 		const response: Response = await fetch(

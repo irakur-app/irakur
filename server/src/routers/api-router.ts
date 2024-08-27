@@ -309,7 +309,7 @@ router.get(
 			res.json(await statisticsController.getWordsImprovedCount(parseInt(req.params.languageId)));
 		}
 	)
-)
+);
 //#endregion
 
 //#region Profiles
@@ -320,21 +320,38 @@ router.get(
 			res.json({ profiles: dataFolderManager.getProfileNames() });
 		}
 	)
-)
-router.post(
+);
+router.get(
 	'/profiles/active',
 	errorWrapper(
 		(req: express.Request, res: express.Response): void => {
-			dataFolderManager.setActiveProfile(req.body.profileName);
-			res.sendStatus(200);
+			const profileName: string | null = dataFolderManager.getActiveProfile();
+
+			if (profileName)
+			{
+				res.json({ profileName });
+			}
+			else
+			{
+				res.sendStatus(404);
+			}
 		}
 	)
-)
+);
 router.post(
 	'/profiles/',
 	errorWrapper(
 		(req: express.Request, res: express.Response): void => {
 			dataFolderManager.createProfile(req.body.profileName);
+			res.sendStatus(200);
+		}
+	)
+);
+router.post(
+	'/profiles/active',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			dataFolderManager.setActiveProfile(req.body.profileName);
 			res.sendStatus(200);
 		}
 	)
