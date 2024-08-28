@@ -11,6 +11,7 @@ type Language = {
 	dictionaryUrl: string;
 	alphabet: string;
 	sentenceDelimiters: string;
+	whitespaces: string;
 };
 
 type Text = {

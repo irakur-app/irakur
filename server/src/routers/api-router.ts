@@ -61,7 +61,8 @@ router.post(
 				req.body.dictionaryUrl,
 				req.body.shouldShowSpaces,
 				req.body.alphabet,
-				req.body.sentenceDelimiters
+				req.body.sentenceDelimiters,
+				req.body.whitespaces
 			);
 			res.sendStatus(200);
 		}
@@ -86,7 +87,8 @@ router.patch(
 				req.body.dictionaryUrl,
 				req.body.shouldShowSpaces,
 				req.body.alphabet,
-				req.body.sentenceDelimiters
+				req.body.sentenceDelimiters,
+				req.body.whitespaces
 			);
 			res.sendStatus(200);
 		}
