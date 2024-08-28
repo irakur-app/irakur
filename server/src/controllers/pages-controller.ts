@@ -152,11 +152,6 @@ class PagesController
 			}
 		}
 	}
-	
-	isWord(token: string): boolean
-	{
-		return (token.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
-	}
 }
 
 export { PagesController };
