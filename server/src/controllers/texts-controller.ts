@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Page, Text } from '@common/types';
+import { Language, Page, Text } from '@common/types';
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -25,7 +25,7 @@ class TextsController
 
 		const textId: number = (await databaseManager.getLastInsertId()).id;
 
-		await this.updatePage(textId, numberOfPages, content);
+		await this.updatePage(textId, languageId, numberOfPages, content);
 	}
 
 	async getAllTexts(): Promise<Text[]>
@@ -134,7 +134,7 @@ class TextsController
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
-			await this.updatePage(textId, numberOfPages, content);
+			await this.updatePage(textId, languageId, numberOfPages, content);
 		}
 
 		if (updates.length > 0)
@@ -152,7 +152,7 @@ class TextsController
 		}
 	}
 
-	private async updatePage(textId: number, numberOfPages: number, content: string)
+	private async updatePage(textId: number, languageId: number, numberOfPages: number, content: string)
 	{
 		const pages: Page[] = await databaseManager.executeQuery(
 			queries.getPagesByText,
@@ -171,7 +171,17 @@ class TextsController
 			newContent = pages.map((page: Page) => page.content).join('');
 		}
 
-		const sentences: string[] = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
+		const language: Language = await databaseManager.getFirstRow(
+			queries.getLanguage,
+			[languageId]
+		);
+
+		const sentenceSplitter: RegExp = new RegExp(
+			"([^" + language.sentenceDelimiters + "]*[" + language.sentenceDelimiters + language.whitespaces + "]+)",
+			'u'
+		);
+
+		const sentences: string[] = newContent.split(sentenceSplitter)
 			.filter((sentence: string) => sentence !== '');
 		const sentencesPerPage: number = Math.floor(sentences.length / newNumberOfPages);
 
