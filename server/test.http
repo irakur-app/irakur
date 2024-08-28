@@ -12,7 +12,7 @@ Content-Type: application/json
 	"dictionaryUrl": "example.com",
 	"shouldShowSpaces": false,
 	"alphabet": "[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]",
-	"sentenceDelimiters": "([^.?!。！？…]*[.?!。！？…\\r\\n]+)"
+	"sentenceDelimiters": "([^.?!。！？…]*[.?!。！？…\\s\\r\\n]+)"
 }
 
 ###
