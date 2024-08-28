@@ -23,7 +23,8 @@ class BackendConnector
 		dictionaryUrl: string,
 		shouldShowSpaces: boolean,
 		alphabet: string,
-		sentenceDelimiters: string
+		sentenceDelimiters: string,
+		whitespaces: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -40,6 +41,7 @@ class BackendConnector
 						shouldShowSpaces,
 						alphabet,
 						sentenceDelimiters,
+						whitespaces,
 					}
 				),
 			}
@@ -84,7 +86,8 @@ class BackendConnector
 		dictionaryUrl: string,
 		shouldShowSpaces: boolean,
 		alphabet: string,
-		sentenceDelimiters: string
+		sentenceDelimiters: string,
+		whitespaces: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -101,6 +104,7 @@ class BackendConnector
 						shouldShowSpaces,
 						alphabet,
 						sentenceDelimiters,
+						whitespaces,
 					}
 				),
 			}

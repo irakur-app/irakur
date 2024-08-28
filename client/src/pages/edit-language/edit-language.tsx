@@ -46,7 +46,8 @@ const EditLanguage = (): JSX.Element => {
 			form.get('dictionaryUrl') as string,
 			(form.get('shouldShowSpaces') as string) === 'on',
 			form.get('alphabet') as string,
-			form.get('sentenceDelimiters') as string
+			form.get('sentenceDelimiters') as string,
+			form.get('whitespaces') as string
 		);
 
 		if (wasEdited)
@@ -93,6 +94,14 @@ const EditLanguage = (): JSX.Element => {
 					name="sentenceDelimiters"
 					id="sentenceDelimiters"
 					defaultValue={language.sentenceDelimiters}
+				/>
+				<br />
+				<label htmlFor="whitespaces">Whitespaces</label>
+				<input
+					type="text"
+					name="whitespaces"
+					id="whitespaces"
+					defaultValue={language.whitespaces}
 				/>
 				<br />
 
