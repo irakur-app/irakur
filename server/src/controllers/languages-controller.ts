@@ -10,11 +10,17 @@ import { queries } from '../database/queries';
 
 class LanguagesController
 {
-	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
+	async addLanguage(
+		name: string,
+		dictionaryUrl: string,
+		shouldShowSpaces: boolean,
+		alphabet: string,
+		sentenceDelimiters: string
+	): Promise<void>
 	{
 		await databaseManager.executeQuery(
 			queries.addLanguage,
-			[name, dictionaryUrl, shouldShowSpaces]
+			[name, dictionaryUrl, shouldShowSpaces, alphabet, sentenceDelimiters]
 		);
 	}
 
@@ -30,7 +36,9 @@ class LanguagesController
 		languageId: number,
 		name: string,
 		dictionaryUrl: string,
-		shouldShowSpaces: boolean
+		shouldShowSpaces: boolean,
+		alphabet: string,
+		sentenceDelimiters: string
 	): Promise<void>
 	{
 		const queryParams: any[] = [];
@@ -50,6 +58,16 @@ class LanguagesController
 		{
 			updates.push('should_show_spaces = ?');
 			queryParams.push(shouldShowSpaces);
+		}
+		if (alphabet !== undefined)
+		{
+			updates.push('alphabet = ?');
+			queryParams.push(alphabet);
+		}
+		if (sentenceDelimiters !== undefined)
+		{
+			updates.push('sentence_delimiters = ?');
+			queryParams.push(sentenceDelimiters);
 		}
 
 		if (updates.length > 0)

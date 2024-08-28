@@ -10,7 +10,9 @@ Content-Type: application/json
 {
 	"name": "Test language",
 	"dictionaryUrl": "example.com",
-	"shouldShowSpaces": false
+	"shouldShowSpaces": false,
+	"alphabet": "[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]",
+	"sentenceDelimiters": "([^.?!。！？…]*[.?!。！？…\\r\\n]+)"
 }
 
 ###

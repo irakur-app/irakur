@@ -16,6 +16,8 @@ const queries: { [key: string]: string } = {
 		name TEXT NOT NULL,
 		dictionary_url TEXT,
 		should_show_spaces INTEGER NOT NULL DEFAULT 1,
+		alphabet TEXT NOT NULL,
+		sentence_delimiters TEXT NOT NULL,
 		CONSTRAINT pk__language__id PRIMARY KEY (id),
 		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
@@ -135,20 +137,26 @@ const queries: { [key: string]: string } = {
 			id,
 			name,
 			dictionary_url AS dictionaryUrl,
-			should_show_spaces AS shouldShowSpaces
+			should_show_spaces AS shouldShowSpaces,
+			alphabet,
+			sentence_delimiters AS sentenceDelimiters
 		FROM language`,
 	getLanguage: `SELECT
 			id,
 			name,
 			dictionary_url AS dictionaryUrl,
-			should_show_spaces AS shouldShowSpaces
+			should_show_spaces AS shouldShowSpaces,
+			alphabet,
+			sentence_delimiters AS sentenceDelimiters
 		FROM language WHERE id = ?`,
 	addLanguage: `INSERT INTO language (
 			name,
 			dictionary_url,
-			should_show_spaces
+			should_show_spaces,
+			alphabet,
+			sentence_delimiters
 		)
-		VALUES (?, ?, ?)`,
+		VALUES (?, ?, ?, ?, ?)`,
 	deleteLanguage: `DELETE FROM language WHERE id = ?`,
 	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = ?`,
 	//#endregion
