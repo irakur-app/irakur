@@ -27,7 +27,9 @@ const AddLanguage = (): JSX.Element => {
 		const wasAdded: boolean = await backendConnector.addLanguage(
 			form.get('name') as string,
 			form.get('dictionaryUrl') as string,
-			(form.get('shouldShowSpaces') as string) === 'on'
+			(form.get('shouldShowSpaces') as string) === 'on',
+			form.get('alphabet') as string,
+			form.get('sentenceDelimiters') as string
 		);
 
 		if (wasAdded)
@@ -53,6 +55,12 @@ const AddLanguage = (): JSX.Element => {
 				<br />
 				<label htmlFor="shouldShowSpaces">Show spaces</label>
 				<input type="checkbox" name="shouldShowSpaces" id="shouldShowSpaces" />
+				<br />
+				<label htmlFor="alphabet">Alphabet</label>
+				<input type="text" name="alphabet" id="alphabet" />
+				<br />
+				<label htmlFor="sentenceDelimiters">Sentence delimiters</label>
+				<input type="text" name="sentenceDelimiters" id="sentenceDelimiters" />
 				<br />
 
 				<button type="submit" disabled={isSubmitting}>Add</button>
