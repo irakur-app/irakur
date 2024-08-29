@@ -43,7 +43,12 @@ const getElementsContent = (elements: HTMLElement[]): string => {
 	return elements.map((element: HTMLElement) => element.textContent).join('');
 }
 
-const getSelectionElements = (element: HTMLElement, selection: string, alphabet: string): HTMLElement[] => {
+const getSelectionElements = (
+	element: HTMLElement,
+	selection: string,
+	alphabet: string,
+	intrawordPunctuation: string
+): HTMLElement[] => {
 	let currentElement: HTMLElement | null = (element.dataset.type === "whitespace")
 		? element.nextElementSibling as HTMLElement
 		: element;
@@ -51,7 +56,7 @@ const getSelectionElements = (element: HTMLElement, selection: string, alphabet:
 	let cumulativeSelection = currentElement.textContent!;
 	const elements: HTMLElement[] = [];
 
-	const selectionOnFollowingWords = tokenizeString(selection, alphabet).slice(1).join('');
+	const selectionOnFollowingWords = tokenizeString(selection, alphabet, intrawordPunctuation).slice(1).join('');
 	const multiwordBeginning: string = currentElement.textContent! + selectionOnFollowingWords;
 
 	while (currentElement !== null && multiwordBeginning.startsWith(cumulativeSelection))
@@ -360,7 +365,12 @@ const Reader = (
 				&& firstWordInSelection !== null
 				&& !firstWordInSelection.textContent!.includes(selectedText)
 		) {
-			const selectedElements = getSelectionElements(firstWordInSelection, selectedText.trim(), languageData.alphabet);
+			const selectedElements = getSelectionElements(
+				firstWordInSelection,
+				selectedText.trim(),
+				languageData.alphabet,
+				languageData.intrawordPunctuation
+			);
 			const parentElement = selectedElements[0].parentElement!;
 
 			if (selectedElements.length > 0 && parentElement?.dataset.type !== "multiword") {

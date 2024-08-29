@@ -62,7 +62,8 @@ router.post(
 				req.body.shouldShowSpaces,
 				req.body.alphabet,
 				req.body.sentenceDelimiters,
-				req.body.whitespaces
+				req.body.whitespaces,
+				req.body.intrawordPunctuation
 			);
 			res.sendStatus(200);
 		}
@@ -88,7 +89,8 @@ router.patch(
 				req.body.shouldShowSpaces,
 				req.body.alphabet,
 				req.body.sentenceDelimiters,
-				req.body.whitespaces
+				req.body.whitespaces,
+				req.body.intrawordPunctuation
 			);
 			res.sendStatus(200);
 		}

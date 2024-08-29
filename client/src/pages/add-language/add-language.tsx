@@ -30,7 +30,8 @@ const AddLanguage = (): JSX.Element => {
 			(form.get('shouldShowSpaces') as string) === 'on',
 			form.get('alphabet') as string,
 			form.get('sentenceDelimiters') as string,
-			form.get('whitespaces') as string
+			form.get('whitespaces') as string,
+			form.get('intrawordPunctuation') as string
 		);
 
 		if (wasAdded)
@@ -65,6 +66,9 @@ const AddLanguage = (): JSX.Element => {
 				<br />
 				<label htmlFor="whitespaces">Whitespaces</label>
 				<input type="text" name="whitespaces" id="whitespaces" />
+				<br />
+				<label htmlFor="intrawordPunctuation">Intraword punctuation</label>
+				<input type="text" name="intrawordPunctuation" id="intrawordPunctuation" />
 				<br />
 
 				<button type="submit" disabled={isSubmitting}>Add</button>

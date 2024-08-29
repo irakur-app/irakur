@@ -24,7 +24,8 @@ class BackendConnector
 		shouldShowSpaces: boolean,
 		alphabet: string,
 		sentenceDelimiters: string,
-		whitespaces: string
+		whitespaces: string,
+		intrawordPunctuation: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -42,6 +43,7 @@ class BackendConnector
 						alphabet,
 						sentenceDelimiters,
 						whitespaces,
+						intrawordPunctuation,
 					}
 				),
 			}
@@ -87,7 +89,8 @@ class BackendConnector
 		shouldShowSpaces: boolean,
 		alphabet: string,
 		sentenceDelimiters: string,
-		whitespaces: string
+		whitespaces: string,
+		intrawordPunctuation: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -105,6 +108,7 @@ class BackendConnector
 						alphabet,
 						sentenceDelimiters,
 						whitespaces,
+						intrawordPunctuation,
 					}
 				),
 			}

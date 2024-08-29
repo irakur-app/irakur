@@ -19,6 +19,7 @@ const queries: Record<string, string> = {
 		alphabet TEXT NOT NULL,
 		sentence_delimiters TEXT NOT NULL,
 		whitespaces TEXT NOT NULL,
+		intraword_punctuation TEXT NOT NULL,
 		CONSTRAINT pk__language__id PRIMARY KEY (id),
 		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
@@ -141,7 +142,8 @@ const queries: Record<string, string> = {
 			should_show_spaces AS shouldShowSpaces,
 			alphabet,
 			sentence_delimiters AS sentenceDelimiters,
-			whitespaces
+			whitespaces,
+			intraword_punctuation AS intrawordPunctuation
 		FROM language`,
 	getLanguage: `SELECT
 			id,
@@ -150,7 +152,8 @@ const queries: Record<string, string> = {
 			should_show_spaces AS shouldShowSpaces,
 			alphabet,
 			sentence_delimiters AS sentenceDelimiters,
-			whitespaces
+			whitespaces,
+			intraword_punctuation AS intrawordPunctuation
 		FROM language WHERE id = :languageId`,
 	addLanguage: `INSERT INTO language (
 			name,
@@ -158,9 +161,10 @@ const queries: Record<string, string> = {
 			should_show_spaces,
 			alphabet,
 			sentence_delimiters,
-			whitespaces
+			whitespaces,
+			intraword_punctuation
 		)
-		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces)`,
+		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces, :intrawordPunctuation)`,
 	deleteLanguage: `DELETE FROM language WHERE id = :languageId`,
 	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = :languageId`,
 	//#endregion

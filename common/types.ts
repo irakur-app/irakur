@@ -12,6 +12,7 @@ type Language = {
 	alphabet: string;
 	sentenceDelimiters: string;
 	whitespaces: string;
+	intrawordPunctuation: string;
 };
 
 type Text = {

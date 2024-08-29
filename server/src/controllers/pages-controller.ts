@@ -62,7 +62,7 @@ class PagesController
 
 		const decodedAlphabet: string = decodeURI(language.alphabet);
 
-		const tokens: string[] = tokenizeString(page.content, language.alphabet);
+		const tokens: string[] = tokenizeString(page.content, language.alphabet, language.intrawordPunctuation);
 		
 		const dynamicQuery: string = queries.findWordsInBatch.replace(
 			/\%DYNAMIC\%/,

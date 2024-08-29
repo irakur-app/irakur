@@ -16,7 +16,8 @@ class LanguagesController
 		shouldShowSpaces: boolean,
 		alphabet: string,
 		sentenceDelimiters: string,
-		whitespaces: string
+		whitespaces: string,
+		intrawordPunctuation: string
 	): void
 	{
 		databaseManager.runQuery(
@@ -28,6 +29,7 @@ class LanguagesController
 				alphabet,
 				sentenceDelimiters,
 				whitespaces,
+				intrawordPunctuation,
 			}
 		);
 	}
@@ -49,7 +51,8 @@ class LanguagesController
 		shouldShowSpaces: boolean,
 		alphabet: string,
 		sentenceDelimiters: string,
-		whitespaces: string
+		whitespaces: string,
+		intrawordPunctuation: string
 	): void
 	{
 		const queryParams: Record<string, any> = {};
@@ -84,6 +87,11 @@ class LanguagesController
 		{
 			updates.push('whitespaces = :whitespaces');
 			queryParams.whitespaces = whitespaces;
+		}
+		if (intrawordPunctuation !== undefined)
+		{
+			updates.push('intraword_punctuation = :intrawordPunctuation');
+			queryParams.intrawordPunctuation = intrawordPunctuation;
 		}
 
 		if (updates.length > 0)

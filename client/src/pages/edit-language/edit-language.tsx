@@ -47,7 +47,8 @@ const EditLanguage = (): JSX.Element => {
 			(form.get('shouldShowSpaces') as string) === 'on',
 			form.get('alphabet') as string,
 			form.get('sentenceDelimiters') as string,
-			form.get('whitespaces') as string
+			form.get('whitespaces') as string,
+			form.get('intrawordPunctuation') as string
 		);
 
 		if (wasEdited)
@@ -102,6 +103,14 @@ const EditLanguage = (): JSX.Element => {
 					name="whitespaces"
 					id="whitespaces"
 					defaultValue={language.whitespaces}
+				/>
+				<br />
+				<label htmlFor="intrawordPunctuation">Intraword punctuation</label>
+				<input
+					type="text"
+					name="intrawordPunctuation"
+					id="intrawordPunctuation"
+					defaultValue={language.intrawordPunctuation}
 				/>
 				<br />
 

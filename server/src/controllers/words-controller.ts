@@ -28,7 +28,7 @@ class WordsController
 			}
 		);
 
-		const tokenizedContent: string[] = tokenizeString(content, language.alphabet);
+		const tokenizedContent: string[] = tokenizeString(content, language.alphabet, language.intrawordPunctuation);
 
 		databaseManager.runQuery(
 			queries.addWord,
@@ -76,7 +76,7 @@ class WordsController
 		const valueList: string[] = [];
 		for (const content of contents)
 		{
-			const tokenizedContent: string[] = tokenizeString(content, language.alphabet);
+			const tokenizedContent: string[] = tokenizeString(content, language.alphabet, language.intrawordPunctuation);
 
 			valueList.push(
 				`(${languageId}, '${content}', ${status}, '', '${timeAdded}', '${timeAdded}', ${tokenizedContent.length})`
@@ -199,7 +199,7 @@ class WordsController
 			updates.push('content = :content');
 			queryParams.content = content;
 
-			const tokenizedContent: string[] = tokenizeString(content, language.alphabet);
+			const tokenizedContent: string[] = tokenizeString(content, language.alphabet, language.intrawordPunctuation);
 
 			updates.push('token_count = :tokenCount');
 			queryParams.tokenCount = tokenizedContent.length;
