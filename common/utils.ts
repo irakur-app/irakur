@@ -11,9 +11,9 @@ const getUnixTime = (): number =>
 	return Math.floor(Date.now() / 1000);
 };
 
-const tokenizeString = (str: string): string[] =>
+const tokenizeString = (str: string, alphabet: string): string[] =>
 {
-	const tokens: string[] = str.split(/([ \r\n"':;,.¿?¡!()\-=。、！？：；「」『』（）…＝・’“”—\d])/u)
+	const tokens: string[] = str.split(new RegExp(`((?!${alphabet}).|\n)`, 'u'))
 		.filter((sentence: string) => sentence !== '');
 
 	return tokens;

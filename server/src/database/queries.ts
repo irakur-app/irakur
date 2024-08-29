@@ -265,9 +265,7 @@ const queries: Record<string, string> = {
 			status,
 			CASE 
 				WHEN
-					NOT input_words.content GLOB '*[ :;,.¿?¡!(){}''"\-=。、！？：；「」『』（）　…＝・’“”—0123456789]*'
-					AND NOT input_words.content LIKE '%[%'
-					AND NOT input_words.content LIKE '%]%'
+					input_words.content REGEXP :alphabet
 				THEN 'word'
 				ELSE 'punctuation'
 			END AS type,

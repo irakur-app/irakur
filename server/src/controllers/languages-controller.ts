@@ -72,18 +72,18 @@ class LanguagesController
 		}
 		if (alphabet !== undefined)
 		{
-			updates.push('alphabet = ?');
-			queryParams.push(alphabet);
+			updates.push('alphabet = :alphabet');
+			queryParams.alphabet = alphabet;
 		}
 		if (sentenceDelimiters !== undefined)
 		{
-			updates.push('sentence_delimiters = ?');
-			queryParams.push(sentenceDelimiters);
+			updates.push('sentence_delimiters = :sentenceDelimiters');
+			queryParams.sentenceDelimiters = sentenceDelimiters;
 		}
 		if (whitespaces !== undefined)
 		{
-			updates.push('whitespaces = ?');
-			queryParams.push(whitespaces);
+			updates.push('whitespaces = :whitespaces');
+			queryParams.whitespaces = whitespaces;
 		}
 
 		if (updates.length > 0)
