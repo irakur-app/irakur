@@ -80,7 +80,7 @@ class DatabaseManager
 		this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
 	}
 
-	runQuery(query: string, parameters: { [key: string]: any } = {}): void
+	runQuery(query: string, parameters: Record<string, any> = {}): void
 	{
 		if (this.database === null)
 		{
@@ -92,7 +92,7 @@ class DatabaseManager
 		this.database.prepare(query).run(parameters);
 	}
 
-	getAllRows(query: string, parameters: { [key: string]: any } = {}): any[]
+	getAllRows(query: string, parameters: Record<string, any> = {}): any[]
 	{
 		if (this.database === null)
 		{
@@ -104,7 +104,7 @@ class DatabaseManager
 		return this.database.prepare(query).all(parameters);
 	}
 
-	getFirstRow(query: string, parameters: { [key: string]: any } = {}): any
+	getFirstRow(query: string, parameters: Record<string, any> = {}): any
 	{
 		if (this.database === null)
 		{
@@ -121,10 +121,10 @@ class DatabaseManager
 		return this.getFirstRow(queries.getLastInsertId);
 	}
 
-	private fixParameters(parameters: { [key: string]: any }): Object
+	private fixParameters(parameters: Record<string, any>): Object
 	{
 		for (const key in parameters)
-			{
+		{
 			if (typeof parameters[key] === 'boolean')
 			{
 				parameters[key] = parameters[key] ? 1 : 0;

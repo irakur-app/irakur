@@ -154,7 +154,7 @@ class WordsController
 		wordId: number
 	): void
 	{
-		const queryParams: { [key: string]: any } = {};
+		const queryParams: Record<string, any> = {};
 		const updates: string[] = [];
 	
 		if (languageId !== undefined)
