@@ -25,7 +25,15 @@ class WordsController
 
 		databaseManager.runQuery(
 			queries.addWord,
-			[languageId, content, status, notes, timeAdded, timeUpdated, tokenizedContent.length]
+			{
+				languageId,
+				content,
+				status,
+				notes,
+				timeAdded,
+				timeUpdated,
+				tokenizedContentLength: tokenizedContent.length,
+			}
 		);
 
 		const wordId: number = databaseManager.getLastInsertId().id;
@@ -34,7 +42,12 @@ class WordsController
 		{
 			databaseManager.runQuery(
 				queries.addEntry,
-				[wordId, i, entries[i].meaning, entries[i].reading]
+				{
+					wordId,
+					entryPosition: i,
+					meaning: entries[i].meaning,
+					reading: entries[i].reading,
+				}
 			);
 		}
 	}
@@ -70,12 +83,16 @@ class WordsController
 	{
 		const rawWord: RawWord = databaseManager.getFirstRow(
 			queries.getWord,
-			[wordId]
+			{
+				wordId,
+			}
 		);
 
 		const entries: Entry[] = databaseManager.getAllRows(
 			queries.getEntriesByWord,
-			[wordId]
+			{
+				wordId,
+			}
 		);
 
 		const word: Word = {
@@ -90,7 +107,10 @@ class WordsController
 	{
 		const rawWord: RawWord | null = databaseManager.getFirstRow(
 			queries.findWord,
-			[content, languageId]
+			{
+				content,
+				languageId,
+			}
 		);
 
 		if (!rawWord)
@@ -100,7 +120,9 @@ class WordsController
 
 		const entries: Entry[] = databaseManager.getAllRows(
 			queries.getEntriesByWord,
-			[rawWord.id]
+			{
+				wordId: rawWord.id,
+			}
 		);
 
 		const word: Word = {
@@ -115,7 +137,9 @@ class WordsController
 	{
 		databaseManager.getAllRows(
 			queries.deleteWord,
-			[wordId]
+			{
+				wordId,
+			}
 		);
 	}
 
@@ -130,37 +154,39 @@ class WordsController
 		wordId: number
 	): void
 	{
-		const queryParams: any[] = [];
+		const queryParams: { [key: string]: any } = {};
 		const updates: string[] = [];
 	
 		if (languageId !== undefined)
 		{
 			const language = databaseManager.getFirstRow(
 				queries.getLanguage,
-				[languageId]
+				{
+					languageId,
+				}
 			);
 			if (!language)
 			{
 				console.error('Language does not exist.');
 				return;
 			}
-			updates.push('language_id = ?');
-			queryParams.push(languageId);
+			updates.push('language_id = :languageId');
+			queryParams.languageId = languageId;
 		}
 		if (content !== undefined)
 		{
-			updates.push('content = ?');
-			queryParams.push(content);
+			updates.push('content = :content');
+			queryParams.content = content;
 
 			const tokenizedContent: string[] = tokenizeString(content);
 
-			updates.push('token_count = ?');
-			queryParams.push(tokenizedContent.length);
+			updates.push('token_count = :tokenCount');
+			queryParams.tokenCount = tokenizedContent.length;
 		}
 		if (status !== undefined)
 		{
-			updates.push('status = ?');
-			queryParams.push(status);
+			updates.push('status = :status');
+			queryParams.status = status;
 		}
 		if (entries !== undefined)
 		{
@@ -168,23 +194,23 @@ class WordsController
 		}
 		if (notes !== undefined)
 		{
-			updates.push('notes = ?');
-			queryParams.push(notes);
+			updates.push('notes = :notes');
+			queryParams.notes = notes;
 		}
 		if (timeAdded !== undefined)
 		{
-			updates.push('time_added = ?');
-			queryParams.push(timeAdded);
+			updates.push('time_added = :timeAdded');
+			queryParams.timeAdded = timeAdded;
 		}
 		if (timeUpdated !== undefined)
 		{
-			updates.push('time_updated = ?');
-			queryParams.push(timeUpdated);
+			updates.push('time_updated = :timeUpdated');
+			queryParams.timeUpdated = timeUpdated;
 		}
 
 		if (updates.length > 0)
 		{
-			queryParams.push(wordId);
+			queryParams.wordId = wordId;
 	
 			const dynamicQuery: string = queries.editWord.replace(
 				/\%DYNAMIC\%/,
@@ -201,7 +227,9 @@ class WordsController
 	{
 		databaseManager.runQuery(
 			queries.deleteEntriesByWord,
-			[wordId]
+			{
+				wordId,
+			}
 		);
 
 		if (!entries || entries.length === 0)
@@ -213,9 +241,9 @@ class WordsController
 			/\%DYNAMIC\%/,
 			(): string => {
 				return entries.map(
-					(token: Entry, index: number): string => {
+					(token: Entry, position: number): string => {
 						return `(${wordId},
-								${index + 1},
+								${position + 1},
 								'${token.meaning.replace(/'/g, "''")}',
 								'${token.reading.replace(/'/g, "''")}'
 							)`;

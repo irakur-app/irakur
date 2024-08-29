@@ -15,7 +15,9 @@ class PagesController
 	{
 		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		return pages;
@@ -25,22 +27,30 @@ class PagesController
 	{
 		const page: Page = databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pagePosition]
+			{
+				textId,
+				pagePosition,
+			}
 		);
 
 		return page;
 	}
-	
+
 	getWords(textId: number, pagePosition: number): ReducedWordData[]
 	{
 		const page: Page = databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pagePosition]
+			{
+				textId,
+				pagePosition,
+			}
 		);
 
 		const languageId: number = databaseManager.getFirstRow(
 			queries.getText,
-			[page.textId]
+			{
+				textId,
+			}
 		).languageId;
 
 		const tokens: string[] = tokenizeString(page.content);
@@ -58,7 +68,9 @@ class PagesController
 		
 		const wordData: ReducedWordData[] = databaseManager.getAllRows(
 			dynamicQuery,
-			[languageId, languageId]
+			{
+				languageId,
+			}
 		);
 
 		for (let i = 0; i < wordData.length; i++)
@@ -67,7 +79,10 @@ class PagesController
 			{
 				const potentialMultiwords: Word[] = databaseManager.getAllRows(
 					queries.getPotentialMultiwords,
-					[wordData[i].content, languageId]
+					{
+						content: wordData[i].content,
+						languageId,
+					}
 				);
 
 				let multiword: Word | null = null;

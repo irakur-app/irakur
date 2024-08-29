@@ -13,7 +13,7 @@ class StatisticsController
 	{
 		return {
 			wordsImprovedCount: databaseManager.getFirstRow(
-				queries.getWordsImprovedCount, [languageId]
+				queries.getWordsImprovedCount, { languageId }
 			).wordsImprovedCount
 		};
 	}

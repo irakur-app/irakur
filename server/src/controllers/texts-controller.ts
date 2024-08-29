@@ -20,7 +20,11 @@ class TextsController
 	{
 		databaseManager.runQuery(
 			queries.addText,
-			[languageId, title, sourceUrl]
+			{
+				languageId,
+				title,
+				sourceUrl,
+			}
 		);
 
 		const textId: number = databaseManager.getLastInsertId().id;
@@ -39,7 +43,9 @@ class TextsController
 	{
 		const texts: Text[] = databaseManager.getAllRows(
 			queries.getTextsByLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 
 		return texts;
@@ -49,7 +55,9 @@ class TextsController
 	{
 		const text: Text = databaseManager.getFirstRow(
 			queries.getText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		return text;
@@ -59,7 +67,9 @@ class TextsController
 	{
 		const numberOfPages: number = databaseManager.getAllRows(
 			queries.getPagesByText,
-			[textId]
+			{
+				textId,
+			}
 		).length;
 
 		return numberOfPages;
@@ -69,12 +79,16 @@ class TextsController
 	{
 		databaseManager.runQuery(
 			queries.deletePagesByText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		databaseManager.runQuery(
 			queries.deleteText,
-			[textId]
+			{
+				textId,
+			}
 		);
 	}
 
@@ -90,47 +104,49 @@ class TextsController
 		progress: number
 	): void
 	{
-		const queryParams: any[] = [];
+		const queryParams: { [key: string]: any } = {};
 		const updates: string[] = [];
 	
 		if (languageId !== undefined)
 		{
 			const language = databaseManager.getFirstRow(
 				queries.getLanguage,
-				[languageId]
+				{
+					languageId,
+				}
 			);
 			if (!language)
 			{
 				console.error('Language does not exist.');
 				return;
 			}
-			updates.push('language_id = ?');
-			queryParams.push(languageId);
+			updates.push('language_id = :languageId');
+			queryParams.languageId = languageId;
 		}
 		if (title !== undefined)
 		{
-			updates.push('title = ?');
-			queryParams.push(title);
+			updates.push('title = :title');
+			queryParams.title = title;
 		}
 		if (sourceUrl !== undefined)
 		{
-			updates.push('source_url = ?');
-			queryParams.push(sourceUrl);
+			updates.push('source_url = :sourceUrl');
+			queryParams.sourceUrl = sourceUrl;
 		}
 		if (timeOpened !== undefined)
 		{
-			updates.push('time_opened = ?');
-			queryParams.push(timeOpened);
+			updates.push('time_opened = :timeOpened');
+			queryParams.timeOpened = timeOpened;
 		}
 		if (timeFinished !== undefined)
 		{
-			updates.push('time_finished = ?');
-			queryParams.push(timeFinished);
+			updates.push('time_finished = :timeFinished');
+			queryParams.timeFinished = timeFinished;
 		}
 		if (progress !== undefined)
 		{
-			updates.push('progress = ?');
-			queryParams.push(progress);
+			updates.push('progress = :progress');
+			queryParams.progress = progress;
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
@@ -139,7 +155,7 @@ class TextsController
 
 		if (updates.length > 0)
 		{
-			queryParams.push(textId);
+			queryParams.textId = textId;
 
 			const dynamicQuery: string = queries.editText.replace(
 				/\%DYNAMIC\%/,
@@ -156,7 +172,9 @@ class TextsController
 	{
 		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		const newNumberOfPages: number = (numberOfPages !== undefined) ? numberOfPages : pages.length;
@@ -187,7 +205,11 @@ class TextsController
 			{
 				databaseManager.runQuery(
 					queries.editPage,
-					[newPageContents[i], textId, i + 1]
+					{
+						content: newPageContents[i],
+						textId,
+						pagePosition: i + 1,
+					}
 				);
 			}
 
@@ -215,7 +237,10 @@ class TextsController
 		{
 			databaseManager.runQuery(
 				queries.deletePagesInBatch,
-				[textId, newNumberOfPages + 1]
+				{
+					textId,
+					pagePosition: newNumberOfPages + 1,
+				}
 			);
 		}
 	}

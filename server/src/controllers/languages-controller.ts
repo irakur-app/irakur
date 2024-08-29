@@ -14,7 +14,11 @@ class LanguagesController
 	{
 		databaseManager.runQuery(
 			queries.addLanguage,
-			[name, dictionaryUrl, shouldShowSpaces]
+			{
+				name,
+				dictionaryUrl,
+				shouldShowSpaces,
+			}
 		);
 	}
 
@@ -22,7 +26,9 @@ class LanguagesController
 	{
 		databaseManager.runQuery(
 			queries.deleteLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 	}
 
@@ -33,28 +39,28 @@ class LanguagesController
 		shouldShowSpaces: boolean
 	): void
 	{
-		const queryParams: any[] = [];
+		const queryParams: { [key: string]: any } = {};
 		const updates: string[] = [];
 	
 		if (name !== undefined)
 		{
-			updates.push('name = ?');
-			queryParams.push(name);
+			updates.push('name = :name');
+			queryParams.name = name;
 		}
 		if (dictionaryUrl !== undefined)
 		{
-			updates.push('dictionary_url = ?');
-			queryParams.push(dictionaryUrl);
+			updates.push('dictionary_url = :dictionaryUrl');
+			queryParams.dictionaryUrl = dictionaryUrl;
 		}
 		if (shouldShowSpaces !== undefined)
 		{
-			updates.push('should_show_spaces = ?');
-			queryParams.push(shouldShowSpaces);
+			updates.push('should_show_spaces = :shouldShowSpaces');
+			queryParams.shouldShowSpaces = shouldShowSpaces;
 		}
 
 		if (updates.length > 0)
 		{
-			queryParams.push(languageId);
+			queryParams.languageId = languageId;
 
 			const dynamicQuery: string = queries.editLanguage.replace(
 				/\%DYNAMIC\%/,
@@ -78,7 +84,9 @@ class LanguagesController
 	{
 		const language: Language = databaseManager.getFirstRow(
 			queries.getLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 		
 		return language;
