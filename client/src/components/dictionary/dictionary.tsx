@@ -14,7 +14,10 @@ const Dictionary = ({ languageData, content }: { languageData: Language, content
 			src={
 				languageData.dictionaryUrl.replace(
 					'%s',
-					(languageData.shouldShowSpaces ? content : content.replace(/\s/g, '')) || ''
+					(languageData.shouldShowSpaces
+						? content
+						: content.replace(new RegExp(languageData.whitespaces, 'ug'), '')
+						) || ''
 				)
 			}
 			style={{

@@ -197,7 +197,7 @@ class TextsController
 		);
 
 		const sentenceSplitter: RegExp = new RegExp(
-			"([^" + language.sentenceDelimiters + "]*[" + language.sentenceDelimiters + language.whitespaces + "]+)",
+			"([^" + language.sentenceDelimiters + "]*" + language.sentenceDelimiters + language.whitespaces + "+)",
 			'u'
 		);
 

@@ -460,17 +460,17 @@ const Reader = (
 	);
 
 	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
-	const spaceRender = (index: number): JSX.Element  =>
+	const whitespaceRender = (word: ReducedWordData): JSX.Element  =>
 	{
 		if (languageData.shouldShowSpaces)
 		{
 			return (
 				<span
 					className="whitespace"
-					data-index={index}
+					data-index={word.index}
 					data-type="whitespace"
-					key={index}
-				>{' '}</span>
+					key={word.index}
+				>{word.content}</span>
 			);
 		}
 		else
@@ -478,10 +478,10 @@ const Reader = (
 			return (
 				<span
 					className="whitespace"
-					data-index={index}
+					data-index={word.index}
 					data-content=" "
 					data-type="whitespace"
-					key={index}
+					key={word.index}
 					style={{
 						fontSize: 0,
 					}}
@@ -494,13 +494,13 @@ const Reader = (
 
 	const renderWord = (word: ReducedWordData): JSX.Element => {
 		let renderedElement;
-		if (word.content === ' ')
-		{
-			renderedElement = spaceRender(word.index);
-		}
-		else if (word.content === '\n')
+		if (word.content === '\n')
 		{
 			renderedElement = <br key={word.index} data-index={word.index} style={{ marginBottom: "1rem" }}/>;
+		}
+		else if (new RegExp(languageData.whitespaces, 'ug').test(word.content))
+		{
+			renderedElement = whitespaceRender(word);
 		}
 		else if (word.type === 'punctuation')
 		{
