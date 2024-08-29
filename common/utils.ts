@@ -18,9 +18,9 @@ const tokenizeString = (str: string, alphabet: string, intrawordPunctuation: str
 	 * It accounts for characters that may appear inside words but not at the beginning or at the end.
 	 * 
 	 * There are three cases:
-	 * 	1. Intraword punctuation is followed by a non-alphabet character:
+	 * 	1. Intraword punctuation is followed by a non-alphabetical character:
 	 *      e.g. She said 'bye' and left (the second ' is followed by a whitespace)
-	 * 	2. Intraword punctuation is preceded by a non-alphabet character:
+	 * 	2. Intraword punctuation is preceded by a non-alphabetical character:
 	 *      e.g. She said 'bye' and left (the first ' is preceded by a whitespace)
 	 * 	3. Non-intraword punctuation, i.e. most token separators, such as whitespaces.
 	 * 
