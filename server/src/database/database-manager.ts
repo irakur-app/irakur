@@ -5,16 +5,14 @@
  */
 
 import fs from 'fs';
-import path from 'path';
-import sqlite3 from 'sqlite3';
+import Database from 'better-sqlite3';
 
-import { getEnvironmentVariable } from '../../../common/utils';
 import { queries } from './queries';
 
 class DatabaseManager
 {
 	private static instance: DatabaseManager;
-	database: sqlite3.Database | null = null;
+	database: Database.Database | null = null;
 
 	constructor()
 	{
@@ -27,7 +25,7 @@ class DatabaseManager
 		DatabaseManager.instance = this;
 	}
 
-	openDatabase(databaseFilePath: string): sqlite3.Database
+	openDatabase(databaseFilePath: string): void
 	{
 		if (!fs.existsSync(databaseFilePath))
 		{
@@ -43,23 +41,11 @@ class DatabaseManager
 			}
 		}
 
-		this.database = new sqlite3.Database(
-			databaseFilePath,
-			(error: Error | null): void => {
-				if (error)
-				{
-					console.error(error.message);
-				}
-				else
-				{
-					console.log('Connected to ' + databaseFilePath);
-				}
-			}
-		);
+		this.database = new Database(databaseFilePath);
+
+		console.log('Connected to ' + databaseFilePath);
 
 		this.initializeDatabase();
-
-		return this.database;
 	}
 
 	closeDatabase(): void
@@ -72,89 +58,81 @@ class DatabaseManager
 		this.database = null;
 	}
 
-	async initializeDatabase(): Promise<void>
+	initializeDatabase(): void
 	{
 		// Create tables
-		await this.executeQuery(queries.createConfigurationTable);
-		await this.executeQuery(queries.createLanguageTable);
-		await this.executeQuery(queries.createTextTable);
-		await this.executeQuery(queries.createPageTable);
-		await this.executeQuery(queries.createWordTable);
-		await this.executeQuery(queries.createEntryTable);
-		await this.executeQuery(queries.createStatusLogTable);
+		this.runQuery(queries.createConfigurationTable);
+		this.runQuery(queries.createLanguageTable);
+		this.runQuery(queries.createTextTable);
+		this.runQuery(queries.createPageTable);
+		this.runQuery(queries.createWordTable);
+		this.runQuery(queries.createEntryTable);
+		this.runQuery(queries.createStatusLogTable);
 
 		// Create indexes
-		await this.executeQuery(queries.createTextLanguageIdTitleIndex);
-		await this.executeQuery(queries.createWordLowerContentLanguageIdIndex);
-		await this.executeQuery(queries.createWordLanguageIdTokenCountContentIndex);
+		this.runQuery(queries.createTextLanguageIdTitleIndex);
+		this.runQuery(queries.createWordLowerContentLanguageIdIndex);
+		this.runQuery(queries.createWordLanguageIdTokenCountContentIndex);
 
 		// Create triggers
-		await this.executeQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
-		await this.executeQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
-		await this.executeQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
+		this.runQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
+		this.runQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
+		this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
 	}
 
-	executeQuery(query: string, parameters: any[] = []): Promise<any>
+	runQuery(query: string, parameters: Record<string, any> = {}): void
 	{
-		return new Promise(
-			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
-				if (this.database === null)
-				{
-					reject('Database not initialized.');
-					return;
-				}
-				this.database.all(
-					query,
-					parameters,
-					(error: Error | null, rows: unknown[]) => {
-						if (error)
-						{
-							reject(error);
-						}
-						else
-						{
-							resolve(rows);
-						}
-					}
-				);
-			}
-		);
+		if (this.database === null)
+		{
+			throw new Error('Database not initialized.');
+		}
+
+		parameters = this.fixParameters(parameters);
+
+		this.database.prepare(query).run(parameters);
 	}
 
-	getFirstRow(query: string, parameters: any[] = []): Promise<any>
+	getAllRows(query: string, parameters: Record<string, any> = {}): any[]
 	{
-		return new Promise(
-			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
-				if (this.database === null)
-				{
-					reject('Database not initialized.');
-					return;
-				}
-				this.database.all(
-					query,
-					parameters,
-					(error: Error | null, rows: unknown[]) => {
-						if (error)
-						{
-							reject(error);
-						}
-						else
-						{
-							resolve(rows[0]);
-						}
-					}
-				);
-			}
-		);
+		if (this.database === null)
+		{
+			throw new Error('Database not initialized.');
+		}
+
+		parameters = this.fixParameters(parameters);
+
+		return this.database.prepare(query).all(parameters);
 	}
 
-	getLastInsertId(): Promise<any>
+	getFirstRow(query: string, parameters: Record<string, any> = {}): any
+	{
+		if (this.database === null)
+		{
+			throw new Error('Database not initialized.');
+		}
+
+		parameters = this.fixParameters(parameters);
+		
+		return this.database.prepare(query).get(parameters);
+	}
+
+	getLastInsertId(): any
 	{
 		return this.getFirstRow(queries.getLastInsertId);
 	}
-}
 
-const databaseFileName: string = 'database.db';
+	private fixParameters(parameters: Record<string, any>): Object
+	{
+		for (const key in parameters)
+		{
+			if (typeof parameters[key] === 'boolean')
+			{
+				parameters[key] = parameters[key] ? 1 : 0;
+			}
+		}
+		return parameters;
+	}
+}
 
 const databaseManager = new DatabaseManager();
 

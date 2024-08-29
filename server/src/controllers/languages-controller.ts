@@ -10,30 +10,39 @@ import { queries } from '../database/queries';
 
 class LanguagesController
 {
-	async addLanguage(
+	addLanguage(
 		name: string,
 		dictionaryUrl: string,
 		shouldShowSpaces: boolean,
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string
-	): Promise<void>
+	): void
 	{
-		await databaseManager.executeQuery(
+		databaseManager.runQuery(
 			queries.addLanguage,
-			[name, dictionaryUrl, shouldShowSpaces, alphabet, sentenceDelimiters, whitespaces]
+			{
+				name,
+				dictionaryUrl,
+				shouldShowSpaces,
+				alphabet,
+				sentenceDelimiters,
+				whitespaces,
+			}
 		);
 	}
 
-	async deleteLanguage(languageId: number): Promise<void>
+	deleteLanguage(languageId: number): void
 	{
-		await databaseManager.executeQuery(
+		databaseManager.runQuery(
 			queries.deleteLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 	}
 
-	async editLanguage(
+	editLanguage(
 		languageId: number,
 		name: string,
 		dictionaryUrl: string,
@@ -41,25 +50,25 @@ class LanguagesController
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string
-	): Promise<void>
+	): void
 	{
-		const queryParams: any[] = [];
+		const queryParams: Record<string, any> = {};
 		const updates: string[] = [];
 	
 		if (name !== undefined)
 		{
-			updates.push('name = ?');
-			queryParams.push(name);
+			updates.push('name = :name');
+			queryParams.name = name;
 		}
 		if (dictionaryUrl !== undefined)
 		{
-			updates.push('dictionary_url = ?');
-			queryParams.push(dictionaryUrl);
+			updates.push('dictionary_url = :dictionaryUrl');
+			queryParams.dictionaryUrl = dictionaryUrl;
 		}
 		if (shouldShowSpaces !== undefined)
 		{
-			updates.push('should_show_spaces = ?');
-			queryParams.push(shouldShowSpaces);
+			updates.push('should_show_spaces = :shouldShowSpaces');
+			queryParams.shouldShowSpaces = shouldShowSpaces;
 		}
 		if (alphabet !== undefined)
 		{
@@ -79,7 +88,7 @@ class LanguagesController
 
 		if (updates.length > 0)
 		{
-			queryParams.push(languageId);
+			queryParams.languageId = languageId;
 
 			const dynamicQuery: string = queries.editLanguage.replace(
 				/\%DYNAMIC\%/,
@@ -88,22 +97,24 @@ class LanguagesController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
+			databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
-	async getAllLanguages(): Promise<Language[]>
+	getAllLanguages(): Language[]
 	{
-		const languages: Language[] = await databaseManager.executeQuery(queries.getAllLanguages);
+		const languages: Language[] = databaseManager.getAllRows(queries.getAllLanguages);
 		
 		return languages;
 	}
 
-	async getLanguage(languageId: number): Promise<Language>
+	getLanguage(languageId: number): Language
 	{
-		const language: Language = await databaseManager.getFirstRow(
+		const language: Language = databaseManager.getFirstRow(
 			queries.getLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 		
 		return language;

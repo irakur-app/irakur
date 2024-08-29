@@ -10,75 +10,89 @@ import { queries } from "../database/queries";
 
 class TextsController
 {
-	async addText(
+	addText(
 		languageId: number,
 		title: string,
 		content: string,
 		sourceUrl: string,
 		numberOfPages: number
-	): Promise<void>
+	): void
 	{
-		await databaseManager.executeQuery(
+		databaseManager.runQuery(
 			queries.addText,
-			[languageId, title, sourceUrl]
+			{
+				languageId,
+				title,
+				sourceUrl,
+			}
 		);
 
-		const textId: number = (await databaseManager.getLastInsertId()).id;
+		const textId: number = databaseManager.getLastInsertId().id;
 
-		await this.updatePage(textId, languageId, numberOfPages, content);
+		this.updatePage(textId, languageId, numberOfPages, content);
 	}
 
-	async getAllTexts(): Promise<Text[]>
+	getAllTexts(): Text[]
 	{
-		const texts: Text[] = await databaseManager.executeQuery(queries.getAllTexts);
+		const texts: Text[] = databaseManager.getAllRows(queries.getAllTexts);
 
 		return texts;
 	}
 
-	async getTextsByLanguage(languageId: number): Promise<Text[]>
+	getTextsByLanguage(languageId: number): Text[]
 	{
-		const texts: Text[] = await databaseManager.executeQuery(
+		const texts: Text[] = databaseManager.getAllRows(
 			queries.getTextsByLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 
 		return texts;
 	}
 
-	async getText(textId: number): Promise<Text>
+	getText(textId: number): Text
 	{
-		const text: Text = await databaseManager.getFirstRow(
+		const text: Text = databaseManager.getFirstRow(
 			queries.getText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		return text;
 	}
 
-	async getNumberOfPages(textId: number): Promise<number>
+	getNumberOfPages(textId: number): number
 	{
-		const numberOfPages: number = (await databaseManager.executeQuery(
+		const numberOfPages: number = databaseManager.getAllRows(
 			queries.getPagesByText,
-			[textId]
-		)).length;
+			{
+				textId,
+			}
+		).length;
 
 		return numberOfPages;
 	}
 
-	async deleteText(textId: number): Promise<void>
+	deleteText(textId: number): void
 	{
-		await databaseManager.executeQuery(
+		databaseManager.runQuery(
 			queries.deletePagesByText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
-		await databaseManager.executeQuery(
+		databaseManager.runQuery(
 			queries.deleteText,
-			[textId]
+			{
+				textId,
+			}
 		);
 	}
 
-	async editText(
+	editText(
 		languageId: number,
 		title: string,
 		sourceUrl: string,
@@ -88,58 +102,60 @@ class TextsController
 		timeOpened: number,
 		timeFinished: number,
 		progress: number
-	): Promise<void>
+	): void
 	{
-		const queryParams: any[] = [];
+		const queryParams: Record<string, any> = {};
 		const updates: string[] = [];
 	
 		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(
+			const language = databaseManager.getFirstRow(
 				queries.getLanguage,
-				[languageId]
+				{
+					languageId,
+				}
 			);
 			if (!language)
 			{
 				console.error('Language does not exist.');
 				return;
 			}
-			updates.push('language_id = ?');
-			queryParams.push(languageId);
+			updates.push('language_id = :languageId');
+			queryParams.languageId = languageId;
 		}
 		if (title !== undefined)
 		{
-			updates.push('title = ?');
-			queryParams.push(title);
+			updates.push('title = :title');
+			queryParams.title = title;
 		}
 		if (sourceUrl !== undefined)
 		{
-			updates.push('source_url = ?');
-			queryParams.push(sourceUrl);
+			updates.push('source_url = :sourceUrl');
+			queryParams.sourceUrl = sourceUrl;
 		}
 		if (timeOpened !== undefined)
 		{
-			updates.push('time_opened = ?');
-			queryParams.push(timeOpened);
+			updates.push('time_opened = :timeOpened');
+			queryParams.timeOpened = timeOpened;
 		}
 		if (timeFinished !== undefined)
 		{
-			updates.push('time_finished = ?');
-			queryParams.push(timeFinished);
+			updates.push('time_finished = :timeFinished');
+			queryParams.timeFinished = timeFinished;
 		}
 		if (progress !== undefined)
 		{
-			updates.push('progress = ?');
-			queryParams.push(progress);
+			updates.push('progress = :progress');
+			queryParams.progress = progress;
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
-			await this.updatePage(textId, languageId, numberOfPages, content);
+			this.updatePage(textId, languageId, numberOfPages, content);
 		}
 
 		if (updates.length > 0)
 		{
-			queryParams.push(textId);
+			queryParams.textId = textId;
 
 			const dynamicQuery: string = queries.editText.replace(
 				/\%DYNAMIC\%/,
@@ -148,15 +164,17 @@ class TextsController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
+			databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
-	private async updatePage(textId: number, languageId: number, numberOfPages: number, content: string)
+	private updatePage(textId: number, languageId: number, numberOfPages: number, content: string)
 	{
-		const pages: Page[] = await databaseManager.executeQuery(
+		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		const newNumberOfPages: number = (numberOfPages !== undefined) ? numberOfPages : pages.length;
@@ -171,9 +189,11 @@ class TextsController
 			newContent = pages.map((page: Page) => page.content).join('');
 		}
 
-		const language: Language = await databaseManager.getFirstRow(
+		const language: Language = databaseManager.getFirstRow(
 			queries.getLanguage,
-			[languageId]
+			{
+				languageId,
+			}
 		);
 
 		const sentenceSplitter: RegExp = new RegExp(
@@ -195,9 +215,13 @@ class TextsController
 			newPageContents[i] = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
 			if (i < pages.length)
 			{
-				await databaseManager.executeQuery(
+				databaseManager.runQuery(
 					queries.editPage,
-					[newPageContents[i], textId, i + 1]
+					{
+						content: newPageContents[i],
+						textId,
+						pagePosition: i + 1,
+					}
 				);
 			}
 
@@ -219,13 +243,16 @@ class TextsController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery);
+			databaseManager.runQuery(dynamicQuery);
 		}
 		if (newNumberOfPages < pages.length)
 		{
-			await databaseManager.executeQuery(
+			databaseManager.runQuery(
 				queries.deletePagesInBatch,
-				[textId, newNumberOfPages + 1]
+				{
+					textId,
+					pagePosition: newNumberOfPages + 1,
+				}
 			);
 		}
 	}
