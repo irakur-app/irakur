@@ -22,10 +22,10 @@ const statisticsController = new StatisticsController();
 const router = express.Router();
 
 const errorWrapper = (handler: express.RequestHandler): express.RequestHandler => {
-	return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
+	return (req: express.Request, res: express.Response, next: express.NextFunction): void => {
 		try
 		{
-			await handler(req, res, next);
+			handler(req, res, next);
 		}
 		catch (error)
 		{
@@ -39,24 +39,24 @@ const errorWrapper = (handler: express.RequestHandler): express.RequestHandler =
 router.get(
 	'/languages/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({ languages: await languagesController.getAllLanguages() });
+		(req: express.Request, res: express.Response): void => {
+			res.json({ languages: languagesController.getAllLanguages() });
 		}
 	)
 );
 router.get(
 	'/languages/:languageId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json(await languagesController.getLanguage(parseInt(req.params.languageId)));
+		(req: express.Request, res: express.Response): void => {
+			res.json(languagesController.getLanguage(parseInt(req.params.languageId)));
 		}
 	)
 );
 router.post(
 	'/languages/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await languagesController.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces);
+		(req: express.Request, res: express.Response): void => {
+			languagesController.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces);
 			res.sendStatus(200);
 		}
 	)
@@ -64,8 +64,8 @@ router.post(
 router.delete(
 	'/languages/:languageId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await languagesController.deleteLanguage(parseInt(req.params.languageId));
+		(req: express.Request, res: express.Response): void => {
+			languagesController.deleteLanguage(parseInt(req.params.languageId));
 			res.sendStatus(200);
 		}
 	)
@@ -73,8 +73,8 @@ router.delete(
 router.patch(
 	'/languages/:languageId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await languagesController.editLanguage(
+		(req: express.Request, res: express.Response): void => {
+			languagesController.editLanguage(
 				parseInt(req.params.languageId),
 				req.body.name,
 				req.body.dictionaryUrl,
@@ -90,14 +90,14 @@ router.patch(
 router.get(
 	'/texts/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
+		(req: express.Request, res: express.Response): void => {
 			if (req.query.languageId !== undefined)
 			{
-				res.json({ texts: await textsController.getTextsByLanguage(parseInt(req.query.languageId as string)) });
+				res.json({ texts: textsController.getTextsByLanguage(parseInt(req.query.languageId as string)) });
 			}
 			else
 			{
-				res.json({ texts: await textsController.getAllTexts() });
+				res.json({ texts: textsController.getAllTexts() });
 			}
 		}
 	)
@@ -105,11 +105,11 @@ router.get(
 router.get(
 	'/texts/:textId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
+		(req: express.Request, res: express.Response): void => {
 			res.json(
 				{
-					...await textsController.getText(parseInt(req.params.textId)),
-					numberOfPages: await textsController.getNumberOfPages(parseInt(req.params.textId)),
+					...textsController.getText(parseInt(req.params.textId)),
+					numberOfPages: textsController.getNumberOfPages(parseInt(req.params.textId)),
 				}
 			);
 		}
@@ -118,8 +118,8 @@ router.get(
 router.post(
 	'/texts/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await textsController.addText(
+		(req: express.Request, res: express.Response): void => {
+			textsController.addText(
 				req.body.languageId,
 				req.body.title,
 				req.body.content,
@@ -133,8 +133,8 @@ router.post(
 router.delete(
 	'/texts/:textId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await textsController.deleteText(parseInt(req.params.textId));
+		(req: express.Request, res: express.Response): void => {
+			textsController.deleteText(parseInt(req.params.textId));
 			res.sendStatus(200);
 		}
 	)
@@ -142,8 +142,8 @@ router.delete(
 router.patch(
 	'/texts/:textId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await textsController.editText(
+		(req: express.Request, res: express.Response): void => {
+			textsController.editText(
 				req.body.languageId,
 				req.body.title,
 				req.body.sourceUrl,
@@ -164,42 +164,28 @@ router.patch(
 router.get(
 	'/texts/:textId/pages/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({ pages: await pagesController.getPagesByText(parseInt(req.params.textId)) });
+		(req: express.Request, res: express.Response): void => {
+			res.json({ pages: pagesController.getPagesByText(parseInt(req.params.textId)) });
 		}
 	)
 );
 router.get(
 	'/texts/:textId/pages/:pagePosition',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json(await pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pagePosition)));
+		(req: express.Request, res: express.Response): void => {
+			res.json(pagesController.getPage(parseInt(req.params.textId), parseInt(req.params.pagePosition)));
 		}
 	)
 );
 router.get(
 	'/texts/:textId/pages/:pagePosition/words',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
+		(req: express.Request, res: express.Response): void => {
 			res.json(
 				{
-					words: await pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pagePosition)),
+					words: pagesController.getWords(parseInt(req.params.textId), parseInt(req.params.pagePosition)),
 				}
 			);
-		}
-	)
-);
-router.patch(
-	'/texts/:textId/pages/:pagePosition',
-	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await pagesController.editPage(
-				parseInt(req.params.textId),
-				req.body.index,
-				req.body.content,
-				parseInt(req.params.pagePosition)
-			);
-			res.sendStatus(200);
 		}
 	)
 );
@@ -209,10 +195,10 @@ router.patch(
 router.get(
 	'/words/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
+		(req: express.Request, res: express.Response): void => {
 			if (req.query.languageId !== undefined && req.query.content !== undefined)
 			{
-				const word = await wordsController.findWord(
+				const word = wordsController.findWord(
 					req.query.content as string,
 					parseInt(req.query.languageId as string)
 				);
@@ -236,16 +222,16 @@ router.get(
 router.get(
 	'/words/:wordId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json(await wordsController.getWord(parseInt(req.params.wordId)));
+		(req: express.Request, res: express.Response): void => {
+			res.json(wordsController.getWord(parseInt(req.params.wordId)));
 		}
 	)
 );
 router.post(
 	'/words/',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await wordsController.addWord(
+		(req: express.Request, res: express.Response): void => {
+			wordsController.addWord(
 				req.body.languageId,
 				req.body.content,
 				req.body.status,
@@ -261,8 +247,8 @@ router.post(
 router.post(
 	'/words/batch',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await wordsController.addWordsInBatch(
+		(req: express.Request, res: express.Response): void => {
+			wordsController.addWordsInBatch(
 				req.body.languageId,
 				req.body.contents,
 				req.body.status,
@@ -275,8 +261,8 @@ router.post(
 router.delete(
 	'/words/:wordId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await wordsController.deleteWord(parseInt(req.params.wordId));
+		(req: express.Request, res: express.Response): void => {
+			wordsController.deleteWord(parseInt(req.params.wordId));
 			res.sendStatus(200);
 		}
 	)
@@ -284,8 +270,8 @@ router.delete(
 router.patch(
 	'/words/:wordId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			await wordsController.editWord(
+		(req: express.Request, res: express.Response): void => {
+			wordsController.editWord(
 				req.body.languageId,
 				req.body.content,
 				req.body.status,
@@ -305,8 +291,8 @@ router.patch(
 router.get(
 	'/statistics/words-improved-count/:languageId',
 	errorWrapper(
-		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json(await statisticsController.getWordsImprovedCount(parseInt(req.params.languageId)));
+		(req: express.Request, res: express.Response): void => {
+			res.json(statisticsController.getWordsImprovedCount(parseInt(req.params.languageId)));
 		}
 	)
 );
@@ -373,7 +359,7 @@ router.patch(
 			res.sendStatus(200);
 		}
 	)
-)
+);
 //#endregion
 
 export { router };

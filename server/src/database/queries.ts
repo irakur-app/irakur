@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-const queries: { [key: string]: string } = {
+const queries: Record<string, string> = {
 	//#region Create tables
 	createConfigurationTable: `CREATE TABLE IF NOT EXISTS configuration (
 		key TEXT NOT NULL,
@@ -142,15 +142,15 @@ const queries: { [key: string]: string } = {
 			name,
 			dictionary_url AS dictionaryUrl,
 			should_show_spaces AS shouldShowSpaces
-		FROM language WHERE id = ?`,
+		FROM language WHERE id = :languageId`,
 	addLanguage: `INSERT INTO language (
 			name,
 			dictionary_url,
 			should_show_spaces
 		)
-		VALUES (?, ?, ?)`,
-	deleteLanguage: `DELETE FROM language WHERE id = ?`,
-	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = ?`,
+		VALUES (:name, :dictionaryUrl, :shouldShowSpaces)`,
+	deleteLanguage: `DELETE FROM language WHERE id = :languageId`,
+	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = :languageId`,
 	//#endregion
 
 	//#region Text
@@ -172,7 +172,7 @@ const queries: { [key: string]: string } = {
 			time_finished AS timeFinished,
 			progress
 		FROM text
-		WHERE language_id = ?`,
+		WHERE language_id = :languageId`,
 	getText: `SELECT
 			id,
 			language_id AS languageId,
@@ -182,15 +182,15 @@ const queries: { [key: string]: string } = {
 			time_finished AS timeFinished,
 			progress
 		FROM text
-		WHERE id = ?`,
+		WHERE id = :textId`,
 	addText: `INSERT INTO text (
 			language_id,
 			title,
 			source_url
 		)
-		VALUES (?, ?, ?)`,
-	deleteText: `DELETE FROM text WHERE id = ?`,
-	editText: `UPDATE text SET %DYNAMIC% WHERE id = ?`,
+		VALUES (:languageId, :title, :sourceUrl)`,
+	deleteText: `DELETE FROM text WHERE id = :textId`,
+	editText: `UPDATE text SET %DYNAMIC% WHERE id = :textId`,
 	//#endregion
 
 	//#region Page
@@ -199,29 +199,29 @@ const queries: { [key: string]: string } = {
 			position,
 			content
 		FROM page
-		WHERE text_id = ?`,
+		WHERE text_id = :textId`,
 	getPage: `SELECT
 			text_id AS textId,
 			position,
 			content
 		FROM page
-		WHERE text_id = ? AND position = ?`,
+		WHERE text_id = :textId AND position = :pagePosition`,
 	addPage: `INSERT INTO page (
 			text_id,
 			position,
 			content
 		)
-		VALUES (?, ?, ?)`,
+		VALUES (:textId, :position, :content)`,
 	addPagesInBatch: `INSERT INTO page (
 			text_id,
 			position,
 			content
 		)
 		VALUES %DYNAMIC%`,
-	deletePage: `DELETE FROM page WHERE text_id = ? AND position = ?`,
-	deletePagesInBatch: `DELETE FROM page WHERE text_id = ? AND position >= ?`,
-	deletePagesByText: `DELETE FROM page WHERE text_id = ?`,
-	editPage: `UPDATE page SET content = ? WHERE text_id = ? AND position = ?`,
+	deletePage: `DELETE FROM page WHERE text_id = :textId AND position = :pagePosition`,
+	deletePagesInBatch: `DELETE FROM page WHERE text_id = :textId AND position >= :pagePosition`,
+	deletePagesByText: `DELETE FROM page WHERE text_id = :textId`,
+	editPage: `UPDATE page SET content = :content WHERE text_id = :textId AND position = :pagePosition`,
 	//#endregion
 
 	//#region Word
@@ -235,7 +235,7 @@ const queries: { [key: string]: string } = {
 			time_updated AS timeUpdated,
 			token_count AS tokenCount
 		FROM word
-		WHERE id = ?`,
+		WHERE id = :wordId`,
 	findWord: `SELECT
 			id,
 			language_id AS languageId,
@@ -246,7 +246,7 @@ const queries: { [key: string]: string } = {
 			time_updated AS timeUpdated,
 			token_count AS tokenCount
 		FROM word
-		WHERE LOWER(content) = LOWER(?) AND language_id = ?`,
+		WHERE LOWER(content) = LOWER(:content) AND language_id = :languageId`,
 	findWordsInBatch: `WITH input_words(content) AS (VALUES %DYNAMIC%)
 		SELECT
 			input_words.content AS content,
@@ -262,10 +262,10 @@ const queries: { [key: string]: string } = {
 			EXISTS (
 				SELECT token_count
 				FROM word
-				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = ? AND word.token_count > 1
+				WHERE word.content LIKE (input_words.content || '%') AND word.language_id = :languageId AND word.token_count > 1
 			) AS potentialMultiword
 		FROM input_words
-		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = ?`,
+		LEFT JOIN word ON LOWER(input_words.content) = LOWER(word.content) AND word.language_id = :languageId`,
 	addWord: `INSERT INTO word (
 			language_id,
 			content,
@@ -275,7 +275,7 @@ const queries: { [key: string]: string } = {
 			time_updated,
 			token_count
 		)
-		VALUES (?, ?, ?, ?, ?, ?, ?)`,
+		VALUES (:languageId, :content, :status, :notes, :timeAdded, :timeUpdated, :tokenCount)`,
 	addWordsInBatch: `INSERT INTO word (
 			language_id,
 			content,
@@ -286,8 +286,8 @@ const queries: { [key: string]: string } = {
 			token_count
 		)
 		VALUES %DYNAMIC%`,
-	deleteWord: `DELETE FROM word WHERE id = ?`,
-	editWord: `UPDATE word SET %DYNAMIC% WHERE id = ?`,
+	deleteWord: `DELETE FROM word WHERE id = :wordId`,
+	editWord: `UPDATE word SET %DYNAMIC% WHERE id = :wordId`,
 	getPotentialMultiwords: `SELECT
 			id,
 			language_id AS languageId,
@@ -298,8 +298,8 @@ const queries: { [key: string]: string } = {
 			time_updated AS timeUpdated,
 			token_count AS tokenCount
 		FROM word
-		WHERE content LIKE (? || '%')
-			AND language_id = ?
+		WHERE content LIKE (:content || '%')
+			AND language_id = :languageId
 			AND token_count > 1`,
 	//#endregion
 
@@ -308,7 +308,7 @@ const queries: { [key: string]: string } = {
 			meaning,
 			reading
 		FROM entry
-		WHERE word_id = ?
+		WHERE word_id = :wordId
 		ORDER BY position ASC`,
 	addEntry: `INSERT INTO entry (
 			word_id,
@@ -316,7 +316,7 @@ const queries: { [key: string]: string } = {
 			meaning,
 			reading
 		)
-		VALUES (?, ?, ?, ?)`,
+		VALUES (:wordId, :entryPosition, :meaning, :reading)`,
 	addEntriesInBatch: `INSERT INTO entry (
 			word_id,
 			position,
@@ -324,7 +324,7 @@ const queries: { [key: string]: string } = {
 			reading
 		)
 		VALUES %DYNAMIC%`,
-	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = ?`,
+	deleteEntriesByWord: `DELETE FROM entry WHERE word_id = :wordId`,
 	//#endregion
 
 	//#region Status Log
@@ -354,7 +354,7 @@ const queries: { [key: string]: string } = {
 		JOIN word
 		ON word.id = ls.word_id
 		WHERE last_status > first_status
-			AND word.language_id = ?`,
+			AND word.language_id = :languageId`,
 	//#endregion
 
 	//#region Utils

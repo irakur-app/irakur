@@ -11,64 +11,47 @@ import { queries } from "../database/queries";
 
 class PagesController
 {
-	async getPagesByText(textId: number): Promise<Page[]>
+	getPagesByText(textId: number): Page[]
 	{
-		const pages: Page[] = await databaseManager.executeQuery(
+		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
-			[textId]
+			{
+				textId,
+			}
 		);
 
 		return pages;
 	}
 
-	async getPage(textId: number, pagePosition: number): Promise<Page>
+	getPage(textId: number, pagePosition: number): Page
 	{
-		const page: Page = await databaseManager.getFirstRow(
+		const page: Page = databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pagePosition]
+			{
+				textId,
+				pagePosition,
+			}
 		);
 
 		return page;
 	}
 
-	async editPage(textId: number, index: number, content: string, pagePosition: number): Promise<void>
+	getWords(textId: number, pagePosition: number): ReducedWordData[]
 	{
-		const queryParams: any[] = [];
-		const updates: string[] = [];
-
-		if (content !== undefined)
-		{
-			updates.push('content = ?');
-			queryParams.push(content);
-		}
-		
-		if (updates.length > 0)
-		{
-			queryParams.push(textId);
-			queryParams.push(pagePosition);
-
-			const dynamicQuery: string = queries.editPage.replace(
-				/\%DYNAMIC\%/,
-				(): string => {
-					return updates.join(', ');
-				}
-			);
-
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
-		}
-	}
-
-	async getWords(textId: number, pagePosition: number): Promise<ReducedWordData[]>
-	{
-		const page: Page = await databaseManager.getFirstRow(
+		const page: Page = databaseManager.getFirstRow(
 			queries.getPage,
-			[textId, pagePosition]
+			{
+				textId,
+				pagePosition,
+			}
 		);
 
-		const languageId: number = (await databaseManager.getFirstRow(
+		const languageId: number = databaseManager.getFirstRow(
 			queries.getText,
-			[page.textId]
-		)).languageId;
+			{
+				textId,
+			}
+		).languageId;
 
 		const tokens: string[] = tokenizeString(page.content);
 		
@@ -83,18 +66,23 @@ class PagesController
 			}
 		);
 		
-		const wordData: ReducedWordData[] = await databaseManager.executeQuery(
+		const wordData: ReducedWordData[] = databaseManager.getAllRows(
 			dynamicQuery,
-			[languageId, languageId]
+			{
+				languageId,
+			}
 		);
 
 		for (let i = 0; i < wordData.length; i++)
 		{
 			if (wordData[i].potentialMultiword)
 			{
-				const potentialMultiwords: Word[] = await databaseManager.executeQuery(
+				const potentialMultiwords: Word[] = databaseManager.getAllRows(
 					queries.getPotentialMultiwords,
-					[wordData[i].content, languageId]
+					{
+						content: wordData[i].content,
+						languageId,
+					}
 				);
 
 				let multiword: Word | null = null;
