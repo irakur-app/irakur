@@ -11,9 +11,9 @@ import { queries } from "../database/queries";
 
 class PagesController
 {
-	async getPagesByText(textId: number): Promise<Page[]>
+	getPagesByText(textId: number): Page[]
 	{
-		const pages: Page[] = await databaseManager.getAllRows(
+		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
 			[textId]
 		);
@@ -21,9 +21,9 @@ class PagesController
 		return pages;
 	}
 
-	async getPage(textId: number, pagePosition: number): Promise<Page>
+	getPage(textId: number, pagePosition: number): Page
 	{
-		const page: Page = await databaseManager.getFirstRow(
+		const page: Page = databaseManager.getFirstRow(
 			queries.getPage,
 			[textId, pagePosition]
 		);
@@ -31,7 +31,7 @@ class PagesController
 		return page;
 	}
 
-	async editPage(textId: number, index: number, content: string, pagePosition: number): Promise<void>
+	editPage(textId: number, index: number, content: string, pagePosition: number): void
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -54,21 +54,21 @@ class PagesController
 				}
 			);
 
-			await databaseManager.runQuery(dynamicQuery, queryParams);
+			databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
-	async getWords(textId: number, pagePosition: number): Promise<ReducedWordData[]>
+	getWords(textId: number, pagePosition: number): ReducedWordData[]
 	{
-		const page: Page = await databaseManager.getFirstRow(
+		const page: Page = databaseManager.getFirstRow(
 			queries.getPage,
 			[textId, pagePosition]
 		);
 
-		const languageId: number = (await databaseManager.getFirstRow(
+		const languageId: number = databaseManager.getFirstRow(
 			queries.getText,
 			[page.textId]
-		)).languageId;
+		).languageId;
 
 		const tokens: string[] = tokenizeString(page.content);
 		
@@ -83,7 +83,7 @@ class PagesController
 			}
 		);
 		
-		const wordData: ReducedWordData[] = await databaseManager.getAllRows(
+		const wordData: ReducedWordData[] = databaseManager.getAllRows(
 			dynamicQuery,
 			[languageId, languageId]
 		);
@@ -92,7 +92,7 @@ class PagesController
 		{
 			if (wordData[i].potentialMultiword)
 			{
-				const potentialMultiwords: Word[] = await databaseManager.getAllRows(
+				const potentialMultiwords: Word[] = databaseManager.getAllRows(
 					queries.getPotentialMultiwords,
 					[wordData[i].content, languageId]
 				);

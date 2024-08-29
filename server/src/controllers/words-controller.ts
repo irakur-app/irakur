@@ -11,7 +11,7 @@ import { queries } from "../database/queries";
 
 class WordsController
 {
-	async addWord(
+	addWord(
 		languageId: number,
 		content: string,
 		status: number,
@@ -19,32 +19,32 @@ class WordsController
 		notes: string,
 		timeAdded: number,
 		timeUpdated: number
-	): Promise<void>
+	): void
 	{
 		const tokenizedContent: string[] = tokenizeString(content);
 
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.addWord,
 			[languageId, content, status, notes, timeAdded, timeUpdated, tokenizedContent.length]
 		);
 
-		const wordId: number = (await databaseManager.getLastInsertId()).id;
+		const wordId: number = databaseManager.getLastInsertId().id;
 
 		for (let i = 0; i < entries.length; i++)
 		{
-			await databaseManager.runQuery(
+			databaseManager.runQuery(
 				queries.addEntry,
 				[wordId, i, entries[i].meaning, entries[i].reading]
 			);
 		}
 	}
 
-	async addWordsInBatch(
+	addWordsInBatch(
 		languageId: number,
 		contents: string[],
 		status: number,
 		timeAdded: number
-	): Promise<void>
+	): void
 	{
 		const valueList: string[] = [];
 		for (const content of contents)
@@ -63,17 +63,17 @@ class WordsController
 			}
 		);
 
-		await databaseManager.runQuery(dynamicQuery);
+		databaseManager.runQuery(dynamicQuery);
 	}
 
-	async getWord(wordId: number): Promise<Word>
+	getWord(wordId: number): Word
 	{
-		const rawWord: RawWord = await databaseManager.getFirstRow(
+		const rawWord: RawWord = databaseManager.getFirstRow(
 			queries.getWord,
 			[wordId]
 		);
 
-		const entries: Entry[] = await databaseManager.getAllRows(
+		const entries: Entry[] = databaseManager.getAllRows(
 			queries.getEntriesByWord,
 			[wordId]
 		);
@@ -86,9 +86,9 @@ class WordsController
 		return word;
 	}
 
-	async findWord(content: string, languageId: number): Promise<Word | null>
+	findWord(content: string, languageId: number): Word | null
 	{
-		const rawWord: RawWord | null = await databaseManager.getFirstRow(
+		const rawWord: RawWord | null = databaseManager.getFirstRow(
 			queries.findWord,
 			[content, languageId]
 		);
@@ -98,7 +98,7 @@ class WordsController
 			return null;
 		}
 
-		const entries: Entry[] = await databaseManager.getAllRows(
+		const entries: Entry[] = databaseManager.getAllRows(
 			queries.getEntriesByWord,
 			[rawWord.id]
 		);
@@ -111,15 +111,15 @@ class WordsController
 		return word;
 	}
 
-	async deleteWord(wordId: number): Promise<void>
+	deleteWord(wordId: number): void
 	{
-		await databaseManager.getAllRows(
+		databaseManager.getAllRows(
 			queries.deleteWord,
 			[wordId]
 		);
 	}
 
-	async editWord(
+	editWord(
 		languageId: number,
 		content: string,
 		status: number,
@@ -128,14 +128,14 @@ class WordsController
 		timeAdded: number,
 		timeUpdated: number,
 		wordId: number
-	): Promise<void>
+	): void
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
 		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(
+			const language = databaseManager.getFirstRow(
 				queries.getLanguage,
 				[languageId]
 			);
@@ -164,7 +164,7 @@ class WordsController
 		}
 		if (entries !== undefined)
 		{
-			await this.updateEntries(wordId, entries);
+			this.updateEntries(wordId, entries);
 		}
 		if (notes !== undefined)
 		{
@@ -193,13 +193,13 @@ class WordsController
 				}
 			);
 
-			await databaseManager.runQuery(dynamicQuery, queryParams);
+			databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
-	async updateEntries(wordId: number, entries: Entry[]): Promise<void>
+	updateEntries(wordId: number, entries: Entry[]): void
 	{
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.deleteEntriesByWord,
 			[wordId]
 		);
@@ -224,7 +224,7 @@ class WordsController
 			}
 		);
 
-		await databaseManager.runQuery(dynamicQuery);
+		databaseManager.runQuery(dynamicQuery);
 	}
 }
 

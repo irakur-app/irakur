@@ -10,34 +10,34 @@ import { queries } from "../database/queries";
 
 class TextsController
 {
-	async addText(
+	addText(
 		languageId: number,
 		title: string,
 		content: string,
 		sourceUrl: string,
 		numberOfPages: number
-	): Promise<void>
+	): void
 	{
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.addText,
 			[languageId, title, sourceUrl]
 		);
 
-		const textId: number = (await databaseManager.getLastInsertId()).id;
+		const textId: number = databaseManager.getLastInsertId().id;
 
-		await this.updatePage(textId, numberOfPages, content);
+		this.updatePage(textId, numberOfPages, content);
 	}
 
-	async getAllTexts(): Promise<Text[]>
+	getAllTexts(): Text[]
 	{
-		const texts: Text[] = await databaseManager.getAllRows(queries.getAllTexts);
+		const texts: Text[] = databaseManager.getAllRows(queries.getAllTexts);
 
 		return texts;
 	}
 
-	async getTextsByLanguage(languageId: number): Promise<Text[]>
+	getTextsByLanguage(languageId: number): Text[]
 	{
-		const texts: Text[] = await databaseManager.getAllRows(
+		const texts: Text[] = databaseManager.getAllRows(
 			queries.getTextsByLanguage,
 			[languageId]
 		);
@@ -45,9 +45,9 @@ class TextsController
 		return texts;
 	}
 
-	async getText(textId: number): Promise<Text>
+	getText(textId: number): Text
 	{
-		const text: Text = await databaseManager.getFirstRow(
+		const text: Text = databaseManager.getFirstRow(
 			queries.getText,
 			[textId]
 		);
@@ -55,30 +55,30 @@ class TextsController
 		return text;
 	}
 
-	async getNumberOfPages(textId: number): Promise<number>
+	getNumberOfPages(textId: number): number
 	{
-		const numberOfPages: number = (await databaseManager.getAllRows(
+		const numberOfPages: number = databaseManager.getAllRows(
 			queries.getPagesByText,
 			[textId]
-		)).length;
+		).length;
 
 		return numberOfPages;
 	}
 
-	async deleteText(textId: number): Promise<void>
+	deleteText(textId: number): void
 	{
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.deletePagesByText,
 			[textId]
 		);
 
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.deleteText,
 			[textId]
 		);
 	}
 
-	async editText(
+	editText(
 		languageId: number,
 		title: string,
 		sourceUrl: string,
@@ -88,14 +88,14 @@ class TextsController
 		timeOpened: number,
 		timeFinished: number,
 		progress: number
-	): Promise<void>
+	): void
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
 	
 		if (languageId !== undefined)
 		{
-			const language = await databaseManager.getFirstRow(
+			const language = databaseManager.getFirstRow(
 				queries.getLanguage,
 				[languageId]
 			);
@@ -134,7 +134,7 @@ class TextsController
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
-			await this.updatePage(textId, numberOfPages, content);
+			this.updatePage(textId, numberOfPages, content);
 		}
 
 		if (updates.length > 0)
@@ -148,13 +148,13 @@ class TextsController
 				}
 			);
 
-			await databaseManager.runQuery(dynamicQuery, queryParams);
+			databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
-	private async updatePage(textId: number, numberOfPages: number, content: string)
+	private updatePage(textId: number, numberOfPages: number, content: string)
 	{
-		const pages: Page[] = await databaseManager.getAllRows(
+		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
 			[textId]
 		);
@@ -185,7 +185,7 @@ class TextsController
 			newPageContents[i] = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
 			if (i < pages.length)
 			{
-				await databaseManager.runQuery(
+				databaseManager.runQuery(
 					queries.editPage,
 					[newPageContents[i], textId, i + 1]
 				);
@@ -209,11 +209,11 @@ class TextsController
 				}
 			);
 
-			await databaseManager.runQuery(dynamicQuery);
+			databaseManager.runQuery(dynamicQuery);
 		}
 		if (newNumberOfPages < pages.length)
 		{
-			await databaseManager.runQuery(
+			databaseManager.runQuery(
 				queries.deletePagesInBatch,
 				[textId, newNumberOfPages + 1]
 			);

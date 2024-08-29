@@ -9,12 +9,12 @@ import { queries } from "../database/queries";
 
 class StatisticsController
 {
-	async getWordsImprovedCount(languageId: number): Promise<{wordsImprovedCount: number}>
+	getWordsImprovedCount(languageId: number): {wordsImprovedCount: number}
 	{
 		return {
-			wordsImprovedCount: (await databaseManager.getFirstRow(
+			wordsImprovedCount: databaseManager.getFirstRow(
 				queries.getWordsImprovedCount, [languageId]
-			)).wordsImprovedCount
+			).wordsImprovedCount
 		};
 	}
 }

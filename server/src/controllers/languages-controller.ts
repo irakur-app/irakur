@@ -10,28 +10,28 @@ import { queries } from '../database/queries';
 
 class LanguagesController
 {
-	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
+	addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): void
 	{
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.addLanguage,
 			[name, dictionaryUrl, shouldShowSpaces]
 		);
 	}
 
-	async deleteLanguage(languageId: number): Promise<void>
+	deleteLanguage(languageId: number): void
 	{
-		await databaseManager.runQuery(
+		databaseManager.runQuery(
 			queries.deleteLanguage,
 			[languageId]
 		);
 	}
 
-	async editLanguage(
+	editLanguage(
 		languageId: number,
 		name: string,
 		dictionaryUrl: string,
 		shouldShowSpaces: boolean
-	): Promise<void>
+	): void
 	{
 		const queryParams: any[] = [];
 		const updates: string[] = [];
@@ -63,20 +63,20 @@ class LanguagesController
 				}
 			);
 
-			await databaseManager.runQuery(dynamicQuery, queryParams);
+			databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
-	async getAllLanguages(): Promise<Language[]>
+	getAllLanguages(): Language[]
 	{
-		const languages: Language[] = await databaseManager.getAllRows(queries.getAllLanguages);
+		const languages: Language[] = databaseManager.getAllRows(queries.getAllLanguages);
 		
 		return languages;
 	}
 
-	async getLanguage(languageId: number): Promise<Language>
+	getLanguage(languageId: number): Language
 	{
-		const language: Language = await databaseManager.getFirstRow(
+		const language: Language = databaseManager.getFirstRow(
 			queries.getLanguage,
 			[languageId]
 		);

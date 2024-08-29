@@ -5,10 +5,8 @@
  */
 
 import fs from 'fs';
-import path from 'path';
 import Database from 'better-sqlite3';
 
-import { getEnvironmentVariable } from '../../../common/utils';
 import { queries } from './queries';
 
 class DatabaseManager
@@ -43,14 +41,7 @@ class DatabaseManager
 			}
 		}
 
-		const options: Database.Options = {
-			readonly: false,
-		};
-
-		this.database = new Database(
-			databaseFilePath,
-			options
-		);
+		this.database = new Database(databaseFilePath);
 
 		console.log('Connected to ' + databaseFilePath);
 
@@ -67,26 +58,26 @@ class DatabaseManager
 		this.database = null;
 	}
 
-	async initializeDatabase(): Promise<void>
+	initializeDatabase(): void
 	{
 		// Create tables
-		await this.runQuery(queries.createConfigurationTable);
-		await this.runQuery(queries.createLanguageTable);
-		await this.runQuery(queries.createTextTable);
-		await this.runQuery(queries.createPageTable);
-		await this.runQuery(queries.createWordTable);
-		await this.runQuery(queries.createEntryTable);
-		await this.runQuery(queries.createStatusLogTable);
+		this.runQuery(queries.createConfigurationTable);
+		this.runQuery(queries.createLanguageTable);
+		this.runQuery(queries.createTextTable);
+		this.runQuery(queries.createPageTable);
+		this.runQuery(queries.createWordTable);
+		this.runQuery(queries.createEntryTable);
+		this.runQuery(queries.createStatusLogTable);
 
 		// Create indexes
-		await this.runQuery(queries.createTextLanguageIdTitleIndex);
-		await this.runQuery(queries.createWordLowerContentLanguageIdIndex);
-		await this.runQuery(queries.createWordLanguageIdTokenCountContentIndex);
+		this.runQuery(queries.createTextLanguageIdTitleIndex);
+		this.runQuery(queries.createWordLowerContentLanguageIdIndex);
+		this.runQuery(queries.createWordLanguageIdTokenCountContentIndex);
 
 		// Create triggers
-		await this.runQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
-		await this.runQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
-		await this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
+		this.runQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
+		this.runQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
+		this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
 	}
 
 	runQuery(query: string, parameters: any[] = []): void
@@ -125,12 +116,12 @@ class DatabaseManager
 		return this.database.prepare(query).get(parameters);
 	}
 
-	getLastInsertId(): Promise<any>
+	getLastInsertId(): any
 	{
 		return this.getFirstRow(queries.getLastInsertId);
 	}
 
-	fixParameters(parameters: any[]): any[]
+	private fixParameters(parameters: any[]): any[]
 	{
 		return parameters.map(
 			parameter => {
@@ -143,8 +134,6 @@ class DatabaseManager
 		);
 	}
 }
-
-const databaseFileName: string = 'database.db';
 
 const databaseManager = new DatabaseManager();
 
