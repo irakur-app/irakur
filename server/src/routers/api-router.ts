@@ -189,20 +189,6 @@ router.get(
 		}
 	)
 );
-router.patch(
-	'/texts/:textId/pages/:pagePosition',
-	errorWrapper(
-		(req: express.Request, res: express.Response): void => {
-			pagesController.editPage(
-				parseInt(req.params.textId),
-				req.body.index,
-				req.body.content,
-				parseInt(req.params.pagePosition)
-			);
-			res.sendStatus(200);
-		}
-	)
-);
 //#endregion
 
 //#region Words

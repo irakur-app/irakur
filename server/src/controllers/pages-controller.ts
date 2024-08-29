@@ -30,34 +30,7 @@ class PagesController
 
 		return page;
 	}
-
-	editPage(textId: number, index: number, content: string, pagePosition: number): void
-	{
-		const queryParams: any[] = [];
-		const updates: string[] = [];
-
-		if (content !== undefined)
-		{
-			updates.push('content = ?');
-			queryParams.push(content);
-		}
-		
-		if (updates.length > 0)
-		{
-			queryParams.push(textId);
-			queryParams.push(pagePosition);
-
-			const dynamicQuery: string = queries.editPage.replace(
-				/\%DYNAMIC\%/,
-				(): string => {
-					return updates.join(', ');
-				}
-			);
-
-			databaseManager.runQuery(dynamicQuery, queryParams);
-		}
-	}
-
+	
 	getWords(textId: number, pagePosition: number): ReducedWordData[]
 	{
 		const page: Page = databaseManager.getFirstRow(
