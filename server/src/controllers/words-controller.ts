@@ -32,7 +32,7 @@ class WordsController
 				notes,
 				timeAdded,
 				timeUpdated,
-				tokenizedContentLength: tokenizedContent.length,
+				tokenCount: tokenizedContent.length,
 			}
 		);
 
