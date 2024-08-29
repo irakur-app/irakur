@@ -56,7 +56,15 @@ router.post(
 	'/languages/',
 	errorWrapper(
 		(req: express.Request, res: express.Response): void => {
-			languagesController.addLanguage(req.body.name, req.body.dictionaryUrl, req.body.shouldShowSpaces);
+			languagesController.addLanguage(
+				req.body.name,
+				req.body.dictionaryUrl,
+				req.body.shouldShowSpaces,
+				req.body.alphabet,
+				req.body.sentenceDelimiters,
+				req.body.whitespaces,
+				req.body.intrawordPunctuation
+			);
 			res.sendStatus(200);
 		}
 	)
@@ -78,7 +86,11 @@ router.patch(
 				parseInt(req.params.languageId),
 				req.body.name,
 				req.body.dictionaryUrl,
-				req.body.shouldShowSpaces
+				req.body.shouldShowSpaces,
+				req.body.alphabet,
+				req.body.sentenceDelimiters,
+				req.body.whitespaces,
+				req.body.intrawordPunctuation
 			);
 			res.sendStatus(200);
 		}

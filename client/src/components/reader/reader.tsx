@@ -43,7 +43,12 @@ const getElementsContent = (elements: HTMLElement[]): string => {
 	return elements.map((element: HTMLElement) => element.textContent).join('');
 }
 
-const getSelectionElements = (element: HTMLElement, selection: string): HTMLElement[] => {
+const getSelectionElements = (
+	element: HTMLElement,
+	selection: string,
+	alphabet: string,
+	intrawordPunctuation: string
+): HTMLElement[] => {
 	let currentElement: HTMLElement | null = (element.dataset.type === "whitespace")
 		? element.nextElementSibling as HTMLElement
 		: element;
@@ -51,7 +56,7 @@ const getSelectionElements = (element: HTMLElement, selection: string): HTMLElem
 	let cumulativeSelection = currentElement.textContent!;
 	const elements: HTMLElement[] = [];
 
-	const selectionOnFollowingWords = tokenizeString(selection).slice(1).join('');
+	const selectionOnFollowingWords = tokenizeString(selection, alphabet, intrawordPunctuation).slice(1).join('');
 	const multiwordBeginning: string = currentElement.textContent! + selectionOnFollowingWords;
 
 	while (currentElement !== null && multiwordBeginning.startsWith(cumulativeSelection))
@@ -360,7 +365,12 @@ const Reader = (
 				&& firstWordInSelection !== null
 				&& !firstWordInSelection.textContent!.includes(selectedText)
 		) {
-			const selectedElements = getSelectionElements(firstWordInSelection, selectedText.trim());
+			const selectedElements = getSelectionElements(
+				firstWordInSelection,
+				selectedText.trim(),
+				languageData.alphabet,
+				languageData.intrawordPunctuation
+			);
 			const parentElement = selectedElements[0].parentElement!;
 
 			if (selectedElements.length > 0 && parentElement?.dataset.type !== "multiword") {
@@ -450,17 +460,17 @@ const Reader = (
 	);
 
 	//const spaceStyle: React.CSSProperties = { fontSize: (shouldShowSpaces ? undefined : 0) };
-	const spaceRender = (index: number): JSX.Element  =>
+	const whitespaceRender = (word: ReducedWordData): JSX.Element  =>
 	{
 		if (languageData.shouldShowSpaces)
 		{
 			return (
 				<span
 					className="whitespace"
-					data-index={index}
+					data-index={word.index}
 					data-type="whitespace"
-					key={index}
-				>{' '}</span>
+					key={word.index}
+				>{word.content}</span>
 			);
 		}
 		else
@@ -468,10 +478,10 @@ const Reader = (
 			return (
 				<span
 					className="whitespace"
-					data-index={index}
+					data-index={word.index}
 					data-content=" "
 					data-type="whitespace"
-					key={index}
+					key={word.index}
 					style={{
 						fontSize: 0,
 					}}
@@ -484,13 +494,13 @@ const Reader = (
 
 	const renderWord = (word: ReducedWordData): JSX.Element => {
 		let renderedElement;
-		if (word.content === ' ')
-		{
-			renderedElement = spaceRender(word.index);
-		}
-		else if (word.content === '\n')
+		if (word.content === '\n')
 		{
 			renderedElement = <br key={word.index} data-index={word.index} style={{ marginBottom: "1rem" }}/>;
+		}
+		else if (new RegExp(languageData.whitespaces, 'ug').test(word.content))
+		{
+			renderedElement = whitespaceRender(word);
 		}
 		else if (word.type === 'punctuation')
 		{

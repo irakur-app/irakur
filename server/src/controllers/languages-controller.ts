@@ -10,7 +10,15 @@ import { queries } from '../database/queries';
 
 class LanguagesController
 {
-	addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): void
+	addLanguage(
+		name: string,
+		dictionaryUrl: string,
+		shouldShowSpaces: boolean,
+		alphabet: string,
+		sentenceDelimiters: string,
+		whitespaces: string,
+		intrawordPunctuation: string
+	): void
 	{
 		databaseManager.runQuery(
 			queries.addLanguage,
@@ -18,6 +26,10 @@ class LanguagesController
 				name,
 				dictionaryUrl,
 				shouldShowSpaces,
+				alphabet,
+				sentenceDelimiters,
+				whitespaces,
+				intrawordPunctuation,
 			}
 		);
 	}
@@ -36,7 +48,11 @@ class LanguagesController
 		languageId: number,
 		name: string,
 		dictionaryUrl: string,
-		shouldShowSpaces: boolean
+		shouldShowSpaces: boolean,
+		alphabet: string,
+		sentenceDelimiters: string,
+		whitespaces: string,
+		intrawordPunctuation: string
 	): void
 	{
 		const queryParams: Record<string, any> = {};
@@ -56,6 +72,26 @@ class LanguagesController
 		{
 			updates.push('should_show_spaces = :shouldShowSpaces');
 			queryParams.shouldShowSpaces = shouldShowSpaces;
+		}
+		if (alphabet !== undefined)
+		{
+			updates.push('alphabet = :alphabet');
+			queryParams.alphabet = alphabet;
+		}
+		if (sentenceDelimiters !== undefined)
+		{
+			updates.push('sentence_delimiters = :sentenceDelimiters');
+			queryParams.sentenceDelimiters = sentenceDelimiters;
+		}
+		if (whitespaces !== undefined)
+		{
+			updates.push('whitespaces = :whitespaces');
+			queryParams.whitespaces = whitespaces;
+		}
+		if (intrawordPunctuation !== undefined)
+		{
+			updates.push('intraword_punctuation = :intrawordPunctuation');
+			queryParams.intrawordPunctuation = intrawordPunctuation;
 		}
 
 		if (updates.length > 0)

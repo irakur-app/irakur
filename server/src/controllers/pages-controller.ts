@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Page, ReducedWordData, Word } from "@common/types";
+import { Language, Page, ReducedWordData, Word } from "@common/types";
 import { tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
@@ -53,7 +53,16 @@ class PagesController
 			}
 		).languageId;
 
-		const tokens: string[] = tokenizeString(page.content);
+		const language: Language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
+		const decodedAlphabet: string = decodeURI(language.alphabet);
+
+		const tokens: string[] = tokenizeString(page.content, language.alphabet, language.intrawordPunctuation);
 		
 		const dynamicQuery: string = queries.findWordsInBatch.replace(
 			/\%DYNAMIC\%/,
@@ -69,7 +78,8 @@ class PagesController
 		const wordData: ReducedWordData[] = databaseManager.getAllRows(
 			dynamicQuery,
 			{
-				languageId,
+				languageId: language.id,
+				alphabet: decodedAlphabet,
 			}
 		);
 
@@ -81,7 +91,7 @@ class PagesController
 					queries.getPotentialMultiwords,
 					{
 						content: wordData[i].content,
-						languageId,
+						languageId: language.id,
 					}
 				);
 
@@ -94,9 +104,11 @@ class PagesController
 					tokenCount = potentialMultiword.tokenCount;
 
 					tokens = wordData.slice(i, i + tokenCount);
-					const tokensContent: string = tokens.map((token: ReducedWordData): string => {
-						return token.content;
-					}).join('');
+					const tokensContent: string = tokens.map(
+						(token: ReducedWordData): string => {
+							return token.content;
+						}
+					).join('');
 
 					if (tokensContent === potentialMultiword.content)
 					{
@@ -107,14 +119,18 @@ class PagesController
 
 				if (multiword)
 				{
-					wordData.splice(i, multiword.tokenCount, {
-						content: multiword.content,
-						status: multiword.status,
-						type: "multiword",
-						tokens: tokens!,
-						potentialMultiword: undefined,
-						index: -1
-					});
+					wordData.splice(
+						i,
+						multiword.tokenCount,
+						{
+							content: multiword.content,
+							status: multiword.status,
+							type: "multiword",
+							tokens: tokens!,
+							potentialMultiword: undefined,
+							index: -1
+						}
+					);
 
 					i += multiword.tokenCount - 1;
 				}
@@ -139,11 +155,6 @@ class PagesController
 				startIndex += wordData[i].tokens!.length;
 			}
 		}
-	}
-	
-	isWord(token: string): boolean
-	{
-		return (token.match(/[ :;,.¿?¡!()\[\]{}\s'"\-=。、！？：；「」『』（）…＝・’“”—\d]/u) === null);
 	}
 }
 

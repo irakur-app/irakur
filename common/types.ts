@@ -9,6 +9,10 @@ type Language = {
 	name: string;
 	shouldShowSpaces: boolean;
 	dictionaryUrl: string;
+	alphabet: string;
+	sentenceDelimiters: string;
+	whitespaces: string;
+	intrawordPunctuation: string;
 };
 
 type Text = {

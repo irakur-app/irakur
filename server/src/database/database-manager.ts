@@ -43,6 +43,14 @@ class DatabaseManager
 
 		this.database = new Database(databaseFilePath);
 
+		this.database.function(
+			'regexp',
+			{ deterministic: true },
+			(regex: any, text: any) => {
+				return new RegExp(regex).test(text) ? 1 : 0;
+			}
+		);
+
 		console.log('Connected to ' + databaseFilePath);
 
 		this.initializeDatabase();

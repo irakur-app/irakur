@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Page, Text } from '@common/types';
+import { Language, Page, Text } from '@common/types';
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
 
@@ -29,7 +29,7 @@ class TextsController
 
 		const textId: number = databaseManager.getLastInsertId().id;
 
-		this.updatePage(textId, numberOfPages, content);
+		this.updatePage(textId, languageId, numberOfPages, content);
 	}
 
 	getAllTexts(): Text[]
@@ -150,7 +150,7 @@ class TextsController
 		}
 		if (numberOfPages !== undefined || content !== undefined)
 		{
-			this.updatePage(textId, numberOfPages, content);
+			this.updatePage(textId, languageId, numberOfPages, content);
 		}
 
 		if (updates.length > 0)
@@ -168,7 +168,7 @@ class TextsController
 		}
 	}
 
-	private updatePage(textId: number, numberOfPages: number, content: string)
+	private updatePage(textId: number, languageId: number, numberOfPages: number, content: string)
 	{
 		const pages: Page[] = databaseManager.getAllRows(
 			queries.getPagesByText,
@@ -189,7 +189,33 @@ class TextsController
 			newContent = pages.map((page: Page) => page.content).join('');
 		}
 
-		const sentences: string[] = newContent.split(/([^.?!。！？…]*[.?!。！？…\s\r\n]+)/u)
+		const language: Language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
+		/*
+		 * This regular expression captures sentences.
+		 * A sentence is defined as zero or more non-sentence-delimiter characters followed by
+		 * one sentence delimiter followed by one or more whitespaces.
+		 * 
+		 * Note that, if a sentence ends with multiple sentence delimiters,
+		 * only the last delimiter will be captured, instead of the entire sentence.
+		 * However, it still works for what we want to achieve, which is to *split* the text.
+		 */
+		const sentenceSplitter: RegExp = new RegExp(
+			"((?:(?!"
+				+ language.sentenceDelimiters
+				+ ").)*"
+				+ language.sentenceDelimiters
+				+ language.whitespaces
+				+ "+)",
+			'u'
+		);
+
+		const sentences: string[] = newContent.split(sentenceSplitter)
 			.filter((sentence: string) => sentence !== '');
 		const sentencesPerPage: number = Math.floor(sentences.length / newNumberOfPages);
 

@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Entry, RawWord, Word } from "@common/types";
+import { Entry, Language, RawWord, Word } from "@common/types";
 import { tokenizeString } from "../../../common/utils";
 import { databaseManager } from "../database/database-manager";
 import { queries } from "../database/queries";
@@ -21,7 +21,14 @@ class WordsController
 		timeUpdated: number
 	): void
 	{
-		const tokenizedContent: string[] = tokenizeString(content);
+		const language: Language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
+		const tokenizedContent: string[] = tokenizeString(content, language.alphabet, language.intrawordPunctuation);
 
 		databaseManager.runQuery(
 			queries.addWord,
@@ -32,7 +39,7 @@ class WordsController
 				notes,
 				timeAdded,
 				timeUpdated,
-				tokenizedContentLength: tokenizedContent.length,
+				tokenCount: tokenizedContent.length,
 			}
 		);
 
@@ -59,10 +66,17 @@ class WordsController
 		timeAdded: number
 	): void
 	{
+		const language: Language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
 		const valueList: string[] = [];
 		for (const content of contents)
 		{
-			const tokenizedContent: string[] = tokenizeString(content);
+			const tokenizedContent: string[] = tokenizeString(content, language.alphabet, language.intrawordPunctuation);
 
 			valueList.push(
 				`(${languageId}, '${content}', ${status}, '', '${timeAdded}', '${timeAdded}', ${tokenizedContent.length})`
@@ -154,6 +168,13 @@ class WordsController
 		wordId: number
 	): void
 	{
+		const language: Language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
 		const queryParams: Record<string, any> = {};
 		const updates: string[] = [];
 	
@@ -178,7 +199,7 @@ class WordsController
 			updates.push('content = :content');
 			queryParams.content = content;
 
-			const tokenizedContent: string[] = tokenizeString(content);
+			const tokenizedContent: string[] = tokenizeString(content, language.alphabet, language.intrawordPunctuation);
 
 			updates.push('token_count = :tokenCount');
 			queryParams.tokenCount = tokenizedContent.length;

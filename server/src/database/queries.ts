@@ -16,6 +16,10 @@ const queries: Record<string, string> = {
 		name TEXT NOT NULL,
 		dictionary_url TEXT,
 		should_show_spaces INTEGER NOT NULL DEFAULT 1,
+		alphabet TEXT NOT NULL,
+		sentence_delimiters TEXT NOT NULL,
+		whitespaces TEXT NOT NULL,
+		intraword_punctuation TEXT NOT NULL,
 		CONSTRAINT pk__language__id PRIMARY KEY (id),
 		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
@@ -135,20 +139,32 @@ const queries: Record<string, string> = {
 			id,
 			name,
 			dictionary_url AS dictionaryUrl,
-			should_show_spaces AS shouldShowSpaces
+			should_show_spaces AS shouldShowSpaces,
+			alphabet,
+			sentence_delimiters AS sentenceDelimiters,
+			whitespaces,
+			intraword_punctuation AS intrawordPunctuation
 		FROM language`,
 	getLanguage: `SELECT
 			id,
 			name,
 			dictionary_url AS dictionaryUrl,
-			should_show_spaces AS shouldShowSpaces
+			should_show_spaces AS shouldShowSpaces,
+			alphabet,
+			sentence_delimiters AS sentenceDelimiters,
+			whitespaces,
+			intraword_punctuation AS intrawordPunctuation
 		FROM language WHERE id = :languageId`,
 	addLanguage: `INSERT INTO language (
 			name,
 			dictionary_url,
-			should_show_spaces
+			should_show_spaces,
+			alphabet,
+			sentence_delimiters,
+			whitespaces,
+			intraword_punctuation
 		)
-		VALUES (:name, :dictionaryUrl, :shouldShowSpaces)`,
+		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces, :intrawordPunctuation)`,
 	deleteLanguage: `DELETE FROM language WHERE id = :languageId`,
 	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = :languageId`,
 	//#endregion
@@ -253,9 +269,7 @@ const queries: Record<string, string> = {
 			status,
 			CASE 
 				WHEN
-					NOT input_words.content GLOB '*[ :;,.¿?¡!(){}''"\-=。、！？：；「」『』（）　…＝・’“”—0123456789]*'
-					AND NOT input_words.content LIKE '%[%'
-					AND NOT input_words.content LIKE '%]%'
+					input_words.content REGEXP :alphabet
 				THEN 'word'
 				ELSE 'punctuation'
 			END AS type,

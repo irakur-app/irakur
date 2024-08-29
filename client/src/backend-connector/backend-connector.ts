@@ -18,7 +18,15 @@ class BackendConnector
 		}
 	}
 
-	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<boolean>
+	async addLanguage(
+		name: string,
+		dictionaryUrl: string,
+		shouldShowSpaces: boolean,
+		alphabet: string,
+		sentenceDelimiters: string,
+		whitespaces: string,
+		intrawordPunctuation: string
+	): Promise<boolean>
 	{
 		const response: Response = await fetch(
 			'/api/languages',
@@ -32,6 +40,10 @@ class BackendConnector
 						name,
 						dictionaryUrl,
 						shouldShowSpaces,
+						alphabet,
+						sentenceDelimiters,
+						whitespaces,
+						intrawordPunctuation,
 					}
 				),
 			}
@@ -74,7 +86,11 @@ class BackendConnector
 		languageId: number,
 		name: string,
 		dictionaryUrl: string,
-		shouldShowSpaces: boolean
+		shouldShowSpaces: boolean,
+		alphabet: string,
+		sentenceDelimiters: string,
+		whitespaces: string,
+		intrawordPunctuation: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -89,6 +105,10 @@ class BackendConnector
 						name,
 						dictionaryUrl,
 						shouldShowSpaces,
+						alphabet,
+						sentenceDelimiters,
+						whitespaces,
+						intrawordPunctuation,
 					}
 				),
 			}

@@ -10,7 +10,11 @@ Content-Type: application/json
 {
 	"name": "Test language",
 	"dictionaryUrl": "example.com",
-	"shouldShowSpaces": false
+	"shouldShowSpaces": false,
+	"alphabet": "[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]",
+	"sentenceDelimiters": "[\\u0021\\u002E\\u003F\\u0589\\u061F\\u06D4\\u0700\\u0701\\u0702\\u0964\\u104A\\u104B\\u1362\\u1367\\u1368\\u166E\\u1803\\u1809\\u203C\\u203D\\u2047\\u2048\\u2049\\u3002\\uFE52\\uFE57\\uFF01\\uFF0E\\uFF1F\\uFF61]",
+	"whitespaces": "[\\u0009\\u000A\\u000B\\u000C\\u000D\\u0020\\u0085\\u00A0\\u1680\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000\\u200B]",
+	"intrawordPunctuation": "[\\u0027]"
 }
 
 ###

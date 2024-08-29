@@ -176,7 +176,9 @@ const EditWord = (
 				placeholder="Word content"
 				value={
 					(content !== null)
-						? ((languageData.shouldShowSpaces ? content : content.replace(/\s/g, '')))
+						? languageData.shouldShowSpaces
+							? content
+							: content.replace(new RegExp(languageData.whitespaces, 'ug'), '')
 						: ''
 				}
 				style={{

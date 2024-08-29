@@ -44,7 +44,11 @@ const EditLanguage = (): JSX.Element => {
 			Number(form.get('id') as string),
 			form.get('name') as string,
 			form.get('dictionaryUrl') as string,
-			(form.get('shouldShowSpaces') as string) === 'on'
+			(form.get('shouldShowSpaces') as string) === 'on',
+			form.get('alphabet') as string,
+			form.get('sentenceDelimiters') as string,
+			form.get('whitespaces') as string,
+			form.get('intrawordPunctuation') as string
 		);
 
 		if (wasEdited)
@@ -81,6 +85,34 @@ const EditLanguage = (): JSX.Element => {
 					id="shouldShowSpaces"
 					defaultChecked={language.shouldShowSpaces}
 				/>
+				<br />
+				<label htmlFor="alphabet">Alphabet</label>
+				<input type="text" name="alphabet" id="alphabet" defaultValue={language.alphabet}/>
+				<br />
+				<label htmlFor="sentenceDelimiters">Sentence delimiters</label>
+				<input
+					type="text"
+					name="sentenceDelimiters"
+					id="sentenceDelimiters"
+					defaultValue={language.sentenceDelimiters}
+				/>
+				<br />
+				<label htmlFor="whitespaces">Whitespaces</label>
+				<input
+					type="text"
+					name="whitespaces"
+					id="whitespaces"
+					defaultValue={language.whitespaces}
+				/>
+				<br />
+				<label htmlFor="intrawordPunctuation">Intraword punctuation</label>
+				<input
+					type="text"
+					name="intrawordPunctuation"
+					id="intrawordPunctuation"
+					defaultValue={language.intrawordPunctuation}
+				/>
+				<br />
 
 				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>
