@@ -196,8 +196,22 @@ class TextsController
 			}
 		);
 
+		/*
+		 * This regular expression captures sentences.
+		 * A sentence is defined as zero or more non-sentence-delimiter characters followed by
+		 * one sentence delimiter followed by one or more whitespaces.
+		 * 
+		 * Note that, if a sentence ends with multiple sentence delimiters,
+		 * only the last delimiter will be captured, instead of the entire sentence.
+		 * However, it still works for what we want to achieve, which is to *split* the text.
+		 */
 		const sentenceSplitter: RegExp = new RegExp(
-			"([^" + language.sentenceDelimiters + "]*" + language.sentenceDelimiters + language.whitespaces + "+)",
+			"((?:(?!"
+				+ language.sentenceDelimiters
+				+ ").)*"
+				+ language.sentenceDelimiters
+				+ language.whitespaces
+				+ "+)",
 			'u'
 		);
 
