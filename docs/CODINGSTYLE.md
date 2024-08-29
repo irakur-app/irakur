@@ -97,7 +97,7 @@ if (!response.ok) {
 if (!response.ok)
 	...
 
-await databaseManager.executeQuery(queries.deleteWord,
+await databaseManager.runQuery(queries.deleteWord,
 	[wordId]
 );
 
@@ -107,7 +107,7 @@ if (!response.ok)
 	...
 }
 
-await databaseManager.executeQuery(
+await databaseManager.runQuery(
 	queries.deleteWord,
 	[wordId]
 );

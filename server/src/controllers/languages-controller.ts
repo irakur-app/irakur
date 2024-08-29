@@ -12,7 +12,7 @@ class LanguagesController
 {
 	async addLanguage(name: string, dictionaryUrl: string, shouldShowSpaces: boolean): Promise<void>
 	{
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.addLanguage,
 			[name, dictionaryUrl, shouldShowSpaces]
 		);
@@ -20,7 +20,7 @@ class LanguagesController
 
 	async deleteLanguage(languageId: number): Promise<void>
 	{
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.deleteLanguage,
 			[languageId]
 		);
@@ -63,13 +63,13 @@ class LanguagesController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
+			await databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
 	async getAllLanguages(): Promise<Language[]>
 	{
-		const languages: Language[] = await databaseManager.executeQuery(queries.getAllLanguages);
+		const languages: Language[] = await databaseManager.getAllRows(queries.getAllLanguages);
 		
 		return languages;
 	}

@@ -13,7 +13,7 @@ class PagesController
 {
 	async getPagesByText(textId: number): Promise<Page[]>
 	{
-		const pages: Page[] = await databaseManager.executeQuery(
+		const pages: Page[] = await databaseManager.getAllRows(
 			queries.getPagesByText,
 			[textId]
 		);
@@ -54,7 +54,7 @@ class PagesController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
+			await databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
@@ -83,7 +83,7 @@ class PagesController
 			}
 		);
 		
-		const wordData: ReducedWordData[] = await databaseManager.executeQuery(
+		const wordData: ReducedWordData[] = await databaseManager.getAllRows(
 			dynamicQuery,
 			[languageId, languageId]
 		);
@@ -92,7 +92,7 @@ class PagesController
 		{
 			if (wordData[i].potentialMultiword)
 			{
-				const potentialMultiwords: Word[] = await databaseManager.executeQuery(
+				const potentialMultiwords: Word[] = await databaseManager.getAllRows(
 					queries.getPotentialMultiwords,
 					[wordData[i].content, languageId]
 				);

@@ -18,7 +18,7 @@ class TextsController
 		numberOfPages: number
 	): Promise<void>
 	{
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.addText,
 			[languageId, title, sourceUrl]
 		);
@@ -30,14 +30,14 @@ class TextsController
 
 	async getAllTexts(): Promise<Text[]>
 	{
-		const texts: Text[] = await databaseManager.executeQuery(queries.getAllTexts);
+		const texts: Text[] = await databaseManager.getAllRows(queries.getAllTexts);
 
 		return texts;
 	}
 
 	async getTextsByLanguage(languageId: number): Promise<Text[]>
 	{
-		const texts: Text[] = await databaseManager.executeQuery(
+		const texts: Text[] = await databaseManager.getAllRows(
 			queries.getTextsByLanguage,
 			[languageId]
 		);
@@ -57,7 +57,7 @@ class TextsController
 
 	async getNumberOfPages(textId: number): Promise<number>
 	{
-		const numberOfPages: number = (await databaseManager.executeQuery(
+		const numberOfPages: number = (await databaseManager.getAllRows(
 			queries.getPagesByText,
 			[textId]
 		)).length;
@@ -67,12 +67,12 @@ class TextsController
 
 	async deleteText(textId: number): Promise<void>
 	{
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.deletePagesByText,
 			[textId]
 		);
 
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.deleteText,
 			[textId]
 		);
@@ -148,13 +148,13 @@ class TextsController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
+			await databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
 	private async updatePage(textId: number, numberOfPages: number, content: string)
 	{
-		const pages: Page[] = await databaseManager.executeQuery(
+		const pages: Page[] = await databaseManager.getAllRows(
 			queries.getPagesByText,
 			[textId]
 		);
@@ -185,7 +185,7 @@ class TextsController
 			newPageContents[i] = sentences.slice(firstPageIndex, lastPageIndex+1).join('');
 			if (i < pages.length)
 			{
-				await databaseManager.executeQuery(
+				await databaseManager.runQuery(
 					queries.editPage,
 					[newPageContents[i], textId, i + 1]
 				);
@@ -209,11 +209,11 @@ class TextsController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery);
+			await databaseManager.runQuery(dynamicQuery);
 		}
 		if (newNumberOfPages < pages.length)
 		{
-			await databaseManager.executeQuery(
+			await databaseManager.runQuery(
 				queries.deletePagesInBatch,
 				[textId, newNumberOfPages + 1]
 			);

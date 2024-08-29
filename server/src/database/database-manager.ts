@@ -6,7 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import sqlite3 from 'sqlite3';
+import Database from 'better-sqlite3';
 
 import { getEnvironmentVariable } from '../../../common/utils';
 import { queries } from './queries';
@@ -14,7 +14,7 @@ import { queries } from './queries';
 class DatabaseManager
 {
 	private static instance: DatabaseManager;
-	database: sqlite3.Database | null = null;
+	database: Database.Database | null = null;
 
 	constructor()
 	{
@@ -27,7 +27,7 @@ class DatabaseManager
 		DatabaseManager.instance = this;
 	}
 
-	openDatabase(databaseFilePath: string): sqlite3.Database
+	openDatabase(databaseFilePath: string): void
 	{
 		if (!fs.existsSync(databaseFilePath))
 		{
@@ -43,23 +43,18 @@ class DatabaseManager
 			}
 		}
 
-		this.database = new sqlite3.Database(
+		const options: Database.Options = {
+			readonly: false,
+		};
+
+		this.database = new Database(
 			databaseFilePath,
-			(error: Error | null): void => {
-				if (error)
-				{
-					console.error(error.message);
-				}
-				else
-				{
-					console.log('Connected to ' + databaseFilePath);
-				}
-			}
+			options
 		);
 
-		this.initializeDatabase();
+		console.log('Connected to ' + databaseFilePath);
 
-		return this.database;
+		this.initializeDatabase();
 	}
 
 	closeDatabase(): void
@@ -75,82 +70,77 @@ class DatabaseManager
 	async initializeDatabase(): Promise<void>
 	{
 		// Create tables
-		await this.executeQuery(queries.createConfigurationTable);
-		await this.executeQuery(queries.createLanguageTable);
-		await this.executeQuery(queries.createTextTable);
-		await this.executeQuery(queries.createPageTable);
-		await this.executeQuery(queries.createWordTable);
-		await this.executeQuery(queries.createEntryTable);
-		await this.executeQuery(queries.createStatusLogTable);
+		await this.runQuery(queries.createConfigurationTable);
+		await this.runQuery(queries.createLanguageTable);
+		await this.runQuery(queries.createTextTable);
+		await this.runQuery(queries.createPageTable);
+		await this.runQuery(queries.createWordTable);
+		await this.runQuery(queries.createEntryTable);
+		await this.runQuery(queries.createStatusLogTable);
 
 		// Create indexes
-		await this.executeQuery(queries.createTextLanguageIdTitleIndex);
-		await this.executeQuery(queries.createWordLowerContentLanguageIdIndex);
-		await this.executeQuery(queries.createWordLanguageIdTokenCountContentIndex);
+		await this.runQuery(queries.createTextLanguageIdTitleIndex);
+		await this.runQuery(queries.createWordLowerContentLanguageIdIndex);
+		await this.runQuery(queries.createWordLanguageIdTokenCountContentIndex);
 
 		// Create triggers
-		await this.executeQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
-		await this.executeQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
-		await this.executeQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
+		await this.runQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
+		await this.runQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
+		await this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
 	}
 
-	executeQuery(query: string, parameters: any[] = []): Promise<any>
+	runQuery(query: string, parameters: any[] = []): void
 	{
-		return new Promise(
-			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
-				if (this.database === null)
-				{
-					reject('Database not initialized.');
-					return;
-				}
-				this.database.all(
-					query,
-					parameters,
-					(error: Error | null, rows: unknown[]) => {
-						if (error)
-						{
-							reject(error);
-						}
-						else
-						{
-							resolve(rows);
-						}
-					}
-				);
-			}
-		);
+		if (this.database === null)
+		{
+			throw new Error('Database not initialized.');
+		}
+
+		parameters = this.fixParameters(parameters);
+
+		this.database.prepare(query).run(parameters);
 	}
 
-	getFirstRow(query: string, parameters: any[] = []): Promise<any>
+	getAllRows(query: string, parameters: any[] = []): any[]
 	{
-		return new Promise(
-			(resolve: (value: any) => void, reject: (reason?: any) => void): void => {
-				if (this.database === null)
-				{
-					reject('Database not initialized.');
-					return;
-				}
-				this.database.all(
-					query,
-					parameters,
-					(error: Error | null, rows: unknown[]) => {
-						if (error)
-						{
-							reject(error);
-						}
-						else
-						{
-							resolve(rows[0]);
-						}
-					}
-				);
-			}
-		);
+		if (this.database === null)
+		{
+			throw new Error('Database not initialized.');
+		}
+
+		parameters = this.fixParameters(parameters);
+
+		return this.database.prepare(query).all(parameters);
+	}
+
+	getFirstRow(query: string, parameters: any[] = []): any
+	{
+		if (this.database === null)
+		{
+			throw new Error('Database not initialized.');
+		}
+
+		parameters = this.fixParameters(parameters);
+		
+		return this.database.prepare(query).get(parameters);
 	}
 
 	getLastInsertId(): Promise<any>
 	{
 		return this.getFirstRow(queries.getLastInsertId);
+	}
+
+	fixParameters(parameters: any[]): any[]
+	{
+		return parameters.map(
+			parameter => {
+				if (typeof parameter === "boolean")
+				{
+					return parameter ? 1 : 0;
+				}
+				return parameter;
+			}
+		);
 	}
 }
 

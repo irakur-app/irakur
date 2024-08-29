@@ -23,7 +23,7 @@ class WordsController
 	{
 		const tokenizedContent: string[] = tokenizeString(content);
 
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.addWord,
 			[languageId, content, status, notes, timeAdded, timeUpdated, tokenizedContent.length]
 		);
@@ -32,7 +32,7 @@ class WordsController
 
 		for (let i = 0; i < entries.length; i++)
 		{
-			await databaseManager.executeQuery(
+			await databaseManager.runQuery(
 				queries.addEntry,
 				[wordId, i, entries[i].meaning, entries[i].reading]
 			);
@@ -63,7 +63,7 @@ class WordsController
 			}
 		);
 
-		await databaseManager.executeQuery(dynamicQuery);
+		await databaseManager.runQuery(dynamicQuery);
 	}
 
 	async getWord(wordId: number): Promise<Word>
@@ -73,7 +73,7 @@ class WordsController
 			[wordId]
 		);
 
-		const entries: Entry[] = await databaseManager.executeQuery(
+		const entries: Entry[] = await databaseManager.getAllRows(
 			queries.getEntriesByWord,
 			[wordId]
 		);
@@ -98,7 +98,7 @@ class WordsController
 			return null;
 		}
 
-		const entries: Entry[] = await databaseManager.executeQuery(
+		const entries: Entry[] = await databaseManager.getAllRows(
 			queries.getEntriesByWord,
 			[rawWord.id]
 		);
@@ -113,7 +113,7 @@ class WordsController
 
 	async deleteWord(wordId: number): Promise<void>
 	{
-		await databaseManager.executeQuery(
+		await databaseManager.getAllRows(
 			queries.deleteWord,
 			[wordId]
 		);
@@ -193,13 +193,13 @@ class WordsController
 				}
 			);
 
-			await databaseManager.executeQuery(dynamicQuery, queryParams);
+			await databaseManager.runQuery(dynamicQuery, queryParams);
 		}
 	}
 
 	async updateEntries(wordId: number, entries: Entry[]): Promise<void>
 	{
-		await databaseManager.executeQuery(
+		await databaseManager.runQuery(
 			queries.deleteEntriesByWord,
 			[wordId]
 		);
@@ -224,7 +224,7 @@ class WordsController
 			}
 		);
 
-		await databaseManager.executeQuery(dynamicQuery);
+		await databaseManager.runQuery(dynamicQuery);
 	}
 }
 
