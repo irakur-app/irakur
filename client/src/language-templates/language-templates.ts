@@ -96,4 +96,23 @@ const targetLanguages: TargetLanguageRecord = {
 	},
 };
 
-export { getTemplate, targetLanguages };
+const getPartialTemplate = (targetLanguageName: string, auxiliaryLanguageName: string): Partial<LanguageTemplate> => {
+	console.log(targetLanguageName, auxiliaryLanguageName);
+	if (targetLanguageName === '')
+	{
+		return {};
+	}
+	const { templates, ...baseProperties } = targetLanguages[targetLanguageName];
+	if (auxiliaryLanguageName === '')
+	{
+		return baseProperties;
+	}
+	const specificProperties = targetLanguages[targetLanguageName].templates[auxiliaryLanguageName];
+
+	return {
+		...baseProperties,
+		...specificProperties,
+	};
+};
+
+export { getPartialTemplate, targetLanguages };
