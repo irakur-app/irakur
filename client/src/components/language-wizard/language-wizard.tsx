@@ -40,7 +40,7 @@ const LanguageWizard = (
 			>
 				<option value="">Configure it yourself</option>
 				{
-					Object.keys(targetLanguages).map(
+					Object.keys(targetLanguages).sort().map(
 						(targetLanguage: string) => (
 							<option
 								key={targetLanguage}
@@ -71,7 +71,7 @@ const LanguageWizard = (
 			>
 				<option value="">Configure it yourself</option>
 				{
-					(targetLanguage !== '') && Object.keys(targetLanguages[targetLanguage].templates).map(
+					(targetLanguage !== '') && Object.keys(targetLanguages[targetLanguage].templates).sort().map(
 						(auxiliaryLanguage: string) => (
 							<option
 								key={auxiliaryLanguage}
