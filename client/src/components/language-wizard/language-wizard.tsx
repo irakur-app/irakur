@@ -13,7 +13,7 @@ const LanguageWizard = (
 	{
 		finishWizard
 	}: {
-		finishWizard: (targetLanguageName: string, auxiliaryLanguageName: string) => void
+		finishWizard: (targetLanguageName: string | null, auxiliaryLanguageName: string | null) => void
 	}
 ): JSX.Element => {
 	const [targetLanguage, setTargetLanguage] = useState<string>('');
@@ -23,7 +23,10 @@ const LanguageWizard = (
 	const handleSubmit = (): void => {
 		setIsSubmitting(true);
 
-		finishWizard(targetLanguage, auxiliaryLanguage);
+		finishWizard(
+			targetLanguage === '' ? null : targetLanguage,
+			auxiliaryLanguage === '' ? null : auxiliaryLanguage
+		);
 	};
 
 	return (

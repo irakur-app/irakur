@@ -18,7 +18,7 @@ const AddLanguage = (): JSX.Element => {
 	{
 		return <LanguageWizard
 			finishWizard={
-				(targetLanguageName: string, auxiliaryLanguageName: string): void => {
+				(targetLanguageName: string | null, auxiliaryLanguageName: string | null): void => {
 					setTargetLanguageName(targetLanguageName);
 					setAuxiliaryLanguageName(auxiliaryLanguageName);
 					setIsWizardDone(true);

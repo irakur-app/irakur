@@ -16,6 +16,7 @@ type BaseProperties = {
 	whitespaces: string;
 	intrawordPunctuation: string;
 	shouldShowSpaces: boolean;
+	script: string;
 };
 
 type LanguageTemplate = BaseProperties & SpecificProperties;
@@ -34,6 +35,7 @@ const targetLanguages: TargetLanguageRecord = {
 		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 		shouldShowSpaces: true,
+		script: 'Latin',
 		templates: {
 			English: {
 				translatedName: 'English',
@@ -57,6 +59,7 @@ const targetLanguages: TargetLanguageRecord = {
 		sentenceDelimiters: '[!.?…。．？｡！]',
 		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
+		script: 'Japanese',
 		templates: {
 			Japanese: {
 				translatedName: '日本語',
@@ -74,11 +77,12 @@ const targetLanguages: TargetLanguageRecord = {
 	},
 	Spanish: {
 		nativeName: 'Español',
-		alphabet: '[a-zA-ZáéíóúÁÉÍÓÚüÜñÑçÇ]',
+		alphabet: '[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]',
 		sentenceDelimiters: '[!.?…]',
 		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 		shouldShowSpaces: true,
+		script: 'Latin',
 		templates: {
 			Spanish: {
 				translatedName: 'Español',
@@ -96,17 +100,22 @@ const targetLanguages: TargetLanguageRecord = {
 	},
 };
 
-const getPartialTemplate = (targetLanguageName: string, auxiliaryLanguageName: string): Partial<LanguageTemplate> => {
-	console.log(targetLanguageName, auxiliaryLanguageName);
-	if (targetLanguageName === '')
+const getPartialTemplate = (
+	targetLanguageName: string | null,
+	auxiliaryLanguageName: string | null
+): Partial<LanguageTemplate> => {
+	if (targetLanguageName === null || targetLanguageName === '')
 	{
 		return {};
 	}
+
 	const { templates, ...baseProperties } = targetLanguages[targetLanguageName];
-	if (auxiliaryLanguageName === '')
+
+	if (auxiliaryLanguageName === null || auxiliaryLanguageName === '')
 	{
 		return baseProperties;
 	}
+
 	const specificProperties = targetLanguages[targetLanguageName].templates[auxiliaryLanguageName];
 
 	return {
