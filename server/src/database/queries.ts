@@ -272,9 +272,10 @@ const queries: Record<string, string> = {
 			input_words.content AS content,
 			status,
 			CASE 
-				WHEN
-					input_words.content REGEXP :alphabet
-				THEN 'word'
+				WHEN input_words.content REGEXP :alphabet
+					THEN 'word'
+				WHEN input_words.content REGEXP :whitespaces
+					THEN 'whitespace'
 				ELSE 'punctuation'
 			END AS type,
 			EXISTS (

@@ -498,8 +498,9 @@ const Reader = (
 		{
 			renderedElement = <br key={word.index} data-index={word.index} style={{ marginBottom: "1rem" }}/>;
 		}
-		else if (new RegExp(languageData.whitespaces, 'ug').test(word.content))
+		else if (word.type === 'whitespace')
 		{
+			console.log("Regex: " + languageData.whitespaces + "\tContent: " + word.content);
 			renderedElement = whitespaceRender(word);
 		}
 		else if (word.type === 'punctuation')
