@@ -21,13 +21,13 @@ const scripts: Record<string, Script> = {
 	'Latin': {
 		alphabet: '[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]',
 		sentenceDelimiters: '[!.?…]',
-		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
+		whitespaces: '[\\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 	},
 	'Japanese': {
 		alphabet: '[一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[々〆〤ヶ]+',
 		sentenceDelimiters: '[!.?…。．？｡！]',
-		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
+		whitespaces: '[\\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 	},
 };

@@ -32,7 +32,7 @@ const targetLanguages: TargetLanguageRecord = {
 		nativeName: 'English',
 		alphabet: '[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]',
 		sentenceDelimiters: '[!.?…]',
-		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
+		whitespaces: '[\\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 		shouldShowSpaces: true,
 		script: 'Latin',
@@ -57,7 +57,7 @@ const targetLanguages: TargetLanguageRecord = {
 		shouldShowSpaces: true, // Since U+200B will be used by default to represent word breaks,
 								// there's no need to hide whitespaces in general.
 		sentenceDelimiters: '[!.?…。．？｡！]',
-		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
+		whitespaces: '[\\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 		script: 'Japanese',
 		templates: {
@@ -79,7 +79,7 @@ const targetLanguages: TargetLanguageRecord = {
 		nativeName: 'Español',
 		alphabet: '[a-zA-Z\\u00C0-\\u024F\\u1E00-\\u1EFF]',
 		sentenceDelimiters: '[!.?…]',
-		whitespaces: '[\s\\u0085\\u2001-\\u2009\\u200B]',
+		whitespaces: '[\\s\\u0085\\u2001-\\u2009\\u200B]',
 		intrawordPunctuation: '',
 		shouldShowSpaces: true,
 		script: 'Latin',
