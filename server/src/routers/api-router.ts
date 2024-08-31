@@ -64,7 +64,8 @@ router.post(
 				req.body.sentenceDelimiters,
 				req.body.whitespaces,
 				req.body.intrawordPunctuation,
-				req.body.templateCode
+				req.body.templateCode,
+				req.body.scriptName
 			);
 			res.sendStatus(200);
 		}

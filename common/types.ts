@@ -14,6 +14,7 @@ type Language = {
 	whitespaces: string;
 	intrawordPunctuation: string;
 	templateCode: string;
+	scriptName: string;
 };
 
 type Text = {

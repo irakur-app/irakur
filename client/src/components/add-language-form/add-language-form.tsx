@@ -74,7 +74,8 @@ const AddLanguageForm = (
 			form.get('sentenceDelimiters') as string,
 			form.get('whitespaces') as string,
 			form.get('intrawordPunctuation') as string,
-			(targetLanguageName || '') + ':' + (auxiliaryLanguageName || '')
+			(targetLanguageName || '') + ':' + (auxiliaryLanguageName || ''),
+			form.get('scriptName') as string
 		);
 
 		if (wasAdded)
@@ -126,8 +127,10 @@ const AddLanguageForm = (
 				<br />
 				<br />
 
-				<label htmlFor="script">Script</label>
+				<label htmlFor="scriptName">Script</label>
 				<select
+					name="scriptName"
+					id="scriptName"
 					defaultValue={languageTemplate.script || 'Latin'}
 					onChange={
 						(event): void => {

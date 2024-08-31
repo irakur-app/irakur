@@ -26,7 +26,8 @@ class BackendConnector
 		sentenceDelimiters: string,
 		whitespaces: string,
 		intrawordPunctuation: string,
-		templateCode: string
+		templateCode: string,
+		scriptName: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(

@@ -18,7 +18,8 @@ class LanguagesController
 		sentenceDelimiters: string,
 		whitespaces: string,
 		intrawordPunctuation: string,
-		templateCode: string
+		templateCode: string,
+		scriptName: string
 	): void
 	{
 		databaseManager.runQuery(
@@ -32,6 +33,7 @@ class LanguagesController
 				whitespaces,
 				intrawordPunctuation,
 				templateCode,
+				scriptName,
 			}
 		);
 	}
