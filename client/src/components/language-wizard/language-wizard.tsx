@@ -85,7 +85,11 @@ const LanguageWizard = (
 									}
 								}
 							>
-								{auxiliaryLanguage}
+								{
+									auxiliaryLanguage === targetLanguage
+										? `${auxiliaryLanguage} (Monolingual)`
+										: auxiliaryLanguage
+								}
 							</option>
 						)
 					)
