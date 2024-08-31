@@ -89,11 +89,11 @@ const targetLanguages: TargetLanguageRecord = {
 				dictionaryUrl: 'https://www.wordreference.com/definicion/%s',
 			},
 			English: {
-				translatedName: 'Español',
+				translatedName: 'Spanish',
 				dictionaryUrl: 'https://www.wordreference.com/es/en/translation.asp?spen=%s',
 			},
 			Japanese: {
-				translatedName: 'Español',
+				translatedName: 'スペイン語',
 				dictionaryUrl: 'https://aulex.org/japones/?busca=%s',
 			},
 		},
