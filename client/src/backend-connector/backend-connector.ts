@@ -25,7 +25,8 @@ class BackendConnector
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string,
-		intrawordPunctuation: string
+		intrawordPunctuation: string,
+		templateCode: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -44,6 +45,7 @@ class BackendConnector
 						sentenceDelimiters,
 						whitespaces,
 						intrawordPunctuation,
+						templateCode,
 					}
 				),
 			}

@@ -63,7 +63,8 @@ router.post(
 				req.body.alphabet,
 				req.body.sentenceDelimiters,
 				req.body.whitespaces,
-				req.body.intrawordPunctuation
+				req.body.intrawordPunctuation,
+				req.body.templateCode
 			);
 			res.sendStatus(200);
 		}

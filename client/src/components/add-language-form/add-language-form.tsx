@@ -73,7 +73,8 @@ const AddLanguageForm = (
 			form.get('alphabet') as string,
 			form.get('sentenceDelimiters') as string,
 			form.get('whitespaces') as string,
-			form.get('intrawordPunctuation') as string
+			form.get('intrawordPunctuation') as string,
+			(targetLanguageName || '') + ':' + (auxiliaryLanguageName || '')
 		);
 
 		if (wasAdded)
