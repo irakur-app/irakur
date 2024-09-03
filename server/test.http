@@ -157,3 +157,6 @@ Content-Type: application/json
 {
 	"newProfileName": "User 3"
 }
+
+###
+POST http://localhost:5000/api/plugins/start

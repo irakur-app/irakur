@@ -9,6 +9,7 @@ import express from 'express';
 import { dataFolderManager } from '../managers/data-folder-manager';
 import { LanguagesController } from '../controllers/languages-controller';
 import { PagesController } from '../controllers/pages-controller';
+import { pluginManager } from '../plugins/plugin-manager';
 import { StatisticsController } from '../controllers/statistics-controller';
 import { TextsController } from '../controllers/texts-controller';
 import { WordsController } from '../controllers/words-controller';
@@ -375,5 +376,16 @@ router.patch(
 	)
 );
 //#endregion
+
+//#region Plugins
+router.post(
+	'/plugins/start',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			pluginManager.startPlugins();
+			res.sendStatus(200);
+		}
+	)
+);
 
 export { router };
