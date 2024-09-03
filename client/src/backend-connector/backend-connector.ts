@@ -47,6 +47,7 @@ class BackendConnector
 						whitespaces,
 						intrawordPunctuation,
 						templateCode,
+						scriptName,
 					}
 				),
 			}
