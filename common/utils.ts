@@ -31,7 +31,7 @@ const tokenizeString = (str: string, alphabet: string, intrawordPunctuation: str
 		"("
 			+ intrawordPunctuation + "(?!" + alphabet + ")"
 			+ "|(?<!"+ alphabet + ")" + intrawordPunctuation
-			+ "|(?!" + alphabet + "|" + intrawordPunctuation + ").|\n"
+			+ "|(?!" + alphabet + (intrawordPunctuation === '' ? '' : ('|' + intrawordPunctuation)) + ").|\n"
 			+ ")",
 		'u'
 	);

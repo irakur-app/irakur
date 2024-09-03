@@ -13,6 +13,8 @@ type Language = {
 	sentenceDelimiters: string;
 	whitespaces: string;
 	intrawordPunctuation: string;
+	templateCode: string;
+	scriptName: string;
 };
 
 type Text = {

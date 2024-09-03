@@ -61,6 +61,7 @@ class PagesController
 		);
 
 		const decodedAlphabet: string = decodeURI(language.alphabet);
+		const decodedWhitespaces: string = decodeURI(language.whitespaces);
 
 		const tokens: string[] = tokenizeString(page.content, language.alphabet, language.intrawordPunctuation);
 		
@@ -80,6 +81,7 @@ class PagesController
 			{
 				languageId: language.id,
 				alphabet: decodedAlphabet,
+				whitespaces: decodedWhitespaces,
 			}
 		);
 

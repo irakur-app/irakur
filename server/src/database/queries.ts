@@ -20,6 +20,8 @@ const queries: Record<string, string> = {
 		sentence_delimiters TEXT NOT NULL,
 		whitespaces TEXT NOT NULL,
 		intraword_punctuation TEXT NOT NULL,
+		template_code TEXT NOT NULL,
+		script_name TEXT NOT NULL,
 		CONSTRAINT pk__language__id PRIMARY KEY (id),
 		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
@@ -143,7 +145,9 @@ const queries: Record<string, string> = {
 			alphabet,
 			sentence_delimiters AS sentenceDelimiters,
 			whitespaces,
-			intraword_punctuation AS intrawordPunctuation
+			intraword_punctuation AS intrawordPunctuation,
+			template_code AS templateCode,
+			script_name AS scriptName
 		FROM language`,
 	getLanguage: `SELECT
 			id,
@@ -153,7 +157,9 @@ const queries: Record<string, string> = {
 			alphabet,
 			sentence_delimiters AS sentenceDelimiters,
 			whitespaces,
-			intraword_punctuation AS intrawordPunctuation
+			intraword_punctuation AS intrawordPunctuation,
+			template_code AS templateCode,
+			script_name AS scriptName
 		FROM language WHERE id = :languageId`,
 	addLanguage: `INSERT INTO language (
 			name,
@@ -162,9 +168,11 @@ const queries: Record<string, string> = {
 			alphabet,
 			sentence_delimiters,
 			whitespaces,
-			intraword_punctuation
+			intraword_punctuation,
+			template_code,
+			script_name
 		)
-		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces, :intrawordPunctuation)`,
+		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces, :intrawordPunctuation, :templateCode, :scriptName)`,
 	deleteLanguage: `DELETE FROM language WHERE id = :languageId`,
 	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = :languageId`,
 	//#endregion
@@ -268,9 +276,10 @@ const queries: Record<string, string> = {
 			input_words.content AS content,
 			status,
 			CASE 
-				WHEN
-					input_words.content REGEXP :alphabet
-				THEN 'word'
+				WHEN input_words.content REGEXP :alphabet
+					THEN 'word'
+				WHEN input_words.content REGEXP :whitespaces
+					THEN 'whitespace'
 				ELSE 'punctuation'
 			END AS type,
 			EXISTS (
