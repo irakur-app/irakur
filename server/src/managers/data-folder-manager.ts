@@ -72,7 +72,10 @@ class DataFolderManager
 			.filter((dirent: fs.Dirent) => dirent.isDirectory())
 			.map((dirent: fs.Dirent) => path.join(pluginsFolderPath, dirent.name));
 
-		pluginManager.loadPlugins(pluginNames);
+		pluginManager.loadPlugins(pluginNames)
+			.then(
+				() => pluginManager.startPlugins()
+			);
 	}
 
 	private initializePluginFolder(pluginsFolderPath: string): void
