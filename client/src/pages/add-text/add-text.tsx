@@ -27,10 +27,15 @@ const AddText = (): JSX.Element => {
 
 		const form = new FormData(event.target as HTMLFormElement);
 
+		const processedText: string = await backendConnector.processText(
+			form.get('content') as string,
+			Number(form.get('languageId') as string),
+		);
+
 		const wasEdited: boolean = await backendConnector.addText(
 			form.get('title') as string,
 			Number(form.get('languageId') as string),
-			form.get('content') as string,
+			processedText,
 			Number(form.get('numberOfPages') as string),
 			form.get('sourceUrl') as string,
 		);

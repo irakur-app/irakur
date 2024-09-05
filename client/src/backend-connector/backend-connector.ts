@@ -497,6 +497,34 @@ class BackendConnector
 
 		return response.ok;
 	}
+
+	async processText(text: string, languageId: number): Promise<string>
+	{
+		const response: Response = await fetch(
+			'/api/plugins/process-text/',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						text,
+						languageId,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to process text');
+		}
+
+		const processedText = (await response.json()).text;
+
+		return processedText;
+	}
 }
 
 const backendConnector: BackendConnector = new BackendConnector();
