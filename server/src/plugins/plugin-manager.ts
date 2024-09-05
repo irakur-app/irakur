@@ -71,6 +71,9 @@ class PluginManager
 					console.log('Registered word data provider: ' + wordDataProvider.name);
 				},
 			},
+			symbols: {
+				anyLanguage: Symbol('anyLanguage'),
+			},
 		};
 
 		const irakur = sandboxProxy(this.api);
@@ -108,14 +111,29 @@ class PluginManager
 		}
 	}
 	
-	async processText(text: string): Promise<string>
+	async processText(text: string, textProcessors: TextProcessor[]): Promise<string>
 	{
-		for (const textProcessor of this.textProcessors)
+		for (const textProcessor of textProcessors)
 		{
 			text = await textProcessor.processText(text);
 		}
 		console.log(text);
 		return text;
+	}
+
+	async processTextInLanguage(text: string, language: string): Promise<string>
+	{
+		const textProcessors = this.textProcessors.filter(
+			(textProcessor) => {
+				if (Array.isArray(textProcessor.languages))
+				{
+					return textProcessor.languages.includes(language);
+				}
+				
+				return textProcessor.languages === this.api.symbols.anyLanguage;
+			}
+		);
+		return this.processText(text, textProcessors);
 	}
 }
 

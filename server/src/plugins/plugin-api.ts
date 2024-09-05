@@ -23,7 +23,7 @@ interface Plugin
 interface TextProcessor
 {
 	name: string;
-	languages: string[] | null;
+	languages: string[] | Symbol;
 	processText: (text: string) => Promise<string>;
 };
 
@@ -41,6 +41,9 @@ interface IrakurApi
 		register: (plugin: Plugin) => void;
 		registerTextProcessor: (textProcessor: TextProcessor) => void;
 		registerWordDataProvider: (wordDataProvider: WordDataProvider) => void;
+	};
+	symbols: {
+		anyLanguage: Symbol;
 	};
 };
 

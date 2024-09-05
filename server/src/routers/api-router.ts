@@ -392,7 +392,7 @@ router.post(
 	'/plugins/process-text',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			res.json({ text: await pluginManager.processText(req.body.text) });
+			res.json({ text: await pluginManager.processTextInLanguage(req.body.text, req.body.language) });
 		}
 	)
 );

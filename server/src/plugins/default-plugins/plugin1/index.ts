@@ -8,7 +8,7 @@ import { Plugin, TextProcessor, irakur } from './irakur-api';
 
 const uppercaseTextProcessor: TextProcessor = {
 	name: 'Convert to uppercase',
-	languages: null,
+	languages: irakur.symbols.anyLanguage,
 	processText: async (text: string): Promise<string> => {
 		return text.toUpperCase();
 	},
@@ -16,7 +16,7 @@ const uppercaseTextProcessor: TextProcessor = {
 
 const newLinesTextProcessor: TextProcessor = {
 	name: 'Add new lines',
-	languages: null,
+	languages: irakur.symbols.anyLanguage,
 	processText: async (text: string): Promise<string> => {
 		return text.replace(/\s/g, '\n');
 	},
