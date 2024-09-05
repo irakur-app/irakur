@@ -4,7 +4,7 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Plugin, IrakurApi, TextProcessor } from './irakur-api';
+import { Plugin, TextProcessor, irakur } from './irakur-api';
 
 const uppercaseTextProcessor: TextProcessor = {
 	name: 'Convert to uppercase',
@@ -26,14 +26,14 @@ const newLinesTextProcessor: TextProcessor = {
 
 const plugin: Plugin = {
 	name: 'Plugin 1',
-	start: async (irakurApi: any) => {
-		irakurApi.plugins.registerTextProcessor(uppercaseTextProcessor);
-		irakurApi.plugins.registerTextProcessor(newLinesTextProcessor);
+	start: async () => {
+		irakur.plugins.registerTextProcessor(uppercaseTextProcessor);
+		irakur.plugins.registerTextProcessor(newLinesTextProcessor);
 	},
 };
 
-const initPlugin = (irakurApi: IrakurApi) => {
-	irakurApi.plugins.register(plugin);
+const initPlugin = () => {
+	irakur.plugins.register(plugin);
 };
 
 export default initPlugin;

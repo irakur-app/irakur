@@ -5,6 +5,7 @@
  */
 
 import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
+import { sandboxProxy } from './sandbox-proxy';
 
 class PluginManager
 {
@@ -40,6 +41,9 @@ class PluginManager
 				},
 			},
 		};
+
+		const irakur = sandboxProxy(this.api);
+		global.irakur = irakur;
 
 		PluginManager.instance = this;
 	}

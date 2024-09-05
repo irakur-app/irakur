@@ -17,7 +17,7 @@ type DictionaryWordData = {
 interface Plugin
 {
 	name: string;
-	start?: (irakurApi: any) => Promise<void>;
+	start?: () => Promise<void>;
 };
 
 interface TextProcessor
@@ -46,4 +46,6 @@ interface IrakurApi
 	};
 };
 
-export { Plugin, IrakurApi, TextProcessor, WordDataProvider };
+const irakur: IrakurApi = global.irakur;
+
+export { Plugin, IrakurApi, TextProcessor, WordDataProvider, irakur };
