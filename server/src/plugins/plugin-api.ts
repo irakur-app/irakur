@@ -23,7 +23,6 @@ interface Plugin
 interface TextProcessor
 {
 	name: string;
-	pluginName: string;
 	languages: string[] | null;
 	processText: (text: string) => Promise<string>;
 };
@@ -31,7 +30,6 @@ interface TextProcessor
 interface WordDataProvider
 {
 	name: string;
-	pluginName: string;
 	targetLanguage: string;
 	auxiliaryLanguage: string;
 	getWordData: (wordContent: string) => Promise<DictionaryWordData>;

@@ -4,18 +4,25 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+import { AsyncLocalStorage } from 'async_hooks';
 import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
 import { sandboxProxy } from './sandbox-proxy';
+
+type PluginNameReference = {
+	pluginName: string;
+};
 
 class PluginManager
 {
 	private static instance: PluginManager;
 
 	private plugins: Plugin[] = [];
-	private textProcessors: TextProcessor[] = [];
-	private wordDataProviders: WordDataProvider[] = [];
+	private textProcessors: (TextProcessor & PluginNameReference)[] = [];
+	private wordDataProviders: (WordDataProvider & PluginNameReference)[] = [];
 
 	public api: IrakurApi;
+
+	private asyncLocalStorage = new AsyncLocalStorage<string>();
 
 	constructor()
 	{
@@ -32,12 +39,36 @@ class PluginManager
 					console.log('Registered plugin: ' + plugin.name);
 				},
 				registerTextProcessor: (textProcessor: TextProcessor) => {
-					this.textProcessors.push(textProcessor);
+					const pluginName = this.asyncLocalStorage.getStore();
+
+					if (!pluginName)
+					{
+						throw new Error('No plugin name found');
+					}
+
+					const textProcessorWithPluginName: TextProcessor & PluginNameReference = {
+						...textProcessor,
+						pluginName: pluginName,
+					}
+					
+					this.textProcessors.push(textProcessorWithPluginName);
 					console.log('Registered text processor: ' + textProcessor.name);
 				},
 				registerWordDataProvider: (wordDataProvider: WordDataProvider) => {
-					this.wordDataProviders.push(wordDataProvider);
-					console.log('Registered word data retriever: ' + wordDataProvider.name);
+					const pluginName = this.asyncLocalStorage.getStore();
+
+					if (!pluginName)
+					{
+						throw new Error('No plugin name found');
+					}
+
+					const wordDataProviderWithPluginName: WordDataProvider & PluginNameReference = {
+						...wordDataProvider,
+						pluginName: pluginName,
+					}
+					
+					this.wordDataProviders.push(wordDataProviderWithPluginName);
+					console.log('Registered word data provider: ' + wordDataProvider.name);
 				},
 			},
 		};
@@ -52,7 +83,12 @@ class PluginManager
 	{
 		for (const plugin of this.plugins)
 		{
-			await plugin.start?.(this.api);
+			await this.asyncLocalStorage.run(
+				plugin.name,
+				async () => {
+					await plugin.start?.();
+				}
+			);
 		}
 	}
 
