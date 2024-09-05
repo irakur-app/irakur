@@ -4,13 +4,15 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { IrakurApi, Plugin } from './plugin-api';
+import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
 
 class PluginManager
 {
 	private static instance: PluginManager;
 
 	private plugins: Plugin[] = [];
+	private textProcessors: TextProcessor[] = [];
+	private wordDataProviders: WordDataProvider[] = [];
 
 	public api: IrakurApi;
 
@@ -28,17 +30,25 @@ class PluginManager
 					this.plugins.push(plugin);
 					console.log('Registered plugin: ' + plugin.name);
 				},
+				registerTextProcessor: (textProcessor: TextProcessor) => {
+					this.textProcessors.push(textProcessor);
+					console.log('Registered text processor: ' + textProcessor.name);
+				},
+				registerWordDataProvider: (wordDataProvider: WordDataProvider) => {
+					this.wordDataProviders.push(wordDataProvider);
+					console.log('Registered word data retriever: ' + wordDataProvider.name);
+				},
 			},
 		};
 
 		PluginManager.instance = this;
 	}
 
-	startPlugins(): void
+	async startPlugins(): Promise<void>
 	{
 		for (const plugin of this.plugins)
 		{
-			plugin.start?.();
+			await plugin.start?.(this.api);
 		}
 	}
 
@@ -56,6 +66,16 @@ class PluginManager
 				console.error(error);
 			}
 		}
+	}
+	
+	async processText(text: string): Promise<string>
+	{
+		for (const textProcessor of this.textProcessors)
+		{
+			text = await textProcessor.processText(text);
+		}
+		console.log(text);
+		return text;
 	}
 }
 

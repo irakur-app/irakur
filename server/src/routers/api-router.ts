@@ -388,4 +388,13 @@ router.post(
 	)
 );
 
+router.post(
+	'/plugins/process-text',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			res.json({ text: await pluginManager.processText(req.body.text) });
+		}
+	)
+);
+
 export { router };
