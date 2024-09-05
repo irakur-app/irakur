@@ -8,8 +8,8 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
 import { sandboxProxy } from './sandbox-proxy';
 
-type PluginNameReference = {
-	pluginName: string;
+type PluginIdReference = {
+	pluginId: string;
 };
 
 class PluginManager
@@ -17,8 +17,8 @@ class PluginManager
 	private static instance: PluginManager;
 
 	private plugins: Plugin[] = [];
-	private textProcessors: (TextProcessor & PluginNameReference)[] = [];
-	private wordDataProviders: (WordDataProvider & PluginNameReference)[] = [];
+	private textProcessors: (TextProcessor & PluginIdReference)[] = [];
+	private wordDataProviders: (WordDataProvider & PluginIdReference)[] = [];
 
 	public api: IrakurApi;
 
@@ -36,39 +36,47 @@ class PluginManager
 			plugins: {
 				register: (plugin: Plugin) => {
 					this.plugins.push(plugin);
-					console.log('Registered plugin: ' + plugin.name);
+					console.log('Registered plugin: ' + plugin.name + ' (' + plugin.id + ')');
 				},
 				registerTextProcessor: (textProcessor: TextProcessor) => {
-					const pluginName = this.asyncLocalStorage.getStore();
+					const pluginId = this.asyncLocalStorage.getStore();
 
-					if (!pluginName)
+					if (!pluginId)
 					{
-						throw new Error('No plugin name found');
+						throw new Error('No plugin id found');
 					}
 
-					const textProcessorWithPluginName: TextProcessor & PluginNameReference = {
+					const textProcessorWithPluginId: TextProcessor & PluginIdReference = {
 						...textProcessor,
-						pluginName: pluginName,
+						pluginId: pluginId,
 					}
 					
-					this.textProcessors.push(textProcessorWithPluginName);
-					console.log('Registered text processor: ' + textProcessor.name);
+					this.textProcessors.push(textProcessorWithPluginId);
+					console.log(
+						'Registered text processor: '
+						+ textProcessor.name
+						+ ' (' + pluginId + '/' + textProcessor.id + ')'
+					);
 				},
 				registerWordDataProvider: (wordDataProvider: WordDataProvider) => {
-					const pluginName = this.asyncLocalStorage.getStore();
+					const pluginId = this.asyncLocalStorage.getStore();
 
-					if (!pluginName)
+					if (!pluginId)
 					{
-						throw new Error('No plugin name found');
+						throw new Error('No plugin id found');
 					}
 
-					const wordDataProviderWithPluginName: WordDataProvider & PluginNameReference = {
+					const wordDataProviderWithPluginId: WordDataProvider & PluginIdReference = {
 						...wordDataProvider,
-						pluginName: pluginName,
+						pluginId: pluginId,
 					}
 					
-					this.wordDataProviders.push(wordDataProviderWithPluginName);
-					console.log('Registered word data provider: ' + wordDataProvider.name);
+					this.wordDataProviders.push(wordDataProviderWithPluginId);
+					console.log(
+						'Registered word data provider: '
+							+ wordDataProvider.name
+							+ ' (' + pluginId + '/' + wordDataProvider.id + ')'
+					);
 				},
 			},
 			symbols: {
@@ -87,7 +95,7 @@ class PluginManager
 		for (const plugin of this.plugins)
 		{
 			await this.asyncLocalStorage.run(
-				plugin.name,
+				plugin.id,
 				async () => {
 					await plugin.start?.();
 				}

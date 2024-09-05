@@ -16,12 +16,14 @@ type DictionaryWordData = {
 
 interface Plugin
 {
+	id: string;
 	name: string;
 	start?: () => Promise<void>;
 };
 
 interface TextProcessor
 {
+	id: string;
 	name: string;
 	languages: string[] | Symbol;
 	processText: (text: string) => Promise<string>;
@@ -29,6 +31,7 @@ interface TextProcessor
 
 interface WordDataProvider
 {
+	id: string;
 	name: string;
 	targetLanguage: string;
 	auxiliaryLanguage: string;

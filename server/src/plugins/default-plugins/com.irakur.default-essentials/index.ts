@@ -8,6 +8,7 @@ import { Plugin, TextProcessor, irakur } from './irakur-api';
 import { tokenize } from '@enjoyjs/node-mecab';
 
 const spaceInserter: TextProcessor = {
+	id: 'mecab-space-inserter',
 	name: 'Add spaces',
 	languages: ['Japanese'],
 	processText: async (text: string): Promise<string> => {
@@ -21,6 +22,7 @@ const spaceInserter: TextProcessor = {
 };
 
 const plugin: Plugin = {
+	id: 'com.irakur.default-essentials',
 	name: 'Processors and Autocompleters for Default Languages',
 	start: async () => {
 		irakur.plugins.registerTextProcessor(spaceInserter);
