@@ -5,28 +5,25 @@
  */
 
 import { Plugin, TextProcessor, irakur } from './irakur-api';
+import { tokenize } from '@enjoyjs/node-mecab';
 
-const uppercaseTextProcessor: TextProcessor = {
-	name: 'Convert to uppercase',
-	languages: irakur.symbols.anyLanguage,
+const spaceInserter: TextProcessor = {
+	name: 'Add spaces',
+	languages: ['Japanese'],
 	processText: async (text: string): Promise<string> => {
-		return text.toUpperCase();
-	},
-};
+		const tokens = await tokenize(text);
 
-const newLinesTextProcessor: TextProcessor = {
-	name: 'Add new lines',
-	languages: irakur.symbols.anyLanguage,
-	processText: async (text: string): Promise<string> => {
-		return text.replace(/\s/g, '\n');
+		return tokens
+			.filter((token) => token.stat === 'NORMAL' || token.stat === 'UNKNOWN')
+			.map((token) => token.surface)
+			.join('\u200B');
 	},
 };
 
 const plugin: Plugin = {
-	name: 'Plugin 1',
+	name: 'Processors and Autocompleters for Default Languages',
 	start: async () => {
-		irakur.plugins.registerTextProcessor(uppercaseTextProcessor);
-		irakur.plugins.registerTextProcessor(newLinesTextProcessor);
+		irakur.plugins.registerTextProcessor(spaceInserter);
 	},
 };
 
