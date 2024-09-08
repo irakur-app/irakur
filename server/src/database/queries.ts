@@ -155,7 +155,7 @@ const queries: Record<string, string> = {
 			VALUES (
 				NEW.id,
 				NEW.progress,
-				NEW.time_updated
+				UNIXEPOCH()
 			);
 		END`,
 	createInsertTextProgressLogAfterUpdateTextTrigger: `CREATE TRIGGER IF NOT EXISTS
@@ -171,7 +171,7 @@ const queries: Record<string, string> = {
 			VALUES (
 				NEW.id,
 				NEW.progress,
-				NEW.time_updated
+				UNIXEPOCH()
 			);
 		END`,
 	createDeleteTextProgressLogAfterDeleteTextTrigger: `CREATE TRIGGER IF NOT EXISTS
