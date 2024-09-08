@@ -87,6 +87,9 @@ class DatabaseManager
 		this.runQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
 		this.runQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
 		this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
+		this.runQuery(queries.createInsertProgressLogAfterInsertTextTrigger);
+		this.runQuery(queries.createInsertProgressLogAfterUpdateTextTrigger);
+		this.runQuery(queries.createDeleteProgressLogAfterDeleteTextTrigger);
 	}
 
 	runQuery(query: string, parameters: Record<string, any> = {}): void

@@ -143,6 +143,44 @@ const queries: Record<string, string> = {
 			DELETE FROM status_log
 			WHERE word_id = OLD.id;
 		END`,
+	createInsertProgressLogAfterInsertTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__progress_log__after__insert__text
+		AFTER INSERT ON text
+		BEGIN
+			INSERT INTO progress_log (
+				text_id,
+				progress,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.progress,
+				NEW.time_updated
+			);
+		END`,
+	createInsertProgressLogAfterUpdateTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__progress_log__after__update__text
+		AFTER UPDATE ON text
+		WHEN OLD.progress != NEW.progress
+		BEGIN
+			INSERT INTO progress_log (
+				text_id,
+				progress,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.progress,
+				NEW.time_updated
+			);
+		END`,
+	createDeleteProgressLogAfterDeleteTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__progress_log__after__delete__text
+		AFTER DELETE ON text
+		BEGIN
+			DELETE FROM progress_log
+			WHERE text_id = OLD.id;
+		END`,
 	//#endregion
 
 	//#region Language
