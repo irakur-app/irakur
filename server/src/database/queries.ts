@@ -403,7 +403,7 @@ const queries: Record<string, string> = {
 				word_id,
 				status AS first_status,
 				MIN(time_updated) AS first_time_updated
-			FROM status_log
+			FROM word_status_log
 			WHERE time_updated >= strftime('%s', 'now') - 86400
 			GROUP BY word_id
 		),
@@ -412,7 +412,7 @@ const queries: Record<string, string> = {
 				word_id,
 				status AS last_status,
 				MAX(time_updated) AS last_time_updated
-			FROM status_log
+			FROM word_status_log
 			WHERE time_updated >= strftime('%s', 'now') - 86400
 			GROUP BY word_id
 		)
