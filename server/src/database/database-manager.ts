@@ -76,6 +76,7 @@ class DatabaseManager
 		this.runQuery(queries.createWordTable);
 		this.runQuery(queries.createEntryTable);
 		this.runQuery(queries.createStatusLogTable);
+		this.runQuery(queries.createProgressLogTable);
 
 		// Create indexes
 		this.runQuery(queries.createTextLanguageIdTitleIndex);

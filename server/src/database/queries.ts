@@ -78,6 +78,15 @@ const queries: Record<string, string> = {
 		CONSTRAINT fk__status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
 		CONSTRAINT uq__status_log__word_id__time_updated UNIQUE (word_id, time_updated)
 	)`,
+	createProgressLogTable: `CREATE TABLE IF NOT EXISTS progress_log (
+		id INTEGER,
+		text_id INTEGER NOT NULL,
+		progress REAL NOT NULL,
+		time_updated INTEGER NOT NULL,
+		CONSTRAINT pk__progress_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__progress_log__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT uq__progress_log__text_id__time_updated UNIQUE (text_id, time_updated)
+	)`,
 	//#endregion
 
 	//#region Create indexes
