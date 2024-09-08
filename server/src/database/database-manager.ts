@@ -75,8 +75,8 @@ class DatabaseManager
 		this.runQuery(queries.createPageTable);
 		this.runQuery(queries.createWordTable);
 		this.runQuery(queries.createEntryTable);
-		this.runQuery(queries.createStatusLogTable);
-		this.runQuery(queries.createProgressLogTable);
+		this.runQuery(queries.createWordStatusLogTable);
+		this.runQuery(queries.createTextProgressLogTable);
 
 		// Create indexes
 		this.runQuery(queries.createTextLanguageIdTitleIndex);
@@ -84,12 +84,12 @@ class DatabaseManager
 		this.runQuery(queries.createWordLanguageIdTokenCountContentIndex);
 
 		// Create triggers
-		this.runQuery(queries.createInsertStatusLogAfterInsertWordTrigger);
-		this.runQuery(queries.createInsertStatusLogAfterUpdateWordTrigger);
-		this.runQuery(queries.createDeleteStatusLogAfterDeleteWordTrigger);
-		this.runQuery(queries.createInsertProgressLogAfterInsertTextTrigger);
-		this.runQuery(queries.createInsertProgressLogAfterUpdateTextTrigger);
-		this.runQuery(queries.createDeleteProgressLogAfterDeleteTextTrigger);
+		this.runQuery(queries.createInsertWordStatusLogAfterInsertWordTrigger);
+		this.runQuery(queries.createInsertWordStatusLogAfterUpdateWordTrigger);
+		this.runQuery(queries.createDeleteWordStatusLogAfterDeleteWordTrigger);
+		this.runQuery(queries.createInsertTextProgressLogAfterInsertTextTrigger);
+		this.runQuery(queries.createInsertTextProgressLogAfterUpdateTextTrigger);
+		this.runQuery(queries.createDeleteTextProgressLogAfterDeleteTextTrigger);
 	}
 
 	runQuery(query: string, parameters: Record<string, any> = {}): void

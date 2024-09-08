@@ -69,23 +69,23 @@ const queries: Record<string, string> = {
 		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
 		CONSTRAINT uq__entry__word_id__position UNIQUE (word_id, position)
 	)`,
-	createStatusLogTable: `CREATE TABLE IF NOT EXISTS status_log (
+	createWordStatusLogTable: `CREATE TABLE IF NOT EXISTS word_status_log (
 		id INTEGER,
 		word_id INTEGER NOT NULL,
 		status INTEGER NOT NULL,
 		time_updated INTEGER NOT NULL,
-		CONSTRAINT pk__status_log__id PRIMARY KEY (id),
-		CONSTRAINT fk__status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
-		CONSTRAINT uq__status_log__word_id__time_updated UNIQUE (word_id, time_updated)
+		CONSTRAINT pk__word_status_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__word_status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
+		CONSTRAINT uq__word_status_log__word_id__time_updated UNIQUE (word_id, time_updated)
 	)`,
-	createProgressLogTable: `CREATE TABLE IF NOT EXISTS progress_log (
+	createTextProgressLogTable: `CREATE TABLE IF NOT EXISTS text_progress_log (
 		id INTEGER,
 		text_id INTEGER NOT NULL,
 		progress REAL NOT NULL,
 		time_updated INTEGER NOT NULL,
-		CONSTRAINT pk__progress_log__id PRIMARY KEY (id),
-		CONSTRAINT fk__progress_log__text_id FOREIGN KEY (text_id) REFERENCES text (id)
-		CONSTRAINT uq__progress_log__text_id__time_updated UNIQUE (text_id, time_updated)
+		CONSTRAINT pk__text_progress_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__text_progress_log__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT uq__text_progress_log__text_id__time_updated UNIQUE (text_id, time_updated)
 	)`,
 	//#endregion
 
@@ -105,11 +105,11 @@ const queries: Record<string, string> = {
 	//#endregion
 
 	//#region Create triggers
-	createInsertStatusLogAfterInsertWordTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__insert__status_log__after__insert__word
+	createInsertWordStatusLogAfterInsertWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__word_status_log__after__insert__word
 		AFTER INSERT ON word
 		BEGIN
-			INSERT INTO status_log (
+			INSERT INTO word_status_log (
 				word_id,
 				status,
 				time_updated
@@ -120,12 +120,12 @@ const queries: Record<string, string> = {
 				NEW.time_updated
 			);
 		END`,
-	createInsertStatusLogAfterUpdateWordTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__insert__status_log__after__update__word
+	createInsertWordStatusLogAfterUpdateWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__word_status_log__after__update__word
 		AFTER UPDATE ON word
 		WHEN OLD.status != NEW.status
 		BEGIN
-			INSERT INTO status_log (
+			INSERT INTO word_status_log (
 				word_id,
 				status,
 				time_updated
@@ -136,18 +136,18 @@ const queries: Record<string, string> = {
 				NEW.time_updated
 			);
 		END`,
-	createDeleteStatusLogAfterDeleteWordTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__delete__status_log__after__delete__word
+	createDeleteWordStatusLogAfterDeleteWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__word_status_log__after__delete__word
 		AFTER DELETE ON word
 		BEGIN
-			DELETE FROM status_log
+			DELETE FROM word_status_log
 			WHERE word_id = OLD.id;
 		END`,
-	createInsertProgressLogAfterInsertTextTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__insert__progress_log__after__insert__text
+	createInsertTextProgressLogAfterInsertTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__text_progress_log__after__insert__text
 		AFTER INSERT ON text
 		BEGIN
-			INSERT INTO progress_log (
+			INSERT INTO text_progress_log (
 				text_id,
 				progress,
 				time_updated
@@ -158,12 +158,12 @@ const queries: Record<string, string> = {
 				NEW.time_updated
 			);
 		END`,
-	createInsertProgressLogAfterUpdateTextTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__insert__progress_log__after__update__text
+	createInsertTextProgressLogAfterUpdateTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__text_progress_log__after__update__text
 		AFTER UPDATE ON text
 		WHEN OLD.progress != NEW.progress
 		BEGIN
-			INSERT INTO progress_log (
+			INSERT INTO text_progress_log (
 				text_id,
 				progress,
 				time_updated
@@ -174,11 +174,11 @@ const queries: Record<string, string> = {
 				NEW.time_updated
 			);
 		END`,
-	createDeleteProgressLogAfterDeleteTextTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__delete__progress_log__after__delete__text
+	createDeleteTextProgressLogAfterDeleteTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__text_progress_log__after__delete__text
 		AFTER DELETE ON text
 		BEGIN
-			DELETE FROM progress_log
+			DELETE FROM text_progress_log
 			WHERE text_id = OLD.id;
 		END`,
 	//#endregion
