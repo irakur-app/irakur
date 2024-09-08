@@ -69,14 +69,23 @@ const queries: Record<string, string> = {
 		CONSTRAINT fk__entry__word_id FOREIGN KEY (word_id) REFERENCES word (id),
 		CONSTRAINT uq__entry__word_id__position UNIQUE (word_id, position)
 	)`,
-	createStatusLogTable: `CREATE TABLE IF NOT EXISTS status_log (
+	createWordStatusLogTable: `CREATE TABLE IF NOT EXISTS word_status_log (
 		id INTEGER,
 		word_id INTEGER NOT NULL,
 		status INTEGER NOT NULL,
 		time_updated INTEGER NOT NULL,
-		CONSTRAINT pk__status_log__id PRIMARY KEY (id),
-		CONSTRAINT fk__status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
-		CONSTRAINT uq__status_log__word_id__time_updated UNIQUE (word_id, time_updated)
+		CONSTRAINT pk__word_status_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__word_status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
+		CONSTRAINT uq__word_status_log__word_id__time_updated UNIQUE (word_id, time_updated)
+	)`,
+	createTextProgressLogTable: `CREATE TABLE IF NOT EXISTS text_progress_log (
+		id INTEGER,
+		text_id INTEGER NOT NULL,
+		progress REAL NOT NULL,
+		time_updated INTEGER NOT NULL,
+		CONSTRAINT pk__text_progress_log__id PRIMARY KEY (id),
+		CONSTRAINT fk__text_progress_log__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT uq__text_progress_log__text_id__time_updated UNIQUE (text_id, time_updated)
 	)`,
 	//#endregion
 
@@ -96,11 +105,11 @@ const queries: Record<string, string> = {
 	//#endregion
 
 	//#region Create triggers
-	createInsertStatusLogAfterInsertWordTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__insert__status_log__after__insert__word
+	createInsertWordStatusLogAfterInsertWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__word_status_log__after__insert__word
 		AFTER INSERT ON word
 		BEGIN
-			INSERT INTO status_log (
+			INSERT INTO word_status_log (
 				word_id,
 				status,
 				time_updated
@@ -111,12 +120,12 @@ const queries: Record<string, string> = {
 				NEW.time_updated
 			);
 		END`,
-	createInsertStatusLogAfterUpdateWordTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__insert__status_log__after__update__word
+	createInsertWordStatusLogAfterUpdateWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__word_status_log__after__update__word
 		AFTER UPDATE ON word
 		WHEN OLD.status != NEW.status
 		BEGIN
-			INSERT INTO status_log (
+			INSERT INTO word_status_log (
 				word_id,
 				status,
 				time_updated
@@ -127,12 +136,50 @@ const queries: Record<string, string> = {
 				NEW.time_updated
 			);
 		END`,
-	createDeleteStatusLogAfterDeleteWordTrigger: `CREATE TRIGGER IF NOT EXISTS
-		tr__delete__status_log__after__delete__word
+	createDeleteWordStatusLogAfterDeleteWordTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__word_status_log__after__delete__word
 		AFTER DELETE ON word
 		BEGIN
-			DELETE FROM status_log
+			DELETE FROM word_status_log
 			WHERE word_id = OLD.id;
+		END`,
+	createInsertTextProgressLogAfterInsertTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__text_progress_log__after__insert__text
+		AFTER INSERT ON text
+		BEGIN
+			INSERT INTO text_progress_log (
+				text_id,
+				progress,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.progress,
+				UNIXEPOCH()
+			);
+		END`,
+	createInsertTextProgressLogAfterUpdateTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__insert__text_progress_log__after__update__text
+		AFTER UPDATE ON text
+		WHEN OLD.progress != NEW.progress
+		BEGIN
+			INSERT INTO text_progress_log (
+				text_id,
+				progress,
+				time_updated
+			)
+			VALUES (
+				NEW.id,
+				NEW.progress,
+				UNIXEPOCH()
+			);
+		END`,
+	createDeleteTextProgressLogAfterDeleteTextTrigger: `CREATE TRIGGER IF NOT EXISTS
+		tr__delete__text_progress_log__after__delete__text
+		AFTER DELETE ON text
+		BEGIN
+			DELETE FROM text_progress_log
+			WHERE text_id = OLD.id;
 		END`,
 	//#endregion
 
@@ -356,7 +403,7 @@ const queries: Record<string, string> = {
 				word_id,
 				status AS first_status,
 				MIN(time_updated) AS first_time_updated
-			FROM status_log
+			FROM word_status_log
 			WHERE time_updated >= strftime('%s', 'now') - 86400
 			GROUP BY word_id
 		),
@@ -365,7 +412,7 @@ const queries: Record<string, string> = {
 				word_id,
 				status AS last_status,
 				MAX(time_updated) AS last_time_updated
-			FROM status_log
+			FROM word_status_log
 			WHERE time_updated >= strftime('%s', 'now') - 86400
 			GROUP BY word_id
 		)
