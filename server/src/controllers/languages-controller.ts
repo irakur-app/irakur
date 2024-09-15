@@ -19,9 +19,12 @@ class LanguagesController
 		whitespaces: string,
 		intrawordPunctuation: string,
 		templateCode: string,
-		scriptName: string
+		scriptName: string,
+		textProcessorFullIds: string[]
 	): void
 	{
+		const textProcessors = JSON.stringify(textProcessorFullIds);
+
 		databaseManager.runQuery(
 			queries.addLanguage,
 			{
@@ -34,6 +37,7 @@ class LanguagesController
 				intrawordPunctuation,
 				templateCode,
 				scriptName,
+				textProcessors,
 			}
 		);
 	}

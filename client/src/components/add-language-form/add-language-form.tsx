@@ -4,11 +4,15 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
+import { TextProcessor } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { getPartialTemplate } from '../../language-templates';
+import { TextProcessorColumn } from '../text-processor-column';
+import { Loading } from '../loading';
 
 type Script = {
 	alphabet: string;
@@ -41,6 +45,9 @@ const AddLanguageForm = (
 		auxiliaryLanguageName: string | null
 	}
 ): JSX.Element => {
+	const [unusedTextProcessors, setUnusedTextProcessors] = useState<TextProcessor[] | null>(null);
+	const usedTextProcessors: TextProcessor[] = [];
+
 	const languageTemplate = getPartialTemplate(targetLanguageName, auxiliaryLanguageName);
 
 	const [scriptValues, setScriptValues] = useState<Script>(
@@ -75,7 +82,10 @@ const AddLanguageForm = (
 			form.get('whitespaces') as string,
 			form.get('intrawordPunctuation') as string,
 			(targetLanguageName || '') + ':' + (auxiliaryLanguageName || ''),
-			form.get('scriptName') as string
+			form.get('scriptName') as string,
+			usedTextProcessors.map(
+				(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id
+			)
 		);
 
 		if (wasAdded)
@@ -97,6 +107,50 @@ const AddLanguageForm = (
 				[name]: value
 			}
 		);
+	};
+
+	useEffect(
+		() => {
+			backendConnector.getTextProcessors().then(
+				(textProcessors) => {
+					setUnusedTextProcessors(textProcessors);
+				}
+			);
+		},
+		[]
+	);
+
+	if (unusedTextProcessors === null)
+	{
+		return <Loading />;
+	}
+
+	const onDragEnd = (result: DropResult): void => {
+		const { destination, draggableId, source } = result;
+
+		if (!destination)
+		{
+			return;
+		}
+
+		if (destination.droppableId === source.droppableId && destination.index === source.index)
+		{
+			return;
+		}
+
+		const sourceColumn: TextProcessor[] = source.droppableId === 'Unused Text Processors'
+			? unusedTextProcessors
+			: usedTextProcessors;
+		const destinationColumn: TextProcessor[] = destination.droppableId === 'Unused Text Processors'
+			? unusedTextProcessors
+			: usedTextProcessors;
+
+		const draggableTextProcessor = sourceColumn?.find(
+			(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id === draggableId
+		) as TextProcessor;
+
+		sourceColumn.splice(source.index, 1);
+		destinationColumn.splice(destination.index, 0, draggableTextProcessor);
 	};
 
 	return (
@@ -191,6 +245,11 @@ const AddLanguageForm = (
 				/>
 				<br />
 				<br />
+
+				<DragDropContext onDragEnd={onDragEnd}>
+					<TextProcessorColumn columnType='Unused Text Processors' textProcessors={unusedTextProcessors} />
+					<TextProcessorColumn columnType='Used Text Processors' textProcessors={usedTextProcessors} />
+				</DragDropContext>
 
 				<button type="submit" disabled={isSubmitting}>Add</button>
 			</form>

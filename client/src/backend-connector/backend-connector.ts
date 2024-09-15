@@ -4,7 +4,8 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Entry, Language, Page, ReducedWordData, Text, Word } from '@common/types';
+import { Entry, Language, Page, ReducedWordData, Text, Word, TextProcessor } from '@common/types';
+import { symbols } from '../symbols';
 
 class BackendConnector
 {
@@ -27,7 +28,8 @@ class BackendConnector
 		whitespaces: string,
 		intrawordPunctuation: string,
 		templateCode: string,
-		scriptName: string
+		scriptName: string,
+		textProcessorFullIds: string[]
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -48,6 +50,7 @@ class BackendConnector
 						intrawordPunctuation,
 						templateCode,
 						scriptName,
+						textProcessorFullIds,
 					}
 				),
 			}
@@ -524,6 +527,22 @@ class BackendConnector
 		const processedText = (await response.json()).text;
 
 		return processedText;
+	}
+
+	async getTextProcessors(): Promise<TextProcessor[]>
+	{
+		const response: Response = await fetch('/api/plugins/text-processors');
+		const textProcessors = (await response.json()).textProcessors;
+		return textProcessors.map(
+			(textProcessor: TextProcessor) => {
+				return {
+					...textProcessor,
+					languages: Array.isArray(textProcessor.languages)
+						? textProcessor.languages
+						: symbols.anyLanguage,
+				};
+			}
+		)
 	}
 }
 

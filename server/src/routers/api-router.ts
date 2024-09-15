@@ -6,6 +6,7 @@
 
 import express from 'express';
 
+import { Language } from '@common/types';
 import { dataFolderManager } from '../managers/data-folder-manager';
 import { LanguagesController } from '../controllers/languages-controller';
 import { PagesController } from '../controllers/pages-controller';
@@ -66,7 +67,8 @@ router.post(
 				req.body.whitespaces,
 				req.body.intrawordPunctuation,
 				req.body.templateCode,
-				req.body.scriptName
+				req.body.scriptName,
+				req.body.textProcessorFullIds
 			);
 			res.sendStatus(200);
 		}
@@ -378,6 +380,30 @@ router.patch(
 //#endregion
 
 //#region Plugins
+router.get(
+	'/plugins/text-processors',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			res.json(
+				{
+					textProcessors: (await pluginManager.getAllAvailableProcessors()).map(
+						(textProcessor) => {
+							return {
+								id: textProcessor.id,
+								name: textProcessor.name,
+								languages: Array.isArray(textProcessor.languages)
+									? textProcessor.languages
+									: textProcessor.languages.description,
+								pluginId: textProcessor.pluginId
+							}
+						}
+					)
+				}
+			);
+		}
+	)
+);
+
 router.post(
 	'/plugins/start',
 	errorWrapper(
@@ -392,8 +418,8 @@ router.post(
 	'/plugins/process-text',
 	errorWrapper(
 		async (req: express.Request, res: express.Response): Promise<void> => {
-			const language: any = await languagesController.getLanguage(req.body.languageId);
-			res.json({ text: await pluginManager.processTextInLanguage(req.body.text, language.name) });
+			const language: Language = await languagesController.getLanguage(req.body.languageId);
+			res.json({ text: await pluginManager.processTextInLanguage(req.body.text, language) });
 		}
 	)
 );

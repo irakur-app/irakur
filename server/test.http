@@ -159,6 +159,9 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:5000/api/plugins/text-processors
+
+###
 POST http://localhost:5000/api/plugins/start
 
 ###

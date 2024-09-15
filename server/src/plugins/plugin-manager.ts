@@ -5,6 +5,8 @@
  */
 
 import { AsyncLocalStorage } from 'async_hooks';
+
+import { Language, TextProcessorReference } from '@common/types';
 import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
 import { sandboxProxy } from './sandbox-proxy';
 
@@ -118,6 +120,26 @@ class PluginManager
 			}
 		}
 	}
+
+	async getAllAvailableProcessors(): Promise<(TextProcessor & PluginIdReference)[]>
+	{
+		console.log(this.textProcessors);
+		return this.textProcessors;
+	}
+
+	async getSuggestedTextProcessorsForLanguage(language: Language): Promise<TextProcessor[]>
+	{
+		return this.textProcessors.filter(
+			(textProcessor: TextProcessor) => {
+				if (Array.isArray(textProcessor.languages))
+				{
+					return textProcessor.languages.includes(language.templateCode.split(':')[0]);
+				}
+				
+				return textProcessor.languages === this.api.symbols.anyLanguage;
+			}
+		);
+	}
 	
 	async processText(text: string, textProcessors: TextProcessor[]): Promise<string>
 	{
@@ -125,22 +147,30 @@ class PluginManager
 		{
 			text = await textProcessor.processText(text);
 		}
-		console.log(text);
 		return text;
 	}
 
-	async processTextInLanguage(text: string, language: string): Promise<string>
+	async getActualTextProcessorsForLanguage(language: Language): Promise<(TextProcessor & PluginIdReference)[]> 
 	{
-		const textProcessors = this.textProcessors.filter(
-			(textProcessor) => {
-				if (Array.isArray(textProcessor.languages))
-				{
-					return textProcessor.languages.includes(language);
-				}
-				
-				return textProcessor.languages === this.api.symbols.anyLanguage;
-			}
+		const textProcessorReferences: TextProcessorReference[] = JSON.parse(language.textProcessors);
+	
+		const textProcessors = textProcessorReferences.map(
+			reference => this.textProcessors.find(
+				(textProcessor: (TextProcessor & PluginIdReference)) => 
+					textProcessor.pluginId === reference.pluginId
+						&& textProcessor.id === reference.textProcessorId
+			)
 		);
+
+		return textProcessors.filter(
+			(textProcessor: (TextProcessor & PluginIdReference) | undefined) => textProcessor !== undefined
+		) as (TextProcessor & PluginIdReference)[]; // For some reason it doesn't work without the cast
+	}
+
+	async processTextInLanguage(text: string, language: Language): Promise<string>
+	{
+		const textProcessors = await this.getActualTextProcessorsForLanguage(language);
+
 		return this.processText(text, textProcessors);
 	}
 }
