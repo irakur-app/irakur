@@ -27,6 +27,7 @@ interface TextProcessor
 	name: string;
 	languages: string[] | Symbol;
 	processText: (text: string) => Promise<string>;
+	prepare?: () => Promise<void>;
 };
 
 interface WordDataProvider

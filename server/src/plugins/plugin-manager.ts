@@ -9,6 +9,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 import { Language, TextProcessorReference } from '@common/types';
 import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
 import { sandboxProxy } from './sandbox-proxy';
+import { LanguagesController } from '../controllers/languages-controller';
 
 type PluginIdReference = {
 	pluginId: string;
@@ -159,6 +160,25 @@ class PluginManager
 				};
 			}
 		);
+	}
+
+	prepare(): void
+	{
+		const languages = new LanguagesController().getAllLanguages();
+
+		for (const language of languages)
+		{
+			this.prepareLanguage(language);
+		}
+	}
+
+	prepareLanguage(language: Language): void
+	{
+		const textProcessors = this.getActualTextProcessorsForLanguage(language);
+		for (const textProcessor of textProcessors)
+		{
+			textProcessor.prepare?.();
+		}
 	}
 
 	getActualTextProcessorsForLanguage(language: Language): (TextProcessor & PluginIdReference)[]

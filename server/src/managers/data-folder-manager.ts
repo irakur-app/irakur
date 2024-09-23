@@ -74,7 +74,9 @@ class DataFolderManager
 
 		pluginManager.loadPlugins(pluginNames)
 			.then(
-				() => pluginManager.startPlugins()
+				() => pluginManager.startPlugins().then(
+					() => pluginManager.prepare()
+				)
 			);
 	}
 

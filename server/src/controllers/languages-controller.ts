@@ -6,6 +6,7 @@
 
 import { Language } from '@common/types';
 import { databaseManager } from '../database/database-manager';
+import { pluginManager } from '../plugins/plugin-manager';
 import { queries } from '../database/queries';
 
 class LanguagesController
@@ -40,6 +41,16 @@ class LanguagesController
 				textProcessors,
 			}
 		);
+
+		const languageId = databaseManager.getLastInsertId();
+		const language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
+		pluginManager.prepareLanguage(language);
 	}
 
 	deleteLanguage(languageId: number): void
@@ -122,6 +133,18 @@ class LanguagesController
 			);
 
 			databaseManager.runQuery(dynamicQuery, queryParams);
+
+			if (textProcessorFullIds !== undefined)
+			{
+				const language = databaseManager.getFirstRow(
+					queries.getLanguage,
+					{
+						languageId,
+					}
+				);
+
+				pluginManager.prepareLanguage(language);
+			}
 		}
 	}
 
