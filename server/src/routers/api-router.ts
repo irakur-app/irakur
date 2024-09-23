@@ -387,7 +387,7 @@ router.get(
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			res.json(
 				{
-					textProcessors: (await pluginManager.getAllAvailableProcessors()).map(
+					textProcessors: pluginManager.getAllAvailableProcessors().map(
 						(textProcessor) => {
 							return {
 								id: textProcessor.id,

@@ -56,8 +56,8 @@ class PluginManager
 					this.textProcessors.push(textProcessorWithPluginId);
 					console.log(
 						'Registered text processor: '
-						+ textProcessor.name
-						+ ' (' + pluginId + '/' + textProcessor.id + ')'
+							+ textProcessor.name
+							+ ' (' + pluginId + '/' + textProcessor.id + ')'
 					);
 				},
 				registerWordDataProvider: (wordDataProvider: WordDataProvider) => {
@@ -121,13 +121,12 @@ class PluginManager
 		}
 	}
 
-	async getAllAvailableProcessors(): Promise<(TextProcessor & PluginIdReference)[]>
+	getAllAvailableProcessors(): (TextProcessor & PluginIdReference)[]
 	{
-		console.log(this.textProcessors);
 		return this.textProcessors;
 	}
 
-	async getSuggestedTextProcessorsForLanguage(language: Language): Promise<TextProcessor[]>
+	getSuggestedTextProcessorsForLanguage(language: Language): TextProcessor[]
 	{
 		return this.textProcessors.filter(
 			(textProcessor: TextProcessor) => {
@@ -150,9 +149,9 @@ class PluginManager
 		return text;
 	}
 
-	async getActualTextProcessorsForLanguage(language: Language): Promise<(TextProcessor & PluginIdReference)[]> 
+	getTextProcessorsReferencesForLanguage(language: Language): TextProcessorReference[]
 	{
-		const textProcessorReferences: TextProcessorReference[] = JSON.parse(language.textProcessors).map(
+		return JSON.parse(language.textProcessors).map(
 			(textProcessorFullId: string) => {
 				return {
 					pluginId: textProcessorFullId.split('/')[0],
@@ -160,6 +159,11 @@ class PluginManager
 				};
 			}
 		);
+	}
+
+	getActualTextProcessorsForLanguage(language: Language): (TextProcessor & PluginIdReference)[]
+	{
+		const textProcessorReferences: TextProcessorReference[] = this.getTextProcessorsReferencesForLanguage(language);
 	
 		const textProcessors = textProcessorReferences.map(
 			reference => this.textProcessors.find(
@@ -176,7 +180,7 @@ class PluginManager
 
 	async processTextInLanguage(text: string, language: Language): Promise<string>
 	{
-		const textProcessors = await this.getActualTextProcessorsForLanguage(language);
+		const textProcessors = this.getActualTextProcessorsForLanguage(language);
 
 		return this.processText(text, textProcessors);
 	}
