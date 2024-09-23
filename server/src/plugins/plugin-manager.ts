@@ -152,7 +152,14 @@ class PluginManager
 
 	async getActualTextProcessorsForLanguage(language: Language): Promise<(TextProcessor & PluginIdReference)[]> 
 	{
-		const textProcessorReferences: TextProcessorReference[] = JSON.parse(language.textProcessors);
+		const textProcessorReferences: TextProcessorReference[] = JSON.parse(language.textProcessors).map(
+			(textProcessorFullId: string) => {
+				return {
+					pluginId: textProcessorFullId.split('/')[0],
+					textProcessorId: textProcessorFullId.split('/')[1]
+				};
+			}
+		);
 	
 		const textProcessors = textProcessorReferences.map(
 			reference => this.textProcessors.find(
