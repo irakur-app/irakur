@@ -60,7 +60,8 @@ class LanguagesController
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string,
-		intrawordPunctuation: string
+		intrawordPunctuation: string,
+		textProcessorFullIds: string[]
 	): void
 	{
 		const queryParams: Record<string, any> = {};
@@ -100,6 +101,13 @@ class LanguagesController
 		{
 			updates.push('intraword_punctuation = :intrawordPunctuation');
 			queryParams.intrawordPunctuation = intrawordPunctuation;
+		}
+		if (textProcessorFullIds !== undefined)
+		{
+			const textProcessors = JSON.stringify(textProcessorFullIds);
+
+			updates.push('text_processors = :textProcessors');
+			queryParams.textProcessors = textProcessors;
 		}
 
 		if (updates.length > 0)

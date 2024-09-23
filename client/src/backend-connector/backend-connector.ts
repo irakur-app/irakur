@@ -97,7 +97,8 @@ class BackendConnector
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string,
-		intrawordPunctuation: string
+		intrawordPunctuation: string,
+		textProcessorFullIds: string[]
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -116,6 +117,7 @@ class BackendConnector
 						sentenceDelimiters,
 						whitespaces,
 						intrawordPunctuation,
+						textProcessorFullIds,
 					}
 				),
 			}

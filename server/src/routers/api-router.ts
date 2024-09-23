@@ -95,7 +95,8 @@ router.patch(
 				req.body.alphabet,
 				req.body.sentenceDelimiters,
 				req.body.whitespaces,
-				req.body.intrawordPunctuation
+				req.body.intrawordPunctuation,
+				req.body.textProcessorFullIds
 			);
 			res.sendStatus(200);
 		}

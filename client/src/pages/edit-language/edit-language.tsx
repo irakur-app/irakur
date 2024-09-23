@@ -6,13 +6,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
-import { Language } from '@common/types';
+import { Language, TextProcessor } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
+import { TextProcessorColumn } from '../../components/text-processor-column';
 
 const EditLanguage = (): JSX.Element => {
 	const [language, setLanguage] = useState<Language | null>(null);
+	const [unusedTextProcessors, setUnusedTextProcessors] = useState<TextProcessor[] | null>(null);
+	const [usedTextProcessors, setUsedTextProcessors] = useState<TextProcessor[] | null>(null);
+	
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const languageId: number = Number(document.location.pathname.split('/').pop());
@@ -22,11 +27,37 @@ const EditLanguage = (): JSX.Element => {
 			backendConnector.getLanguage(languageId).then(
 				(language): void => {
 					setLanguage(language);
+					backendConnector.getTextProcessors().then(
+						(textProcessors) => {
+							setUnusedTextProcessors(
+								textProcessors.filter(
+									(textProcessor) => !language.textProcessors.includes(
+										textProcessor.pluginId + '/' + textProcessor.id
+									)
+								)
+							);
+
+							const languageTextProcessorFullIds: string[] = JSON.parse(language.textProcessors);
+							setUsedTextProcessors(
+								languageTextProcessorFullIds.map(
+									(textProcessorFullId) => textProcessors.find(
+										(textProcessor) => textProcessorFullId ===
+											textProcessor.pluginId + '/' + textProcessor.id
+									)
+								).filter((textProcessor): textProcessor is TextProcessor => textProcessor !== undefined)
+							);
+						}
+					);
 				}
 			);
 		},
 		[languageId]
 	);
+
+	if (!language || !unusedTextProcessors || !usedTextProcessors)
+	{
+		return <Loading />;
+	}
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
 		event.preventDefault();
@@ -48,7 +79,10 @@ const EditLanguage = (): JSX.Element => {
 			form.get('alphabet') as string,
 			form.get('sentenceDelimiters') as string,
 			form.get('whitespaces') as string,
-			form.get('intrawordPunctuation') as string
+			form.get('intrawordPunctuation') as string,
+			usedTextProcessors.map(
+				(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id
+			)
 		);
 
 		if (wasEdited)
@@ -58,11 +92,34 @@ const EditLanguage = (): JSX.Element => {
 
 		setIsSubmitting(false);
 	};
+	
+	const onDragEnd = (result: DropResult): void => {
+		const { destination, draggableId, source } = result;
 
-	if (!language)
-	{
-		return <Loading />;
-	}
+		if (!destination)
+		{
+			return;
+		}
+
+		if (destination.droppableId === source.droppableId && destination.index === source.index)
+		{
+			return;
+		}
+
+		const sourceColumn: TextProcessor[] = source.droppableId === 'Unused Text Processors'
+			? unusedTextProcessors
+			: usedTextProcessors;
+		const destinationColumn: TextProcessor[] = destination.droppableId === 'Unused Text Processors'
+			? unusedTextProcessors
+			: usedTextProcessors;
+
+		const draggableTextProcessor = sourceColumn?.find(
+			(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id === draggableId
+		) as TextProcessor;
+
+		sourceColumn.splice(source.index, 1);
+		destinationColumn.splice(destination.index, 0, draggableTextProcessor);
+	};
 
 	return (
 		<HelmetProvider>
@@ -113,6 +170,12 @@ const EditLanguage = (): JSX.Element => {
 					defaultValue={language.intrawordPunctuation}
 				/>
 				<br />
+				<br />
+
+				<DragDropContext onDragEnd={onDragEnd}>
+					<TextProcessorColumn columnType='Unused Text Processors' textProcessors={unusedTextProcessors} />
+					<TextProcessorColumn columnType='Used Text Processors' textProcessors={usedTextProcessors} />
+				</DragDropContext>
 
 				<button type="submit" disabled={isSubmitting}>Update</button>
 			</form>
