@@ -548,7 +548,9 @@ class BackendConnector
 
 	async getWordData(languageId: number, wordContent: string): Promise<DictionaryWordData | null>
 	{
-		const response: Response = await fetch(`/api/plugins/provide-word-data?languageId=${languageId}&content=${wordContent}`);
+		const response: Response = await fetch(
+			`/api/plugins/provide-word-data?languageId=${languageId}&content=${wordContent}`
+		);
 		if (!response.ok)
 		{
 			return null;

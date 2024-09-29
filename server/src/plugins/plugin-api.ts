@@ -55,4 +55,4 @@ interface IrakurApi
 
 declare var irakur: IrakurApi;
 
-export { Plugin, IrakurApi, TextProcessor, WordDataProvider, DictionaryWordData, irakur };
+export { DictionaryEntry, Plugin, IrakurApi, TextProcessor, WordDataProvider, DictionaryWordData, irakur };
