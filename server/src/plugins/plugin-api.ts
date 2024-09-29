@@ -53,6 +53,6 @@ interface IrakurApi
 	};
 };
 
-declare var irakur: IrakurApi;
+const irakur: IrakurApi = global.irakur;
 
 export { DictionaryEntry, Plugin, IrakurApi, TextProcessor, WordDataProvider, DictionaryWordData, irakur };
