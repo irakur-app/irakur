@@ -407,6 +407,19 @@ router.get(
 	)
 );
 
+router.get(
+	'/plugins/word-data-providers',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			res.json(
+				{
+					wordDataProviders: pluginManager.getAllAvailableWordDataProviders()
+				}
+			);
+		}
+	)
+);
+
 router.post(
 	'/plugins/start',
 	errorWrapper(

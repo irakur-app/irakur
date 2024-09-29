@@ -4,7 +4,18 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Entry, Language, Page, ReducedWordData, Text, Word, TextProcessor } from '@common/types';
+import {
+	Entry,
+	Language,
+	Page,
+	ReducedWordData,
+	Text,
+	Word,
+	TextProcessor,
+	WordDataProvider,
+	DictionaryWordData
+} from '@common/types';
+
 import { symbols } from '../symbols';
 
 class BackendConnector
@@ -29,7 +40,8 @@ class BackendConnector
 		intrawordPunctuation: string,
 		templateCode: string,
 		scriptName: string,
-		textProcessorFullIds: string[]
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -51,6 +63,7 @@ class BackendConnector
 						templateCode,
 						scriptName,
 						textProcessorFullIds,
+						wordDataProviderFullId,
 					}
 				),
 			}
@@ -98,7 +111,8 @@ class BackendConnector
 		sentenceDelimiters: string,
 		whitespaces: string,
 		intrawordPunctuation: string,
-		textProcessorFullIds: string[]
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -118,6 +132,7 @@ class BackendConnector
 						whitespaces,
 						intrawordPunctuation,
 						textProcessorFullIds,
+						wordDataProviderFullId,
 					}
 				),
 			}
@@ -531,6 +546,17 @@ class BackendConnector
 		return processedText;
 	}
 
+	async getWordData(languageId: number, wordContent: string): Promise<DictionaryWordData | null>
+	{
+		const response: Response = await fetch(`/api/plugins/provide-word-data?languageId=${languageId}&content=${wordContent}`);
+		if (!response.ok)
+		{
+			return null;
+		}
+		const wordData = (await response.json()).wordData;
+		return wordData;
+	}
+
 	async getTextProcessors(): Promise<TextProcessor[]>
 	{
 		const response: Response = await fetch('/api/plugins/text-processors');
@@ -545,6 +571,13 @@ class BackendConnector
 				};
 			}
 		)
+	}
+
+	async getWordDataProviders(): Promise<WordDataProvider[]>
+	{
+		const response: Response = await fetch('/api/plugins/word-data-providers');
+		const wordDataProviders = (await response.json()).wordDataProviders;
+		return wordDataProviders;
 	}
 }
 

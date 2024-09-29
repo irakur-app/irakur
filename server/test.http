@@ -162,6 +162,9 @@ Content-Type: application/json
 GET http://localhost:5000/api/plugins/text-processors
 
 ###
+GET http://localhost:5000/api/plugins/word-data-providers
+
+###
 POST http://localhost:5000/api/plugins/start
 
 ###

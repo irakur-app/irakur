@@ -87,9 +87,30 @@ const EditWord = (
 				{
 					setIsNewWord(true);
 					setId(null);
-					setNotes(null);
-					setEntries([{...emptyEntry}]);
 					setStatus(0);
+
+					const wordData = await backendConnector.getWordData(languageData.id, content);
+					if (wordData)
+					{
+						setNotes(wordData.notes || null);
+						setEntries(
+							(wordData.entries && wordData.entries.length > 0)
+								? wordData.entries.map(
+									(entry) => (
+										{
+											meaning: entry.meaning || '',
+											reading: entry.reading || '',
+										}
+									)
+								)
+								: [{...emptyEntry}]
+						);
+					}
+					else
+					{
+						setNotes(null);
+						setEntries([{...emptyEntry}]);
+					}
 				}
 				setIsLoading(false);
 			}

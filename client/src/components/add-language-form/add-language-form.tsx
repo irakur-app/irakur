@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
-import { TextProcessor } from '@common/types';
+import { TextProcessor, WordDataProvider } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { getPartialTemplate } from '../../language-templates';
 import { TextProcessorColumn } from '../text-processor-column';
@@ -48,6 +48,8 @@ const AddLanguageForm = (
 	const [unusedTextProcessors, setUnusedTextProcessors] = useState<TextProcessor[] | null>(null);
 	const usedTextProcessors: TextProcessor[] = [];
 
+	const [wordDataProviders, setWordDataProviders] = useState<WordDataProvider[] | null>(null);
+
 	const languageTemplate = getPartialTemplate(targetLanguageName, auxiliaryLanguageName);
 
 	const [scriptValues, setScriptValues] = useState<Script>(
@@ -85,7 +87,8 @@ const AddLanguageForm = (
 			form.get('scriptName') as string,
 			usedTextProcessors.map(
 				(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id
-			)
+			),
+			form.get('wordDataProviderName') as string
 		);
 
 		if (wasAdded)
@@ -116,11 +119,16 @@ const AddLanguageForm = (
 					setUnusedTextProcessors(textProcessors);
 				}
 			);
+			backendConnector.getWordDataProviders().then(
+				(wordDataProviders) => {
+					setWordDataProviders(wordDataProviders);
+				}
+			);
 		},
 		[]
 	);
 
-	if (unusedTextProcessors === null)
+	if (unusedTextProcessors === null || wordDataProviders === null)
 	{
 		return <Loading />;
 	}
@@ -243,6 +251,31 @@ const AddLanguageForm = (
 					value={scriptValues.intrawordPunctuation}
 					onChange={handleOnChange}
 				/>
+				<br />
+				<br />
+
+				<label htmlFor="wordDataProvider">Word Data Provider</label>
+				<select
+					name="wordDataProvider"
+					id="wordDataProvider"
+				>
+					<option value="">(None)</option>
+					{
+						wordDataProviders.map(
+							(wordDataProvider) => (
+								<option
+									key={wordDataProvider.id}
+									value={wordDataProvider.pluginId + '/' + wordDataProvider.id}
+								>
+									{
+										wordDataProvider.targetLanguage + '->' + wordDataProvider.auxiliaryLanguage
+											+ ': ' + wordDataProvider.name
+									}
+								</option>
+							)
+						)
+					}
+				</select>
 				<br />
 				<br />
 

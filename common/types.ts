@@ -90,6 +90,25 @@ type TextProcessor = {
 	pluginId: string;
 };
 
+type WordDataProvider = {
+	id: string;
+	name: string;
+	targetLanguage: string;
+	auxiliaryLanguage: string;
+	pluginId: string;
+};
+
+type DictionaryEntry = {
+	reading?: string;
+	meaning?: string;
+};
+
+type DictionaryWordData = {
+	wordContent?: string;
+	entries?: DictionaryEntry[];
+	notes?: string;
+};
+
 export type {
 	Language,
 	Text,
@@ -100,5 +119,7 @@ export type {
 	Word,
 	WordDataProviderReference,
 	RawWord,
-	TextProcessor
+	TextProcessor,
+	WordDataProvider,
+	DictionaryWordData
 };

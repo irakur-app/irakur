@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 
-import { Language, TextProcessor } from '@common/types';
+import { Language, TextProcessor, WordDataProvider } from '@common/types';
 import { backendConnector } from '../../backend-connector';
 import { Loading } from '../../components/loading';
 import { TextProcessorColumn } from '../../components/text-processor-column';
@@ -17,6 +17,8 @@ const EditLanguage = (): JSX.Element => {
 	const [language, setLanguage] = useState<Language | null>(null);
 	const [unusedTextProcessors, setUnusedTextProcessors] = useState<TextProcessor[] | null>(null);
 	const [usedTextProcessors, setUsedTextProcessors] = useState<TextProcessor[] | null>(null);
+
+	const [wordDataProviders, setWordDataProviders] = useState<WordDataProvider[] | null>(null);
 	
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -48,13 +50,18 @@ const EditLanguage = (): JSX.Element => {
 							);
 						}
 					);
+					backendConnector.getWordDataProviders().then(
+						(wordDataProviders) => {
+							setWordDataProviders(wordDataProviders);
+						}
+					)
 				}
 			);
 		},
 		[languageId]
 	);
 
-	if (!language || !unusedTextProcessors || !usedTextProcessors)
+	if (!language || !unusedTextProcessors || !usedTextProcessors || !wordDataProviders)
 	{
 		return <Loading />;
 	}
@@ -82,7 +89,8 @@ const EditLanguage = (): JSX.Element => {
 			form.get('intrawordPunctuation') as string,
 			usedTextProcessors.map(
 				(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id
-			)
+			),
+			form.get('wordDataProvider') as string,
 		);
 
 		if (wasEdited)
@@ -171,6 +179,30 @@ const EditLanguage = (): JSX.Element => {
 				/>
 				<br />
 				<br />
+
+				<label htmlFor="wordDataProvider">Word Data Provider</label>
+				<select
+					name="wordDataProvider"
+					id="wordDataProvider"
+					defaultValue={language.wordDataProvider}
+				>
+					<option value="">(None)</option>
+					{
+						wordDataProviders.map(
+							(wordDataProvider) => (
+								<option
+									key={wordDataProvider.id}
+									value={wordDataProvider.pluginId + '/' + wordDataProvider.id}
+								>
+									{
+										wordDataProvider.targetLanguage + '->' + wordDataProvider.auxiliaryLanguage
+											+ ': ' + wordDataProvider.name
+									}
+								</option>
+							)
+						)
+					}
+				</select>
 
 				<DragDropContext onDragEnd={onDragEnd}>
 					<TextProcessorColumn columnType='Unused Text Processors' textProcessors={unusedTextProcessors} />
