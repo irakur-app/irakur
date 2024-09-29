@@ -136,12 +136,12 @@ class PluginManager
 	{
 		return this.textProcessors.filter(
 			(textProcessor: TextProcessor) => {
-				if (Array.isArray(textProcessor.languages))
+				if (Array.isArray(textProcessor.supportedLanguages))
 				{
-					return textProcessor.languages.includes(language.templateCode.split(':')[0]);
+					return textProcessor.supportedLanguages.includes(language.templateCode.split(':')[0]);
 				}
 				
-				return textProcessor.languages === this.api.symbols.anyLanguage;
+				return textProcessor.supportedLanguages === this.api.symbols.anyLanguage;
 			}
 		);
 	}

@@ -26,7 +26,7 @@ interface TextProcessor
 {
 	id: string;
 	name: string;
-	languages: string[] | Symbol;
+	supportedLanguages: string[] | Symbol;
 	processText: (text: string) => Promise<string>;
 	prepare?: () => Promise<void>;
 };

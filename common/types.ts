@@ -86,7 +86,7 @@ type RawWord = {
 type TextProcessor = {
 	id: string;
 	name: string;
-	languages: string[] | Symbol;
+	supportedLanguages: string[] | Symbol;
 	pluginId: string;
 };
 

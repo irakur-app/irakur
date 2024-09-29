@@ -567,8 +567,8 @@ class BackendConnector
 			(textProcessor: TextProcessor) => {
 				return {
 					...textProcessor,
-					languages: Array.isArray(textProcessor.languages)
-						? textProcessor.languages
+					languages: Array.isArray(textProcessor.supportedLanguages)
+						? textProcessor.supportedLanguages
 						: symbols.anyLanguage,
 				};
 			}

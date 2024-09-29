@@ -10,7 +10,7 @@ import { tokenize } from '@enjoyjs/node-mecab';
 const spaceInserter: TextProcessor = {
 	id: 'mecab-space-inserter',
 	name: 'Add spaces',
-	languages: ['Japanese'],
+	supportedLanguages: ['Japanese'],
 	processText: async (text: string): Promise<string> => {
 		const tokens = await tokenize(text);
 

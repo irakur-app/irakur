@@ -394,9 +394,9 @@ router.get(
 							return {
 								id: textProcessor.id,
 								name: textProcessor.name,
-								languages: Array.isArray(textProcessor.languages)
-									? textProcessor.languages
-									: textProcessor.languages.description,
+								languages: Array.isArray(textProcessor.supportedLanguages)
+									? textProcessor.supportedLanguages
+									: textProcessor.supportedLanguages.description,
 								pluginId: textProcessor.pluginId
 							}
 						}
