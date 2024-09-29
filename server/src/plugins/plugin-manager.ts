@@ -6,8 +6,8 @@
 
 import { AsyncLocalStorage } from 'async_hooks';
 
-import { Language, TextProcessorReference } from '@common/types';
-import { IrakurApi, Plugin, TextProcessor, WordDataProvider } from './plugin-api';
+import { Language, TextProcessorReference, WordDataProviderReference } from '@common/types';
+import { IrakurApi, Plugin, TextProcessor, WordDataProvider, DictionaryWordData } from './plugin-api';
 import { sandboxProxy } from './sandbox-proxy';
 import { LanguagesController } from '../controllers/languages-controller';
 
@@ -127,6 +127,11 @@ class PluginManager
 		return this.textProcessors;
 	}
 
+	getAllAvailableWordDataProviders(): (WordDataProvider & PluginIdReference)[]
+	{
+		return this.wordDataProviders;
+	}
+
 	getSuggestedTextProcessorsForLanguage(language: Language): TextProcessor[]
 	{
 		return this.textProcessors.filter(
@@ -140,6 +145,16 @@ class PluginManager
 			}
 		);
 	}
+
+	getSuggestedWordDataProvidersForLanguage(language: Language): WordDataProvider[]
+	{
+		return this.wordDataProviders.filter(
+			(wordDataProvider: WordDataProvider) => {
+				return (wordDataProvider.targetLanguage + ':' + wordDataProvider.auxiliaryLanguage)
+					== (language.templateCode.split(':')[0]);
+			}
+		);
+	}
 	
 	async processText(text: string, textProcessors: TextProcessor[]): Promise<string>
 	{
@@ -148,6 +163,11 @@ class PluginManager
 			text = await textProcessor.processText(text);
 		}
 		return text;
+	}
+
+	async provideWordData(wordContent: string, wordDataProvider: WordDataProvider): Promise<DictionaryWordData | null>
+	{
+		return await wordDataProvider.getWordData(wordContent);
 	}
 
 	getTextProcessorsReferencesForLanguage(language: Language): TextProcessorReference[]
@@ -160,6 +180,14 @@ class PluginManager
 				};
 			}
 		);
+	}
+
+	getWordDataProviderReferenceForLanguage(language: Language): WordDataProviderReference
+	{
+		return {
+			pluginId: language.wordDataProvider.split('/')[0],
+			wordDataProviderId: language.wordDataProvider.split('/')[1],
+		};
 	}
 
 	prepare(): void
@@ -178,6 +206,12 @@ class PluginManager
 		for (const textProcessor of textProcessors)
 		{
 			textProcessor.prepare?.();
+		}
+
+		const wordDataProvider = this.getActualWordDataProviderForLanguage(language);
+		if (wordDataProvider)
+		{
+			wordDataProvider.prepare?.();
 		}
 	}
 
@@ -198,11 +232,35 @@ class PluginManager
 		) as (TextProcessor & PluginIdReference)[]; // For some reason it doesn't work without the cast
 	}
 
+	getActualWordDataProviderForLanguage(language: Language): (WordDataProvider & PluginIdReference) | undefined
+	{
+		const wordDataProviderReference: WordDataProviderReference = this.getWordDataProviderReferenceForLanguage(language);
+
+		const wordDataProvider = this.wordDataProviders.find(
+			(wordDataProvider: (WordDataProvider & PluginIdReference)) => 
+				wordDataProvider.pluginId === wordDataProviderReference.pluginId
+					&& wordDataProvider.id === wordDataProviderReference.wordDataProviderId
+		);
+
+		return wordDataProvider;
+	}
+
 	async processTextInLanguage(text: string, language: Language): Promise<string>
 	{
 		const textProcessors = this.getActualTextProcessorsForLanguage(language);
 
 		return this.processText(text, textProcessors);
+	}
+
+	async provideWordDataInLanguage(wordContent: string, language: Language): Promise<DictionaryWordData | null>
+	{
+		const wordDataProvider = this.getActualWordDataProviderForLanguage(language);
+		if (wordDataProvider)
+		{
+			return this.provideWordData(wordContent, wordDataProvider);
+		}
+
+		return null;
 	}
 }
 

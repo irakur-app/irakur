@@ -26,7 +26,7 @@ type Language = {
 	templateCode: string;
 	scriptName: string;
 	textProcessors: string;
-	wordDataProviders: string;
+	wordDataProvider: string;
 };
 
 type Text = {

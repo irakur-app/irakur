@@ -21,7 +21,8 @@ class LanguagesController
 		intrawordPunctuation: string,
 		templateCode: string,
 		scriptName: string,
-		textProcessorFullIds: string[]
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): void
 	{
 		const textProcessors = JSON.stringify(textProcessorFullIds);
@@ -39,6 +40,7 @@ class LanguagesController
 				templateCode,
 				scriptName,
 				textProcessors,
+				wordDataProviderFullId,
 			}
 		);
 
@@ -72,7 +74,8 @@ class LanguagesController
 		sentenceDelimiters: string,
 		whitespaces: string,
 		intrawordPunctuation: string,
-		textProcessorFullIds: string[]
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): void
 	{
 		const queryParams: Record<string, any> = {};
@@ -120,6 +123,11 @@ class LanguagesController
 			updates.push('text_processors = :textProcessors');
 			queryParams.textProcessors = textProcessors;
 		}
+		if (wordDataProviderFullId !== undefined)
+		{
+			updates.push('word_data_provider = :wordDataProviderFullId');
+			queryParams.wordDataProviderFullId = wordDataProviderFullId;
+		}
 
 		if (updates.length > 0)
 		{
@@ -134,7 +142,7 @@ class LanguagesController
 
 			databaseManager.runQuery(dynamicQuery, queryParams);
 
-			if (textProcessorFullIds !== undefined)
+			if (textProcessorFullIds !== undefined || wordDataProviderFullId !== undefined)
 			{
 				const language = databaseManager.getFirstRow(
 					queries.getLanguage,

@@ -18,7 +18,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/api/languages/1
+GET http://localhost:5000/api/languages/6
 
 ###
 PATCH http://localhost:5000/api/languages/1
@@ -172,3 +172,6 @@ Content-Type: application/json
 	"text": "This is a test.",
 	"language": "English"
 }
+
+###
+GET http://localhost:5000/api/plugins/provide-word-data?languageId=6&content=家

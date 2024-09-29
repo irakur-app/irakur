@@ -5,13 +5,14 @@
  */
 
 type DictionaryEntry = {
-	reading: string;
-	meaning: string;
+	reading?: string;
+	meaning?: string;
 };
 
 type DictionaryWordData = {
-	wordContent: string;
-	entries: DictionaryEntry[];
+	wordContent?: string;
+	entries?: DictionaryEntry[];
+	notes?: string;
 };
 
 interface Plugin
@@ -27,6 +28,7 @@ interface TextProcessor
 	name: string;
 	languages: string[] | Symbol;
 	processText: (text: string) => Promise<string>;
+	prepare?: () => Promise<void>;
 };
 
 interface WordDataProvider
@@ -35,7 +37,8 @@ interface WordDataProvider
 	name: string;
 	targetLanguage: string;
 	auxiliaryLanguage: string;
-	getWordData: (wordContent: string) => Promise<DictionaryWordData>;
+	getWordData: (wordContent: string) => Promise<DictionaryWordData | null>;
+	prepare?: () => Promise<void>;
 };
 
 interface IrakurApi
@@ -50,6 +53,6 @@ interface IrakurApi
 	};
 };
 
-const irakur: IrakurApi = global.irakur;
+declare var irakur: IrakurApi;
 
-export { Plugin, IrakurApi, TextProcessor, WordDataProvider, irakur };
+export { Plugin, IrakurApi, TextProcessor, WordDataProvider, DictionaryWordData, irakur };
