@@ -15,8 +15,8 @@ const spaceInserter: TextProcessor = {
 		const tokens = await tokenize(text);
 
 		return tokens
-			.filter((token) => token.stat === 'NORMAL' || token.stat === 'UNKNOWN')
-			.map((token) => token.surface)
+			.filter((token) => token.stat === 'NORMAL' || token.stat === 'UNKNOWN' || token.stat === 'EOS')
+			.map((token) => (token.stat === 'EOS' ? '\n' : token.surface))
 			.join('\u200B');
 	},
 };
