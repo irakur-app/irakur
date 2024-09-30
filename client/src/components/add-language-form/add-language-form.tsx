@@ -88,7 +88,7 @@ const AddLanguageForm = (
 			usedTextProcessors.map(
 				(textProcessor) => textProcessor.pluginId + '/' + textProcessor.id
 			),
-			form.get('wordDataProviderName') as string
+			form.get('wordDataProvider') as string
 		);
 
 		if (wasAdded)

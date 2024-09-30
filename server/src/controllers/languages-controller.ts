@@ -26,6 +26,7 @@ class LanguagesController
 	): void
 	{
 		const textProcessors = JSON.stringify(textProcessorFullIds);
+		const wordDataProvider = wordDataProviderFullId;
 
 		databaseManager.runQuery(
 			queries.addLanguage,
@@ -40,7 +41,7 @@ class LanguagesController
 				templateCode,
 				scriptName,
 				textProcessors,
-				wordDataProviderFullId,
+				wordDataProvider,
 			}
 		);
 
