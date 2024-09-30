@@ -19,6 +19,7 @@ interface Plugin
 {
 	id: string;
 	name: string;
+	description?: string;
 	start?: () => Promise<void>;
 };
 
@@ -26,6 +27,7 @@ interface TextProcessor
 {
 	id: string;
 	name: string;
+	description?: string;
 	supportedLanguages: string[] | Symbol;
 	processText: (text: string) => Promise<string>;
 	prepare?: () => Promise<void>;
@@ -35,6 +37,7 @@ interface WordDataProvider
 {
 	id: string;
 	name: string;
+	description?: string;
 	targetLanguage: string;
 	auxiliaryLanguage: string;
 	getWordData: (wordContent: string) => Promise<DictionaryWordData | null>;

@@ -10,6 +10,7 @@ import { tokenize } from '@enjoyjs/node-mecab';
 const spaceInserter: TextProcessor = {
 	id: 'mecab-space-inserter',
 	name: 'Add spaces',
+	description: 'Adds zero-width spaces between tokens. The text is tokenized by MeCab.',
 	supportedLanguages: ['Japanese'],
 	processText: async (text: string): Promise<string> => {
 		const tokens = await tokenize(text);
@@ -24,6 +25,7 @@ const spaceInserter: TextProcessor = {
 const jishoFetcher: WordDataProvider = {
 	id: 'jisho-fetcher',
 	name: 'Jisho Fetcher',
+	description: 'Fetches word data from jisho.org API.',
 	targetLanguage: 'Japanese',
 	auxiliaryLanguage: 'English',
 	getWordData: async (wordContent: string): Promise<DictionaryWordData | null> => {
@@ -100,6 +102,7 @@ const jishoFetcher: WordDataProvider = {
 const plugin: Plugin = {
 	id: 'com.irakur.default-essentials',
 	name: 'Processors and Autocompleters for Default Languages',
+	description: 'Adds essential processors and autocompleters for default languages.',
 	start: async () => {
 		irakur.plugins.registerTextProcessor(spaceInserter);
 		irakur.plugins.registerWordDataProvider(jishoFetcher);
