@@ -34,28 +34,60 @@ const jishoFetcher: WordDataProvider = {
 			return null;
 		}
 
-		const jishoWords = json.data.filter(
-			(word: any) => word.japanese.find(
-				(japanese: any) => japanese.word === wordContent || japanese.reading === wordContent
+		const suitableWords = json.data.filter(
+			(word: any, index: number) => word.japanese.find(
+				(japanese: any) => japanese.word === wordContent
+					|| japanese.reading === wordContent
+					|| (
+						(
+							!japanese.word
+								|| !japanese.reading
+								|| japanese.word.startsWith(wordContent.substring(0, wordContent.length - 1))
+								|| japanese.reading.startsWith(wordContent.substring(0, wordContent.length - 1))
+						)
+						&& (
+							(index <= 2
+								&& word.senses.find(
+									(sense: any) => sense.parts_of_speech.find(
+										(partOfSpeech: any) => /(?<!Suru) verb$/.test(partOfSpeech)
+									) !== undefined
+								) !== undefined
+							)
+							|| (index <= 1
+								&& wordContent.charAt(wordContent.length - 1) === 'く'
+								&& word.senses.find(
+									(sense: any) => sense.parts_of_speech.find(
+										(partOfSpeech: any) => /.*adjective.*/m.test(partOfSpeech)
+									) !== undefined
+								) !== undefined
+							)
+						)
+					)
 			) !== undefined
 		);
 
 		return {
 			wordContent: wordContent,
-			entries: jishoWords.map(
+			entries: suitableWords.map(
 				(word: any) => {
 					const meaning: string = word.senses.map(
 						(sense: any, index: number) => (index + 1) + '. ' + sense.english_definitions.join('; ')
 					).join('\n');
 					
-					const readingItem = word.japanese.filter(
+					const readingItems = word.japanese.filter(
 						(japanese: any) => japanese.word === wordContent || japanese.reading === wordContent
-					)[0];
+					);
+
+					const readingItem = readingItems.length > 0
+					 	? readingItems[0]
+						: word.japanese[0];
 
 					return {
 						meaning: meaning,
 						reading: (readingItem.reading === wordContent)
-							? (readingItem.word) !== undefined ? readingItem.word : undefined
+							? (readingItem.word) !== undefined 
+								? readingItem.word
+								: undefined
 							: readingItem.reading,
 					};
 				}
