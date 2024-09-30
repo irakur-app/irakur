@@ -182,8 +182,12 @@ class PluginManager
 		);
 	}
 
-	getWordDataProviderReferenceForLanguage(language: Language): WordDataProviderReference
+	getWordDataProviderReferenceForLanguage(language: Language): WordDataProviderReference | undefined
 	{
+		if (!language.wordDataProvider)
+		{
+			return undefined;
+		}
 		return {
 			pluginId: language.wordDataProvider.split('/')[0],
 			wordDataProviderId: language.wordDataProvider.split('/')[1],
@@ -234,13 +238,15 @@ class PluginManager
 
 	getActualWordDataProviderForLanguage(language: Language): (WordDataProvider & PluginIdReference) | undefined
 	{
-		const wordDataProviderReference: WordDataProviderReference = this.getWordDataProviderReferenceForLanguage(language);
+		const wordDataProviderReference = this.getWordDataProviderReferenceForLanguage(language);
 
-		const wordDataProvider = this.wordDataProviders.find(
-			(wordDataProvider: (WordDataProvider & PluginIdReference)) => 
-				wordDataProvider.pluginId === wordDataProviderReference.pluginId
-					&& wordDataProvider.id === wordDataProviderReference.wordDataProviderId
-		);
+		const wordDataProvider = (wordDataProviderReference !== undefined)
+			? this.wordDataProviders.find(
+				(wordDataProvider: (WordDataProvider & PluginIdReference)) => 
+					wordDataProvider.pluginId === wordDataProviderReference.pluginId
+						&& wordDataProvider.id === wordDataProviderReference.wordDataProviderId
+			)
+			: undefined;
 
 		return wordDataProvider;
 	}
