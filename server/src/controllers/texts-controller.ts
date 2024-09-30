@@ -27,7 +27,7 @@ class TextsController
 			}
 		);
 
-		const textId: number = databaseManager.getLastInsertId().id;
+		const textId: number = databaseManager.getLastInsertId();
 
 		this.updatePage(textId, languageId, numberOfPages, content);
 	}

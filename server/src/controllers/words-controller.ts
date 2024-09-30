@@ -43,7 +43,7 @@ class WordsController
 			}
 		);
 
-		const wordId: number = databaseManager.getLastInsertId().id;
+		const wordId: number = databaseManager.getLastInsertId();
 
 		for (let i = 0; i < entries.length; i++)
 		{
