@@ -23,6 +23,7 @@ It will initially be distributed as a desktop application using [Electron](https
 - **Offline Functionality**: Irakur runs locally without an internet connection. The user will have the ability to synchronize their data accross devices.
 - **Open-Source and Free**: Released under the AGPL-3.0 license with a proxy clause, check [#License](#License).
 - **Cross-Platform**: It is developed with web technologies so that builds are available for different platforms in the future.
+- **Multiwords**: Supports expressions consisting of multiple words, such as idioms and fixed phrases.
 
 ## Installation
 
