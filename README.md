@@ -21,7 +21,7 @@ It will initially be distributed as a desktop application using [Electron](https
 - **Progress Tracking**: Color coding to represent the user's familiarity with each word.
 - **Language Agnosticism**: Any language can be configured to be learned by the user. A plugin system will be available for further personalization in case specific languages need it (for example, for word parsing in spaceless languages such as Japanese).
 - **Offline Functionality**: Irakur runs locally without an internet connection. The user will have the ability to synchronize their data accross devices.
-- **Open-Source and Free**: Released under the AGPL-3.0 license with a proxy clause, check <LICENSE>.
+- **Open-Source and Free**: Released under the AGPL-3.0 license with a proxy clause, check [#License](#License).
 - **Cross-Platform**: It is developed with web technologies so that builds are available for different platforms in the future.
 
 ## Installation
