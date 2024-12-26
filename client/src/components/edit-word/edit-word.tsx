@@ -89,7 +89,12 @@ const EditWord = (
 					setId(null);
 					setStatus(0);
 
-					const wordData = await backendConnector.getWordData(languageData.id, content);
+					const wordData = await backendConnector.getWordData(
+						languageData.id,
+						languageData.shouldShowSpaces
+							? content
+							: content.replace(new RegExp(languageData.whitespaces, 'ug'), '')
+					);
 					if (wordData)
 					{
 						setNotes(wordData.notes || null);
