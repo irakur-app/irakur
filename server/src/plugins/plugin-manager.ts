@@ -8,6 +8,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 
 import { Language, TextProcessorReference, WordDataProviderReference } from '@common/types';
 import { IrakurApi, Plugin, TextProcessor, WordDataProvider, DictionaryWordData } from './plugin-api';
+import { PluginError } from './plugin-error';
 import { sandboxProxy } from './sandbox-proxy';
 import { LanguagesController } from '../controllers/languages-controller';
 
@@ -165,9 +166,16 @@ class PluginManager
 		return text;
 	}
 
-	async provideWordData(wordContent: string, wordDataProvider: WordDataProvider): Promise<DictionaryWordData | null>
+	async provideWordData(
+		wordContent: string,
+		wordDataProvider: (WordDataProvider & PluginIdReference)
+	): Promise<DictionaryWordData | null>
 	{
-		return await wordDataProvider.getWordData(wordContent);
+		return await wordDataProvider.getWordData(wordContent).catch(
+			error => {
+				throw new PluginError(wordDataProvider.id + '/' + wordDataProvider.pluginId, error.message);
+			}
+		);
 	}
 
 	getTextProcessorsReferencesForLanguage(language: Language): TextProcessorReference[]
@@ -261,12 +269,22 @@ class PluginManager
 	async provideWordDataInLanguage(wordContent: string, language: Language): Promise<DictionaryWordData | null>
 	{
 		const wordDataProvider = this.getActualWordDataProviderForLanguage(language);
+		
+		let providedWordData: DictionaryWordData | null = null;
+
 		if (wordDataProvider)
 		{
-			return this.provideWordData(wordContent, wordDataProvider);
+			try
+			{
+				providedWordData = await this.provideWordData(wordContent, wordDataProvider);
+			}
+			catch (error)
+			{
+				console.error((error as PluginError).message);
+			}
 		}
 
-		return null;
+		return providedWordData;
 	}
 }
 
