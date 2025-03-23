@@ -17,7 +17,7 @@ const Dictionary = ({ languageData, content }: { languageData: Language, content
 					(languageData.shouldShowSpaces
 						? content
 						: content.replace(new RegExp(languageData.whitespaces, 'ug'), '')
-						) || ''
+					) || ''
 				)
 			}
 			style={{

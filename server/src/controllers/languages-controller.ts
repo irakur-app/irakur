@@ -6,6 +6,7 @@
 
 import { Language } from '@common/types';
 import { databaseManager } from '../database/database-manager';
+import { pluginManager } from '../plugins/plugin-manager';
 import { queries } from '../database/queries';
 
 class LanguagesController
@@ -19,9 +20,14 @@ class LanguagesController
 		whitespaces: string,
 		intrawordPunctuation: string,
 		templateCode: string,
-		scriptName: string
+		scriptName: string,
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): void
 	{
+		const textProcessors = JSON.stringify(textProcessorFullIds);
+		const wordDataProvider = wordDataProviderFullId;
+
 		databaseManager.runQuery(
 			queries.addLanguage,
 			{
@@ -34,8 +40,20 @@ class LanguagesController
 				intrawordPunctuation,
 				templateCode,
 				scriptName,
+				textProcessors,
+				wordDataProvider,
 			}
 		);
+
+		const languageId = databaseManager.getLastInsertId();
+		const language = databaseManager.getFirstRow(
+			queries.getLanguage,
+			{
+				languageId,
+			}
+		);
+
+		pluginManager.prepareLanguage(language);
 	}
 
 	deleteLanguage(languageId: number): void
@@ -56,7 +74,9 @@ class LanguagesController
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string,
-		intrawordPunctuation: string
+		intrawordPunctuation: string,
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): void
 	{
 		const queryParams: Record<string, any> = {};
@@ -97,6 +117,18 @@ class LanguagesController
 			updates.push('intraword_punctuation = :intrawordPunctuation');
 			queryParams.intrawordPunctuation = intrawordPunctuation;
 		}
+		if (textProcessorFullIds !== undefined)
+		{
+			const textProcessors = JSON.stringify(textProcessorFullIds);
+
+			updates.push('text_processors = :textProcessors');
+			queryParams.textProcessors = textProcessors;
+		}
+		if (wordDataProviderFullId !== undefined)
+		{
+			updates.push('word_data_provider = :wordDataProviderFullId');
+			queryParams.wordDataProviderFullId = wordDataProviderFullId;
+		}
 
 		if (updates.length > 0)
 		{
@@ -110,6 +142,18 @@ class LanguagesController
 			);
 
 			databaseManager.runQuery(dynamicQuery, queryParams);
+
+			if (textProcessorFullIds !== undefined || wordDataProviderFullId !== undefined)
+			{
+				const language = databaseManager.getFirstRow(
+					queries.getLanguage,
+					{
+						languageId,
+					}
+				);
+
+				pluginManager.prepareLanguage(language);
+			}
 		}
 	}
 

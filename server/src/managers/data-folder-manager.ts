@@ -10,6 +10,7 @@ import path from 'path';
 import { getEnvironmentVariable } from '../../../common/utils';
 
 import { databaseManager } from '../database/database-manager';
+import { pluginManager } from '../plugins/plugin-manager';
 
 class DataFolderManager
 {
@@ -60,6 +61,32 @@ class DataFolderManager
 		this.profileNames = fs.readdirSync(profilesFolderPath, { withFileTypes: true })
 			.filter((dirent: fs.Dirent) => dirent.isDirectory())
 			.map((dirent: fs.Dirent) => dirent.name);
+
+		const pluginsFolderPath: string = path.join(dataFolderPath, 'plugins');
+		if (!fs.existsSync(pluginsFolderPath))
+		{
+			this.initializePluginFolder(pluginsFolderPath);
+		}
+
+		const pluginNames: string[] = fs.readdirSync(pluginsFolderPath, { withFileTypes: true })
+			.filter((dirent: fs.Dirent) => dirent.isDirectory())
+			.map((dirent: fs.Dirent) => path.join(pluginsFolderPath, dirent.name));
+
+		pluginManager.loadPlugins(pluginNames)
+			.then(
+				() => pluginManager.startPlugins().then(
+					() => pluginManager.prepare()
+				)
+			);
+	}
+
+	private initializePluginFolder(pluginsFolderPath: string): void
+	{
+		fs.mkdirSync(pluginsFolderPath, { recursive: true });
+
+		const defaultPluginsFolderPath: string = path.join(__dirname, '..', 'plugins', 'default-plugins');
+		
+		fs.cpSync(defaultPluginsFolderPath, pluginsFolderPath, { recursive: true });
 	}
 
 	createProfile(name: string): void

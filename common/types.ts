@@ -4,6 +4,16 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
+type TextProcessorReference = {
+	pluginId: string;
+	textProcessorId: string;
+};
+
+type WordDataProviderReference = {
+	pluginId: string;
+	wordDataProviderId: string;
+};
+
 type Language = {
 	id: number;
 	name: string;
@@ -15,6 +25,8 @@ type Language = {
 	intrawordPunctuation: string;
 	templateCode: string;
 	scriptName: string;
+	textProcessors: string;
+	wordDataProvider: string;
 };
 
 type Text = {
@@ -71,4 +83,43 @@ type RawWord = {
 	tokenCount: number;
 };
 
-export type { Language, Text, Page, ReducedWordData, Entry, Word, RawWord };
+type TextProcessor = {
+	id: string;
+	name: string;
+	supportedLanguages: string[] | Symbol;
+	pluginId: string;
+};
+
+type WordDataProvider = {
+	id: string;
+	name: string;
+	targetLanguage: string;
+	auxiliaryLanguage: string;
+	pluginId: string;
+};
+
+type DictionaryEntry = {
+	reading?: string;
+	meaning?: string;
+};
+
+type DictionaryWordData = {
+	wordContent?: string;
+	entries?: DictionaryEntry[];
+	notes?: string;
+};
+
+export type {
+	Language,
+	Text,
+	TextProcessorReference,
+	Page,
+	ReducedWordData,
+	Entry,
+	Word,
+	WordDataProviderReference,
+	RawWord,
+	TextProcessor,
+	WordDataProvider,
+	DictionaryWordData
+};

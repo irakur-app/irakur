@@ -4,7 +4,19 @@
  * Licensed under version 3 of the GNU Affero General Public License
  */
 
-import { Entry, Language, Page, ReducedWordData, Text, Word } from '@common/types';
+import {
+	Entry,
+	Language,
+	Page,
+	ReducedWordData,
+	Text,
+	Word,
+	TextProcessor,
+	WordDataProvider,
+	DictionaryWordData
+} from '@common/types';
+
+import { symbols } from '../symbols';
 
 class BackendConnector
 {
@@ -27,7 +39,9 @@ class BackendConnector
 		whitespaces: string,
 		intrawordPunctuation: string,
 		templateCode: string,
-		scriptName: string
+		scriptName: string,
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -48,6 +62,8 @@ class BackendConnector
 						intrawordPunctuation,
 						templateCode,
 						scriptName,
+						textProcessorFullIds,
+						wordDataProviderFullId,
 					}
 				),
 			}
@@ -94,7 +110,9 @@ class BackendConnector
 		alphabet: string,
 		sentenceDelimiters: string,
 		whitespaces: string,
-		intrawordPunctuation: string
+		intrawordPunctuation: string,
+		textProcessorFullIds: string[],
+		wordDataProviderFullId: string
 	): Promise<boolean>
 	{
 		const response: Response = await fetch(
@@ -113,6 +131,8 @@ class BackendConnector
 						sentenceDelimiters,
 						whitespaces,
 						intrawordPunctuation,
+						textProcessorFullIds,
+						wordDataProviderFullId,
 					}
 				),
 			}
@@ -496,6 +516,70 @@ class BackendConnector
 		}
 
 		return response.ok;
+	}
+
+	async processText(text: string, languageId: number): Promise<string>
+	{
+		const response: Response = await fetch(
+			'/api/plugins/process-text/',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(
+					{
+						text,
+						languageId,
+					}
+				),
+			}
+		);
+
+		if (!response.ok)
+		{
+			console.error('Failed to process text');
+		}
+
+		const processedText = (await response.json()).text;
+
+		return processedText;
+	}
+
+	async getWordData(languageId: number, wordContent: string): Promise<DictionaryWordData | null>
+	{
+		const response: Response = await fetch(
+			`/api/plugins/provide-word-data?languageId=${languageId}&content=${wordContent}`
+		);
+		if (!response.ok)
+		{
+			return null;
+		}
+		const wordData = (await response.json()).wordData;
+		return wordData;
+	}
+
+	async getTextProcessors(): Promise<TextProcessor[]>
+	{
+		const response: Response = await fetch('/api/plugins/text-processors');
+		const textProcessors = (await response.json()).textProcessors;
+		return textProcessors.map(
+			(textProcessor: TextProcessor) => {
+				return {
+					...textProcessor,
+					languages: Array.isArray(textProcessor.supportedLanguages)
+						? textProcessor.supportedLanguages
+						: symbols.anyLanguage,
+				};
+			}
+		)
+	}
+
+	async getWordDataProviders(): Promise<WordDataProvider[]>
+	{
+		const response: Response = await fetch('/api/plugins/word-data-providers');
+		const wordDataProviders = (await response.json()).wordDataProviders;
+		return wordDataProviders;
 	}
 }
 

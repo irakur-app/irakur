@@ -128,9 +128,9 @@ class DatabaseManager
 		return this.database.prepare(query).get(parameters);
 	}
 
-	getLastInsertId(): any
+	getLastInsertId(): number
 	{
-		return this.getFirstRow(queries.getLastInsertId);
+		return this.getFirstRow(queries.getLastInsertId).id;
 	}
 
 	private fixParameters(parameters: Record<string, any>): Object

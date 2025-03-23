@@ -6,9 +6,11 @@
 
 import express from 'express';
 
+import { Language } from '@common/types';
 import { dataFolderManager } from '../managers/data-folder-manager';
 import { LanguagesController } from '../controllers/languages-controller';
 import { PagesController } from '../controllers/pages-controller';
+import { pluginManager } from '../plugins/plugin-manager';
 import { StatisticsController } from '../controllers/statistics-controller';
 import { TextsController } from '../controllers/texts-controller';
 import { WordsController } from '../controllers/words-controller';
@@ -65,7 +67,9 @@ router.post(
 				req.body.whitespaces,
 				req.body.intrawordPunctuation,
 				req.body.templateCode,
-				req.body.scriptName
+				req.body.scriptName,
+				req.body.textProcessorFullIds,
+				req.body.wordDataProviderFullId
 			);
 			res.sendStatus(200);
 		}
@@ -92,7 +96,9 @@ router.patch(
 				req.body.alphabet,
 				req.body.sentenceDelimiters,
 				req.body.whitespaces,
-				req.body.intrawordPunctuation
+				req.body.intrawordPunctuation,
+				req.body.textProcessorFullIds,
+				req.body.wordDataProviderFullId
 			);
 			res.sendStatus(200);
 		}
@@ -374,6 +380,87 @@ router.patch(
 		}
 	)
 );
+//#endregion
+
+//#region Plugins
+router.get(
+	'/plugins/text-processors',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			res.json(
+				{
+					textProcessors: pluginManager.getAllAvailableProcessors().map(
+						(textProcessor) => {
+							return {
+								id: textProcessor.id,
+								name: textProcessor.name,
+								languages: Array.isArray(textProcessor.supportedLanguages)
+									? textProcessor.supportedLanguages
+									: textProcessor.supportedLanguages.description,
+								pluginId: textProcessor.pluginId
+							}
+						}
+					)
+				}
+			);
+		}
+	)
+);
+
+router.get(
+	'/plugins/word-data-providers',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			res.json(
+				{
+					wordDataProviders: pluginManager.getAllAvailableWordDataProviders()
+				}
+			);
+		}
+	)
+);
+
+router.post(
+	'/plugins/start',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			pluginManager.startPlugins();
+			res.sendStatus(200);
+		}
+	)
+);
+
+router.post(
+	'/plugins/process-text',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			const language: Language = languagesController.getLanguage(req.body.languageId);
+			res.json({ text: await pluginManager.processTextInLanguage(req.body.text, language) });
+		}
+	)
+);
+
+router.get(
+	'/plugins/provide-word-data',
+	errorWrapper(
+		async (req: express.Request, res: express.Response): Promise<void> => {
+			if (req.query.languageId !== undefined && req.query.content !== undefined)
+			{
+				const language: Language = languagesController.getLanguage(parseInt(req.query.languageId as string));
+				res.json(
+					{
+						wordData: await pluginManager.provideWordDataInLanguage(req.query.content as string, language)
+					}
+				);
+			}
+			else
+			{
+				res.sendStatus(500);
+			}
+		}
+	)
+);
+
 //#endregion
 
 export { router };

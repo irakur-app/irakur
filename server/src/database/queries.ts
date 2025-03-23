@@ -22,6 +22,8 @@ const queries: Record<string, string> = {
 		intraword_punctuation TEXT NOT NULL,
 		template_code TEXT NOT NULL,
 		script_name TEXT NOT NULL,
+		text_processors TEXT NOT NULL DEFAULT '[]',
+		word_data_provider TEXT,
 		CONSTRAINT pk__language__id PRIMARY KEY (id),
 		CONSTRAINT uq__language__name UNIQUE (name)
 	)`,
@@ -194,7 +196,9 @@ const queries: Record<string, string> = {
 			whitespaces,
 			intraword_punctuation AS intrawordPunctuation,
 			template_code AS templateCode,
-			script_name AS scriptName
+			script_name AS scriptName,
+			text_processors AS textProcessors,
+			word_data_provider AS wordDataProvider
 		FROM language`,
 	getLanguage: `SELECT
 			id,
@@ -206,7 +210,9 @@ const queries: Record<string, string> = {
 			whitespaces,
 			intraword_punctuation AS intrawordPunctuation,
 			template_code AS templateCode,
-			script_name AS scriptName
+			script_name AS scriptName,
+			text_processors AS textProcessors,
+			word_data_provider AS wordDataProvider
 		FROM language WHERE id = :languageId`,
 	addLanguage: `INSERT INTO language (
 			name,
@@ -217,9 +223,11 @@ const queries: Record<string, string> = {
 			whitespaces,
 			intraword_punctuation,
 			template_code,
-			script_name
+			script_name,
+			text_processors,
+			word_data_provider
 		)
-		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces, :intrawordPunctuation, :templateCode, :scriptName)`,
+		VALUES (:name, :dictionaryUrl, :shouldShowSpaces, :alphabet, :sentenceDelimiters, :whitespaces, :intrawordPunctuation, :templateCode, :scriptName, :textProcessors, :wordDataProvider)`,
 	deleteLanguage: `DELETE FROM language WHERE id = :languageId`,
 	editLanguage: `UPDATE language SET %DYNAMIC% WHERE id = :languageId`,
 	//#endregion
