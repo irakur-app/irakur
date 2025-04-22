@@ -83,6 +83,11 @@ type RawWord = {
 	tokenCount: number;
 };
 
+type Collection = {
+	id: number,
+	name: string;
+}
+
 type TextProcessor = {
 	id: string;
 	name: string;
@@ -117,6 +122,7 @@ export type {
 	ReducedWordData,
 	Entry,
 	Word,
+	Collection,
 	WordDataProviderReference,
 	RawWord,
 	TextProcessor,

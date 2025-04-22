@@ -14,12 +14,14 @@ import { pluginManager } from '../plugins/plugin-manager';
 import { StatisticsController } from '../controllers/statistics-controller';
 import { TextsController } from '../controllers/texts-controller';
 import { WordsController } from '../controllers/words-controller';
+import { CollectionsController } from '../controllers/collections-controller';
 
 const languagesController = new LanguagesController();
 const textsController = new TextsController();
 const pagesController = new PagesController();
 const wordsController = new WordsController();
 const statisticsController = new StatisticsController();
+const collectionsController = new CollectionsController();
 
 const router = express.Router();
 
@@ -301,6 +303,68 @@ router.patch(
 				req.body.timeUpdated,
 				parseInt(req.params.wordId)
 			);
+			res.sendStatus(200);
+		}
+	)
+);
+//#endregion
+
+//#region Collections
+router.get(
+	'/collections/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			if (req.query.textId !== undefined)
+			{
+				res.json({ collections: collectionsController.getCollectionsOfText(parseInt(req.query.textId as string)) });
+			}
+			else
+			{
+				res.json({ collections: collectionsController.getAllCollections() });
+			}
+		}
+	)
+);
+router.get(
+	'/collections/:collectionName/texts/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			res.json({ texts: collectionsController.getTextsInCollection(req.params.collectionName) });
+		}
+	)
+);
+router.post(
+	'/collections/',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			collectionsController.addCollection(req.body.collectionName);
+			res.sendStatus(200);
+		}
+	)
+);
+router.post(
+	'/collections/batch',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			collectionsController.addCollectionsInBatch(req.body.collectionNames);
+			res.sendStatus(200);
+		}
+	)
+);
+router.post(
+	'/collections/batch/texts/:textId',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			collectionsController.addTextToCollectionsInBatch(parseInt(req.params.textId), req.body.collectionNames);
+			res.sendStatus(200);
+		}
+	)
+);
+router.post(
+	'/collections/:collectionName/texts/:textId',
+	errorWrapper(
+		(req: express.Request, res: express.Response): void => {
+			collectionsController.addTextToCollection(parseInt(req.params.textId), req.params.collectionName);
 			res.sendStatus(200);
 		}
 	)

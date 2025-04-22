@@ -178,3 +178,40 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/api/plugins/provide-word-data?languageId=6&content=家
+
+###
+GET http://localhost:5000/api/collections/
+
+###
+GET http://localhost:5000/api/collections/test3/texts/
+
+###
+POST http://localhost:5000/api/collections/
+Content-Type: application/json
+
+{
+	"collectionName": "test1"
+}
+
+###
+POST http://localhost:5000/api/collections/batch/
+Content-Type: application/json
+
+{
+	"collectionNames": [
+		"test2",
+		"test5",
+		"test4",
+		"test6"
+	]
+}
+
+###
+POST http://localhost:5000/api/collections/batch/texts/1
+Content-Type: application/json
+
+{
+	"collectionNames": [
+		"test3"
+	]
+}

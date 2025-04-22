@@ -75,6 +75,8 @@ class DatabaseManager
 		this.runQuery(queries.createPageTable);
 		this.runQuery(queries.createWordTable);
 		this.runQuery(queries.createEntryTable);
+		this.runQuery(queries.createCollectionTable);
+		this.runQuery(queries.createCollectionTextTable);
 		this.runQuery(queries.createWordStatusLogTable);
 		this.runQuery(queries.createTextProgressLogTable);
 

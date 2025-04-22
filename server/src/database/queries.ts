@@ -45,7 +45,7 @@ const queries: Record<string, string> = {
 		position INTEGER,
 		content TEXT NOT NULL,
 		CONSTRAINT pk__page__id PRIMARY KEY (id),
-		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT fk__page__text_id FOREIGN KEY (text_id) REFERENCES text (id),
 		CONSTRAINT uq__page__text_id__position UNIQUE (text_id, position)
 	)`,
 	createWordTable: `CREATE TABLE IF NOT EXISTS word (
@@ -77,7 +77,7 @@ const queries: Record<string, string> = {
 		status INTEGER NOT NULL,
 		time_updated INTEGER NOT NULL,
 		CONSTRAINT pk__word_status_log__id PRIMARY KEY (id),
-		CONSTRAINT fk__word_status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id)
+		CONSTRAINT fk__word_status_log__word_id FOREIGN KEY (word_id) REFERENCES word (id),
 		CONSTRAINT uq__word_status_log__word_id__time_updated UNIQUE (word_id, time_updated)
 	)`,
 	createTextProgressLogTable: `CREATE TABLE IF NOT EXISTS text_progress_log (
@@ -86,8 +86,23 @@ const queries: Record<string, string> = {
 		progress REAL NOT NULL,
 		time_updated INTEGER NOT NULL,
 		CONSTRAINT pk__text_progress_log__id PRIMARY KEY (id),
-		CONSTRAINT fk__text_progress_log__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT fk__text_progress_log__text_id FOREIGN KEY (text_id) REFERENCES text (id),
 		CONSTRAINT uq__text_progress_log__text_id__time_updated UNIQUE (text_id, time_updated)
+	)`,
+	createCollectionTable: `CREATE TABLE IF NOT EXISTS collection (
+		id INTEGER,
+		name TEXT,
+		CONSTRAINT pk__collection__id PRIMARY KEY (id),
+		CONSTRAINT uq__collection__name UNIQUE (name)
+	)`,
+	createCollectionTextTable: `CREATE TABLE IF NOT EXISTS collection_text (
+		id INTEGER,
+		collection_id INTEGER,
+		text_id INTEGER,
+		CONSTRAINT pk__collection_text__id PRIMARY KEY (id),
+		CONSTRAINT fk__collection_text__collection_id FOREIGN KEY (collection_id) REFERENCES collection (id),
+		CONSTRAINT fk__collection_text__text_id FOREIGN KEY (text_id) REFERENCES text (id)
+		CONSTRAINT uq__collection_text__collection_id__text_id UNIQUE (collection_id, text_id)
 	)`,
 	//#endregion
 
@@ -433,6 +448,55 @@ const queries: Record<string, string> = {
 		ON word.id = ls.word_id
 		WHERE last_status > first_status
 			AND word.language_id = :languageId`,
+	//#endregion
+
+	//#region Collection
+	addCollection: `INSERT OR IGNORE INTO collection (
+			name
+		)
+		VALUES (:name)`,
+	addCollectionsInBatch: `INSERT OR IGNORE INTO collection (
+			name
+		)
+		VALUES %DYNAMIC%`,
+	addTextToCollection: `INSERT OR IGNORE INTO collection_text (
+			collection_id,
+			text_id
+		)
+		VALUES ((SELECT id AS collection_id FROM collection WHERE name = :name), :textId)`,
+	addTextToCollectionsInBatch: `INSERT OR IGNORE INTO collection_text (
+		collection_id,
+		text_id
+	)
+	VALUES %DYNAMIC%`,
+	findCollection: `SELECT
+			id,
+			name
+		FROM collection
+		WHERE name = :name`,
+	getAllCollections: `SELECT
+			id,
+			name
+		FROM collection`,
+	getCollectionsOfText: `SELECT
+		collection.id,
+		name
+	FROM collection
+	JOIN collection_text ON collection_text.collection_id = collection.id
+	WHERE collection_text.text_id = :textId`,
+	getTextsInCollection: `SELECT
+			text.id,
+			language_id AS languageId,
+			title,
+			source_url AS sourceUrl,
+			time_opened AS timeOpened,
+			time_finished AS timeFinished,
+			progress
+		FROM text
+		JOIN collection_text ON collection_text.text_id = text.id
+		JOIN collection ON collection.id = collection_text.collection_id
+		WHERE collection.name = :collectionName`,
+	deleteTextCollections: `DELETE FROM collection_text WHERE text_id = :textId`,
 	//#endregion
 
 	//#region Utils
